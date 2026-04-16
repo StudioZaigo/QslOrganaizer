@@ -24,10 +24,10 @@ End Module
 
 Module ModeList
     Public ReadOnly Modes As String() = {
-        "CW", "SSB", "FT8", "FM",
-        "PHONE", "RTTY", "FT4", "PSK31", "AM",
+        "RTTY", "FT8", "FT4", "PSK31",
         "JT65", "JT9", "SSTV", "ATV",
         "AMTOR", "PACKET", "FSK", "MFSK",
+        "CW", "SSB", "AM", "FM", "PHONE",
         "C4FM", "D-STAR", "DSTAR", "SAT", "SATELLITE",
         "F3", "A3J", "A1", "A1A", "F2A", "A3", "FONE"
     }
@@ -58,123 +58,6 @@ Module MonthDictionary
 End Module
 
 
-
-Public Class CallsignDetector
-
-    Public Function DetectBestCallsign(text As String) As String
-        Dim candidates = GenerateCandidates(text)
-
-        Dim bestScore As Integer = Integer.MinValue
-        Dim best As String = ""
-
-        For Each c In candidates
-            Dim score = ScoreCallsign(c)
-            If score > bestScore Then
-                bestScore = score
-                best = c
-            End If
-        Next
-
-        Return best
-    End Function
-
-    ' -----------------------------
-    ' 候補生成
-    ' -----------------------------
-    Private Function GenerateCandidates(text As String) As List(Of String)
-        Dim results As New List(Of String)
-
-        ' 広めに拾う
-        Dim pattern As String = "[A-Z0-9/=]{4,15}"
-        For Each m As Match In Regex.Matches(text.ToUpper(), pattern)
-            Dim raw = m.Value
-
-            results.Add(raw)
-
-            ' 軽い揺らぎ候補（限定的）
-            results.AddRange(GenerateVariants(raw))
-        Next
-
-        Return results.Distinct().ToList()
-    End Function
-
-    ' -----------------------------
-    ' OCR誤認識の「候補生成」
-    ' -----------------------------
-    Private Function GenerateVariants(s As String) As List(Of String)
-        Dim list As New List(Of String)
-
-        ' 危険な全置換はしない
-        ' 1文字だけ置換した候補を作る
-        Dim map As New Dictionary(Of Char, Char()) From {
-            {"="c, {"E"c}},
-            {"0"c, {"O"c}},
-            {"1"c, {"I"c}},
-            {"8"c, {"B"c}}
-        }
-
-        For i = 0 To s.Length - 1
-            Dim ch = s(i)
-            If map.ContainsKey(ch) Then
-                For Each alt In map(ch)
-                    Dim arr = s.ToCharArray()
-                    arr(i) = alt
-                    list.Add(New String(arr))
-                Next
-            End If
-        Next
-
-        Return list
-    End Function
-
-    ' -----------------------------
-    ' スコアリング
-    ' -----------------------------
-    Private Function ScoreCallsign(s As String) As Integer
-        Dim score As Integer = 0
-
-        ' 長さ
-        If s.Length >= 5 AndAlso s.Length <= 10 Then
-            score += 3
-        ElseIf s.Length <= 12 Then
-            score += 1
-        Else
-            score -= 3
-        End If
-
-        ' 数字を含む（重要）
-        If Regex.IsMatch(s, "\d") Then
-            score += 5
-        Else
-            score -= 5
-        End If
-
-        ' 英字で始まることが多い
-        If Regex.IsMatch(s, "^[A-Z]") Then
-            score += 2
-        End If
-
-        ' 不自然な記号
-        If s.Contains("=") Then score -= 2
-
-        ' スラッシュ（ポータブル）
-        If s.Contains("/") Then score += 1
-
-        ' コールサインらしい基本構造（緩め）
-        If Regex.IsMatch(s, "[A-Z0-9]{1,4}\d[A-Z0-9]{1,6}") Then
-            score += 5
-        End If
-
-        ' すべて数字は除外
-        If Regex.IsMatch(s, "^\d+$") Then
-            score -= 10
-        End If
-
-        Return score
-    End Function
-
-End Class
-
 Public Class Form1
 
     Private Shared UsedRanges As New List(Of (Start As Integer, Length As Integer))
@@ -186,7 +69,7 @@ Public Class Form1
     Public OutputFolder As String
     Public InputFileName As String
 
-    Dim patnCallsign As String = "[1-9]?[A-Za-z]{1,5}[0-9]{1,5}[A-Za-z0-9]{1,8}"        ' Callsignの正規表現　但し、前後の区切りをつける必要あり
+    Dim patnCallsign As String = "[1-9]?[A-Za-z]{1,5}[0-9]{1, 5}[A-Za-z0-9]{1,8}"        ' Callsignの正規表現　但し、前後の区切りをつける必要あり
 
     Public SpecialText As String          ' OcrEngine内で共通に利用できるOCRした結果
 
@@ -199,8 +82,7 @@ Public Class Form1
         Dim input = "qsl_original.jpg"
         Dim output = "qsl_corrected.jpg"
 
-        dlg.Filter = "画像ファイル|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tiff"
-
+        dlg.Filter = "画像ファイル|*.jpg;*.jpeg;*.png;*.        bmp"
         If InitSub Then
             dlg.InitialDirectory = InputFolder
             InitSub = False
@@ -268,6 +150,7 @@ Public Class Form1
 
         Dim year, month, day, hour, minute As String
         Dim pattern As String
+
         Dim upper As String = Dir(FileName).ToUpper()           ' ファイル名を抜き出す 先にファイル名を抜き出し、その後大文字にする必要がある
 
         pattern = "^([A-Z0-9]+)_([0-9]{8})_([0-9]{4})_([0-9]{1,4}[MGC])_([A-Z0-9]+)\.(JPG|JPEG|PNG|BMP)$"
@@ -287,7 +170,7 @@ Public Class Form1
             Return True
         End If
 
-        pattern = "^([A-Z0-9-]+)_([0-9]{8})([0-9]{4})_([0-9]{1,4}[MGC])_([A-Z0-9]+)\.(JPG|JPEG|PNG|BMP)$"
+        pattern = "^([A-Z0-9]+)_([0-9]{8})([0-9]{4})_([0-9]{1,4}[MGC])_([A-Z0-9]+)\.(JPG|JPEG|PNG|BMP)$"
         m = Regex.Match(upper, pattern, RegexOptions.IgnoreCase)            ' "A31MM_201710290514_15M_SSB.JPG"の型式  日付と時刻の間に"_"がない
         If m.Success Then
             cmbCallsign.Text = m.Groups(1).Value
@@ -305,7 +188,7 @@ Public Class Form1
         End If
 
         ' "A35TR_140822_0022_21.200_CW_JA7FKF.jpg"の型式  ｈQSLの形式
-        pattern = "^([A-Z0-9-]+)_([0-9]{6})_([0-9]{4})_(\d+(\.\d+)?)_([A-Z0-9]+)_([A-Z0-9]+)\.JPG$"
+        pattern = "^([A-Z0-9]+)_([0-9]{6})_([0-9]{4})_(\d+(\.\d+)?)_([A-Z0-9]+)_([A-Z0-9]+)\.JPG$"
         m = Regex.Match(upper, pattern, RegexOptions.IgnoreCase)
         If m.Success Then
             cmbCallsign.Text = m.Groups(1).Value
@@ -505,7 +388,7 @@ Public Class Form1
 
         Dim text = ocr.RecognizeText(currentImagePath)
 
-        If text.Trim = "" Then
+        If text = "" Then
             MessageBox.Show("OCR結果が空です")
             Exit Sub
         Else
@@ -513,9 +396,8 @@ Public Class Form1
             Dim preview = If(text.Length > 1000, text.Substring(0, 1000) & " ...", text)
             Dim s = preview.Split(vbCr)
 
-            'LstOcrResult.Items.Clear()
-            'LstOcrResult.Items.AddRange(text.Split(New String() {vbLf}, StringSplitOptions.RemoveEmptyEntries))
-            TxtOcrResult.Lines = text.Split(New String() {vbLf}, StringSplitOptions.RemoveEmptyEntries)
+            LstOcrResult.Items.Clear()
+            LstOcrResult.Items.AddRange(text.Split(New String() {vbLf}, StringSplitOptions.RemoveEmptyEntries))
         End If
 
         '罫線を削除する
@@ -527,6 +409,7 @@ Public Class Form1
         text = Regex.Replace(text, " +", " ")
 
         UsedRanges.Clear()      ' OCR → Extract の処理へ    ' 既出の文字列リストをクリアする
+
 
         SpecialText = Trim(text).ToUpper            ' OcrEngine内で共通の利用できる読み取り結果
 
@@ -574,13 +457,9 @@ Public Class Form1
 
     Public Class RegexExtractor
 
+
         Public Shared Function ExtractCallsignCandidates(text As String) As List(Of String)
-
-
             Dim list As New List(Of String)
-            If text = "" Then
-                Return list
-            End If
 
             ' OCR誤認識補正前のテキストを大文字化
             Dim upper = FixCallsign(text.ToUpper()）
@@ -652,8 +531,6 @@ Public Class Form1
 
         Public Shared Function ExtractDate(text As String) As String
 
-            If text = "" Then Return ""
-
             Dim cleaned = CleanDateText1(text.ToUpper)
             Dim dateFromMonth = ExtractDateWithMonthName(cleaned)
             If dateFromMonth <> "" Then Return dateFromMonth
@@ -696,68 +573,54 @@ Public Class Form1
             s = s.Replace(".", "/")
             s = s.Replace(";", "/")
             s = s.Replace(":", "/")
-            's = s.Replace(" /", "/")        ' ":"前後の空白を除く
-            's = s.Replace("/ ", "/")
+            s = s.Replace(" /", "/")        ' ":"前後の空白を除く
+            s = s.Replace("/ ", "/")
             Return s
         End Function
 
+        ' 月名を含む日付
         Private Shared Function ExtractDateWithMonthName(text As String) As String
-            ' 月名を含む日付の処理
             text = CleanDateText(text).ToUpper
             Dim pattern As String
-            Dim key As String = ""
-            Dim b As Boolean = False
+            Dim m As Match
 
             For Each key In MonthNames.Keys
+
+                pattern = "(\d{1,2})[\s/-]+" & key & "[\s/-]+(\d{2,4})"              '日、月、年の並び順
+                m = Regex.Match(text, pattern)
+                If m.Success Then
+                    Dim month = MonthNames(key)
+                    Dim day = Integer.Parse(m.Groups(1).Value)
+                    Dim year = FixYear(m.Groups(2).Value)
+                    Dim s As String = $"{year:0000}/{month:00}/{day:00}"
+                    If IsDate(s) Then
+
+                        '               lstPastStrs.Add(m.Groups(1).Value)
+                        Return s
+                    End If
+                End If
+
                 If text.Contains(key) Then
-                    b = True
-                    Exit For
-                End If
-            Next
-            If Not b Then Return ""
+                    pattern = "\b" & key & "[\s/-]+(\d{1,2})[\s/-]+(\d{2,4})\b"              '月、日、年の並び順
+                    m = Regex.Match(text, pattern)
+                    If m.Success Then
+                        Dim month = MonthNames(key)
+                        Dim day = Integer.Parse(m.Groups(1).Value)
+                        Dim year = FixYear(m.Groups(2).Value)
+                        Dim s As String = $"{year:0000}/{month:00}/{day:00}"
+                        If IsDate(s) Then Return s
+                    End If
 
-            pattern = "(\d{1,2})[\s/-]+" & key & "[\s/-]+(\d{2,4})"              '日、月、年の並び順
-            Dim regex As New Regex(pattern)
-            For Each m As Match In regex.Matches(text, RegexOptions.IgnoreCase)
-                Dim month = MonthNames(key)
-                Dim day = Integer.Parse(m.Groups(1).Value)
-                Dim year = FixYear(m.Groups(2).Value)
-                Dim s As String = $"{year:0000}/{month:00}/{day:00}"
-                If IsDate(s) Then
-                    Debug.Print("Index=" & m.Index & "  Length=" & m.Length & "  text=" & Mid(text, m.Index, m.Length))
+                    pattern = "(\d{2,4})[\s/-]+" & key & "[\s/-]+(\d{1,2})\s"              '年、月、日の並び順
+                    m = Regex.Match(text, pattern)
+                    If m.Success Then
+                        Dim month = MonthNames(key)
+                        Dim day = Integer.Parse(m.Groups(2).Value)
+                        Dim year = FixYear(m.Groups(1).Value)
+                        Dim s As String = $"{year:0000}/{month:00}/{day:00}"
+                        If IsDate(s) Then Return s
+                    End If
 
-                    UsedRanges.Add((m.Index, m.Length))
-                    Return s
-                End If
-            Next
-
-            pattern = "\b" & key & "[\s/-]+(\d{1,2})[\s/-]+(\d{2,4})\b"              '月、日、年の並び順
-            regex = New Regex(pattern)
-            For Each m As Match In regex.Matches(text, RegexOptions.IgnoreCase)
-                Dim month = MonthNames(key)
-                Dim day = Integer.Parse(m.Groups(1).Value)
-                Dim year = FixYear(m.Groups(2).Value)
-                Dim s As String = $"{year:0000}/{month:00}/{day:00}"
-                If IsDate(s) Then
-                    Debug.Print("Index=" & m.Index & "  Length=" & m.Length & "  text=" & Mid(text, m.Index, m.Length))
-
-                    UsedRanges.Add((m.Index, m.Length))
-                    Return s
-                End If
-            Next
-
-            pattern = "(\d{2,4})[\s/-]+" & key & "[\s/-]+(\d{1,2})\s"              '年、月、日の並び順
-            regex = New Regex(pattern)
-            For Each m As Match In regex.Matches(text, RegexOptions.IgnoreCase)
-                Dim month = MonthNames(key)
-                Dim day = Integer.Parse(m.Groups(2).Value)
-                Dim year = FixYear(m.Groups(1).Value)
-                Dim s As String = $"{year:0000}/{month:00}/{day:00}"
-                If IsDate(s) Then
-                    Debug.Print("Index=" & m.Index & "  Length=" & m.Length & "  text=" & Mid(text, m.Index, m.Length))
-
-                    UsedRanges.Add((m.Index, m.Length))
-                    Return s
                 End If
             Next
 
@@ -768,173 +631,117 @@ Public Class Form1
         Private Shared Function ExtractDateNumeric(text As String) As String
 
             Dim a, b, c As String
+
             Dim year As Integer
             Dim month As Integer
             Dim day As Integer
-            Dim d As String
 
-            '      text = text.Trim
+            text = text.Trim
             ' "yyyy/mm/dd"の場合
-            Dim pattern = "\b(\d{1,4})[\/\-,\.\s](\d{1,2})[\/\-,\.\s](\d{1,4})\b"
-            Dim Regex As New Regex(pattern)
-            For Each m As Match In Regex.Matches(text, RegexOptions.IgnoreCase)
-                If IsUsed(m.Index, m.Length) Then
-                    Continue For
-                End If
-
+            Dim pattern = "\s(\d{2,4})[\/\-,\.\s](\d{1,2})[\/\-,\.\s](\d{1,2})\s"
+            Dim m = Regex.Match(text, pattern)
+            If m.Success Then
                 a = m.Groups(1).Value
                 b = m.Groups(2).Value
                 c = m.Groups(3).Value
 
                 ' yyyy/mm/dd
-                If a.Length = 4 Then            ' 年が4桁の時
-                    year = Integer.Parse(a)     ' aが年ならyyyy/mm/ddの型式とする
+                If a.Length = 4 Then
+                    year = Integer.Parse(a)
                     month = Integer.Parse(b)
                     day = Integer.Parse(c)
-                    d = $"{year:0000}/{month:00}/{day:00}"
-                    If IsDate(d) Then
-                        Debug.Print("Index=" & m.Index & "  Length=" & m.Length & "  text=" & Mid(text, m.Index, m.Length))
-                        UsedRanges.Add((m.Index, m.Length))
-                        Return d
-                    End If
-                ElseIf c.Length = 4 Then        ' cが年なら
+                ElseIf c.Length = 4 Then
                     year = Integer.Parse(c)
-                    month = Integer.Parse(b)         ' DD/MM/YYYYを試す
-                    day = Integer.Parse(a)
-                    d = $"{year:0000}/{month:00}/{day:00}"
-                    If IsDate(d) Then
-                        Debug.Print("Index=" & m.Index & "  Length=" & m.Length & "  text=" & Mid(text, m.Index, m.Length))
-                        UsedRanges.Add((m.Index, m.Length))
-                        Return d
-                    End If
-
-                    month = Integer.Parse(a)        ' MM/DD/YYYYを試す
+                    month = Integer.Parse(a)
                     day = Integer.Parse(b)
-                    If IsDate(d) Then
-                        Debug.Print("Index=" & m.Index & "  Length=" & m.Length & "  text=" & Mid(text, m.Index, m.Length))
-                        UsedRanges.Add((m.Index, m.Length))
-                        Return d
-                    End If
-                End If
+                Else
+                    ' mm/dd/yy or yy/mm/dd の判定
 
-                ' mm/dd/yy or yy/mm/dd の判定      年が2桁　年は19または20でなければならない
-                If Integer.Parse(a) = 19 OrElse Integer.Parse(a) = 20 Then      ' 第1要素が年であるとしたら
-                    year = FixYear(Integer.Parse(a))
-                    month = Integer.Parse(b)                    ' yy/mm/ddの場合
+                    ' 月は 1〜12 の範囲で判断
+                    If Integer.Parse(b) <= 12 Then      ' 第二要素が１から12なら月
+                        year = Integer.Parse(c)
+                        month = Integer.Parse(b)
+                        day = Integer.Parse(c)
+                    Else
+                        year = Integer.Parse(a)
+                        month = Integer.Parse(b)
+                        day = Integer.Parse(c)
+                    End If
+
+                    '                    year = yy
+                End If
+                year = FixYear(year)
+                Dim d As String = $"{year:0000}/{month:00}/{day:00}"
+                If IsDate(d) Then
+                    Return d
+                End If
+            End If
+
+            ' "mm/dd/yyyy"の場合
+            pattern = "\s(\d{2})[\/\-,\.\s](\d{1,2})[\/\-,\.\s](\d{1,4})\s"
+            m = Regex.Match(text, pattern)
+            If m.Success Then
+                a = m.Groups(3).Value
+                b = m.Groups(1).Value
+                c = m.Groups(2).Value
+
+                ' yyyy/mm/dd
+                If a.Length = 4 Then
+                    year = Integer.Parse(a)
+                    month = Integer.Parse(b)
                     day = Integer.Parse(c)
-                    d = $"{year:0000}/{month:00}/{day:00}"
-                    If IsDate(d) Then
-                        Debug.Print("Index=" & m.Index & "  Length=" & m.Length & "  text=" & Mid(text, m.Index, m.Length))
-                        UsedRanges.Add((m.Index, m.Length))
-                        Return d
-                    End If
-
-                    month = Integer.Parse(c)                    ' yy/dd/mmの場合
+                ElseIf c.Length = 4 Then
+                    year = Integer.Parse(c)
+                    month = Integer.Parse(a)
                     day = Integer.Parse(b)
-                    d = $"{year:0000}/{month:00}/{day:00}"
-                    If IsDate(d) Then
-                        Debug.Print("Index=" & m.Index & "  Length=" & m.Length & "  text=" & Mid(text, m.Index, m.Length))
-                        UsedRanges.Add((m.Index, m.Length))
-                        Return d
+                Else
+                    ' mm/dd/yy or yy/mm/dd の判定
+
+                    ' 月は 1〜12 の範囲で判断
+                    If Integer.Parse(b) <= 12 Then      ' 第二要素が１から12なら月
+                        year = Integer.Parse(c)
+                        month = Integer.Parse(b)
+                        day = Integer.Parse(c)
+                    Else
+                        year = Integer.Parse(a)
+                        month = Integer.Parse(b)
+                        day = Integer.Parse(c)
+                    End If
+
+                    '                    year = yy
+                End If
+                year = FixYear(year)
+                Dim d As String = $"{year:0000}/{month:00}/{day:00}"
+                If IsDate(d) Then
+                    Return d
+                End If
+            End If
+
+            pattern = "((19|20)\d{2})"
+            m = Regex.Match(text, pattern)
+            If m.Success() Then
+                a = m.Groups(1).Value
+                If a >= 1952 AndAlso a <= (Now().Year) Then
+                    a = m.Groups(1).Value
+
+                    pattern = "(\d{1,2})\s*[/:]\s*(\d{1,2})"
+                    m = Regex.Match(text, pattern, RegexOptions.IgnoreCase)
+                    If m.Success() Then
+                        b = m.Groups(1).Value
+                        c = m.Groups(2).Value
+
+                        year = Integer.Parse(a)
+                        month = Integer.Parse(b)
+                        day = Integer.Parse(c)
+
+                        Dim d As String = $"{year:0000}/{month:00}/{day:00}"
+                        If IsDate(d) Then
+                            Return d
+                        End If
+
                     End If
                 End If
-
-                year = FixYear(Integer.Parse(c))        ' cが年の場合
-                month = Integer.Parse(b)                ' mm/dd/yyの場合
-                day = Integer.Parse(a)
-                d = $"{year:0000}/{month:00}/{day:00}"
-                If IsDate(d) Then
-                    Debug.Print("Index=" & m.Index & "  Length=" & m.Length & "  text=" & Mid(text, m.Index, m.Length))
-                    UsedRanges.Add((m.Index, m.Length))
-                    Return d
-                End If
-
-                month = Integer.Parse(b)                ' dd/mm/yyの場合
-                day = Integer.Parse(a)
-                d = $"{year:0000}/{month:00}/{day:00}"
-                If IsDate(d) Then
-                    Debug.Print("Index=" & m.Index & "  Length=" & m.Length & "  text=" & Mid(text, m.Index, m.Length))
-                    UsedRanges.Add((m.Index, m.Length))
-                    Return d
-                End If
-
-                ' これで全部の組み合わせをしているはず
-            Next
-
-            '' "mm/dd/yyyy"の場合
-            'pattern = "\s(\d{2})[\/\-,\.\s](\d{1,2})[\/\-,\.\s](\d{1,4})\s"
-            'Regex = New Regex(pattern)
-            'For Each m As Match In Regex.Matches(text)
-            '    If IsUsed(m.Index, m.Length) Then
-            '        Continue For
-            '    End If
-            '    a = m.Groups(3).Value
-            '    b = m.Groups(1).Value
-            '    c = m.Groups(2).Value
-            '    If a.Length = 4 Then
-            '        year = Integer.Parse(a)
-            '        month = Integer.Parse(b)
-            '        day = Integer.Parse(c)
-            '    ElseIf c.Length = 4 Then
-            '        year = Integer.Parse(c)
-            '        month = Integer.Parse(a)
-            '        day = Integer.Parse(b)
-            '    Else
-            '        ' mm/dd/yy or yy/mm/dd の判定
-            '        ' 月は 1〜12 の範囲で判断
-            '        If Integer.Parse(b) <= 12 Then      ' 第二要素が１から12なら月
-            '            year = Integer.Parse(c)
-            '            month = Integer.Parse(b)
-            '            day = Integer.Parse(c)
-            '        Else
-            '            year = Integer.Parse(a)
-            '            month = Integer.Parse(b)
-            '            day = Integer.Parse(c)
-            '        End If
-            '    End If
-
-            '    ' yyyy/mm/dd
-            '    year = FixYear(year)
-            '    d = $"{year:0000}/{month:00}/{day:00}"
-            '    If IsDate(d) Then
-            '        Debug.Print("Index=" & m.Index & "  Length=" & m.Length & "  text=" & Mid(text, m.Index, m.Length))
-
-            '        UsedRanges.Add((m.Index, m.Length))
-            '        Return d
-            '    End If
-            'Next
-
-            'pattern = "((19|20)\d{2})"
-            'Regex = New Regex(pattern)
-            'For Each m As Match In Regex.Matches(text)
-            '    If IsUsed(m.Index, m.Length) Then
-            '        Continue For
-            '    End If
-            '    a = m.Groups(1).Value
-            '    If a >= 1952 AndAlso a <= (Now().Year) Then
-            '        a = m.Groups(1).Value
-
-            '        pattern = "(\d{1,2})\s*[/:]\s*(\d{1,2})"
-            '        Dim m1 = Regex.Match(text, pattern, RegexOptions.IgnoreCase)
-            '        If m1.Success() Then
-            '            b = m1.Groups(1).Value
-            '            c = m1.Groups(2).Value
-
-            '            year = Integer.Parse(a)
-            '            month = Integer.Parse(b)
-            '            day = Integer.Parse(c)
-
-            '            Dim d As String = $"{year:0000}/{month:00}/{day:00}"
-            '            If IsDate(d) Then
-            '                Debug.Print("Index=" & m.Index & "  Length=" & m.Length & "  text=" & Mid(text, m.Index, m.Length))
-
-            '                UsedRanges.Add((m.Index, m.Length))
-            '                Return d
-            '            End If
-
-            '        End If
-            '    End If
-            'Next
+            End If
 
             Return ""
         End Function
@@ -949,9 +756,9 @@ Public Class Form1
             s = s.Replace(",", " ")
             s = s.Replace("|", " ")
             s = s.Replace("/", " ")     ' 邪魔なので取り除く
+
             Return s
         End Function
-
         ' 年の補正（2桁 → 4桁）
         Private Shared Function FixYear(y As Integer) As Integer
             Dim yy = Integer.Parse(y)
@@ -970,49 +777,37 @@ Public Class Form1
         ' 時刻抽出のメイン関数
         Public Shared Function ExtractTime(text As String) As String
             Dim cleaned = CleanTimeText(text)
+
             Dim pattern As String
+            Dim m As Match
 
-            If text = "" Then Return ""
+            ' 時刻パターン hhnn(2300)
+            pattern = "(?<=\s)([01]\d)([0-5]\d)(?=\s)"
+            m = Regex.Match(cleaned, pattern, RegexOptions.IgnoreCase)
 
-            ' 時刻パターン hhnn(2300)             ' 数字のみ4桁
-            pattern = "(?<=\s)([012]\d)([0-5]\d)(?=\s)"
-            Dim Regex = New Regex(pattern)
-            For Each m As Match In Regex.Matches(cleaned, RegexOptions.IgnoreCase)
-                If IsUsed(m.Index, m.Length) Then
-                    Continue For
-                End If
+            If m.Success Then
                 Dim hour = Integer.Parse(m.Groups(1).Value)
                 Dim minute = Integer.Parse(m.Groups(2).Value)
                 ' 時刻の妥当性チェック
-                If hour < 0 Or hour > 23 Then Continue For
-                If minute < 0 Or minute > 59 Then Continue For
+                If hour < 0 Or hour > 23 Then Return ""
+                If minute < 0 Or minute > 59 Then Return ""
                 ' ゼロ埋めして返す
-                Debug.Print("Index=" & m.Index & "  Length=" & m.Length & "  text=" & Mid(text, m.Index, m.Length))
-
-                UsedRanges.Add((m.Index, m.Length))
                 Return $"{hour:00}:{minute:00}"
-            Next
+            End If
 
             ' 時刻パターン（例：9:3, 09:30, 21:5 など）
             pattern = "(?<=\s)(\d{1,2})[:\./s](\d{1,2}(?=\s))"
-            Regex = New Regex(pattern)
-            For Each m As Match In Regex.Matches(cleaned, RegexOptions.IgnoreCase)
-                If IsUsed(m.Index, m.Length) Then
-                    Continue For
-                End If
+            m = Regex.Match(cleaned, pattern, RegexOptions.IgnoreCase)
+            If m.Success Then
                 Dim hour = Integer.Parse(m.Groups(1).Value)
                 Dim minute = Integer.Parse(m.Groups(2).Value)
+
                 ' 時刻の妥当性チェック
-                If hour < 0 Or hour > 23 Then Continue For
-                If minute < 0 Or minute > 59 Then Continue For
+                If hour < 0 Or hour > 23 Then Return ""
+                If minute < 0 Or minute > 59 Then Return ""
                 ' ゼロ埋めして返す
                 Return $"{hour:00}:{minute:00}"
-                Debug.Print("Index=" & m.Index & "  Length=" & m.Length & "  text=" & Mid(text, m.Index, m.Length))
-
-                UsedRanges.Add((m.Index, m.Length))
-                Return m.Value
-            Next
-
+            End If
 
 
 
@@ -1030,7 +825,7 @@ Public Class Form1
             s = s.Replace(";", ":")
             s = s.Replace(".", ":")
             s = s.Replace(",", ":")
-            s = s.Replace("|", " ")
+            s = s.Replace("|", "")
 
             Return s
         End Function
@@ -1038,9 +833,7 @@ Public Class Form1
         ' メイン関数
         Public Shared Function ExtractMode(text As String) As String
 
-            If text = "" Then Return ""
-
-            Dim cleaned = CleanModeText(text.ToUpper)
+            Dim cleaned = text.ToUpper.Trim
             ' まずそのまま、チェックする
             For Each md In Modes
                 If cleaned.Contains(" " & md & " ") Then
@@ -1054,16 +847,15 @@ Public Class Form1
             ' まず既知モードが含まれているかチェック
             For Each md In Modes
                 If cleaned.Contains(md) Then
-                    Dim pattern As String = "[\s:;](" & md & ")[\s:;]"
-                    Dim m = Regex.Match(cleaned, pattern, RegexOptions.IgnoreCase)
-                    If m.Success Then
-                        md = m.Groups(1).Value
-
-                        Dim n As String = ""
-                        If AliasMode.TryGetValue(md, n) Then md = n
-                        Return md
-                    End If
+                    '      Dim pattern As String = "\d(" & md & ")\d"
+                    '     Dim m = Regex.Match(cleaned, pattern, RegexOptions.IgnoreCase)
+                    '    If m.Success Then
+                    '   md = m.Value(1)
+                    Dim n As String = ""
+                    If AliasMode.TryGetValue(md, n) Then md = n
+                    Return md
                 End If
+                'End If
             Next
 
             Dim candidate = FindSimilarMode(cleaned)
@@ -1100,9 +892,6 @@ Public Class Form1
 
         ' 周波数 → バンド変換のメイン関数
         Public Shared Function ExtractBand(text As String) As String
-
-            If text = "" Then Return ""
-
             ' 1. まず Band 表記があるか探す
             Dim band = ExtractBandDirect(text)
             If band <> "" Then Return band
@@ -1129,9 +918,10 @@ Public Class Form1
                         If IsUsed(m.Index, m.Length) Then
                             Continue For
                         End If
-                        Debug.Print("Index=" & m.Index & "  Length=" & m.Length & "  text=" & Mid(text, m.Index, m.Length))
+
                         UsedRanges.Add((m.Index, m.Length))
                         Return m.Value
+
                     Next
                 End If
             Next
@@ -1160,32 +950,20 @@ Public Class Form1
 
             '        Dim pattern = "(\s\d{1,5}(\.\d{1,3})?\s)"
             Dim pattern = "(?<=\s)\d{1,5}(\.\d{1,3})?(?=\s)"
-            Dim Regex As New Regex(pattern)
 
             '   text = text.ToUpper     ' まず変換する前に実行する
-            For Each m As Match In Regex.Matches(text, RegexOptions.Multiline Or RegexOptions.IgnoreCase)
-                If IsUsed(m.Index, m.Length) Then
-                    Continue For
-                End If
+            For Each m As Match In Regex.Matches(text, pattern, RegexOptions.Multiline Or RegexOptions.IgnoreCase)
                 Dim b As String = ConvertFreqToBand(m.Value)
                 If b <> "" Then
-                    Debug.Print("Index=" & m.Index & "  Length=" & m.Length & "  text=" & Mid(text, m.Index, m.Length))
-
-                    UsedRanges.Add((m.Index, m.Length))
                     Return b
                 End If
             Next
 
             Dim cleaned = CleanFreqText(text)
-            For Each m As Match In Regex.Matches(cleaned, RegexOptions.Multiline Or RegexOptions.IgnoreCase)
-                If IsUsed(m.Index, m.Length) Then
-                    Continue For
-                End If
+
+            For Each m As Match In Regex.Matches(cleaned, pattern, RegexOptions.Multiline)
                 Dim b As String = ConvertFreqToBand(m.Value)
                 If b <> "" Then
-                    Debug.Print("Index=" & m.Index & "  Length=" & m.Length & "  text=" & Mid(cleaned, m.Index, m.Length))
-
-                    UsedRanges.Add((m.Index, m.Length))
                     Return b
                 End If
             Next
@@ -1235,22 +1013,21 @@ Public Class Form1
         Dim integerPart As Double = Math.Truncate(num)              ' 整数部 を取得
         Dim fractionalPart As Double = num - integerPart            ' 小数部 を取得
         If fractionalPart = 0 Then                                  ' 小数部がないときFreqToBandをみて、keyがあったらそのままReturn値とする
-            If integerPart = 10 Then                                ' 10MHzと28MHzの判断
+            If integerPart = 10 Then
                 If Form1.SpecialText.Contains(" MHZ ") Then
                     Return "30M"
                 Else
                     Return "10M"
                 End If
             End If
-            '        Else
+
+        Else
             Dim key As String = integerPart & "M"
-            If BandList.Bands.Contains(key) Then
-                Return key
+            If FreqToBand.ContainsKey(key) Then                     ' キーがあった
+                Dim item = FreqToBand(key)
+                Return item
             End If
-            key = integerPart & "CM"
-            If BandList.Bands.Contains(key) Then
-                Return key
-            End If
+
         End If
 
         If freq = 0 Then Return ""
@@ -1280,6 +1057,7 @@ Public Class Form1
         If freq >= 5650.0 AndAlso freq < 5850 Then Return "5CM"
         If freq >= 10000.0 AndAlso freq < 10500.0 Then Return "3CM"
 
+
         Return ""
     End Function
 
@@ -1288,13 +1066,12 @@ Public Class Form1
 
         LoadSettings()
 
+
         For Each c As Control In Me.Controls
             If TypeOf c Is TextBox OrElse TypeOf c Is ComboBox Then
-                If c.TabStop Then
-                    AddHandler c.Enter, AddressOf Control_Enter
-                    AddHandler c.Leave, AddressOf Control_Leave
-                    AddHandler c.KeyDown, AddressOf Control_KeyDown
-                End If
+                AddHandler c.Enter, AddressOf Control_Enter
+                AddHandler c.Leave, AddressOf Control_Leave
+                AddHandler c.KeyDown, AddressOf Control_KeyDown
             End If
         Next
 
@@ -1352,18 +1129,14 @@ Public Class Form1
         ' 前方向
         For i As Integer = currentIndex - 1 To 0 Step -1
             If TypeOf controls(i) Is TextBox OrElse TypeOf controls(i) Is ComboBox Then
-                If controls(i).TabStop Then
-                    Return controls(i)
-                End If
+                Return controls(i)
             End If
         Next
 
         ' 最後に戻る
         For i As Integer = controls.Count - 1 To currentIndex + 1 Step -1
             If TypeOf controls(i) Is TextBox OrElse TypeOf controls(i) Is ComboBox Then
-                If controls(i).TabStop Then
-                    Return controls(i)
-                End If
+                Return controls(i)
             End If
         Next
 
@@ -1380,18 +1153,14 @@ Public Class Form1
         ' 次のコントロールを順にチェック
         For i As Integer = currentIndex + 1 To controls.Count - 1
             If TypeOf controls(i) Is TextBox OrElse TypeOf controls(i) Is ComboBox Then
-                If controls(i).TabStop Then
-                    Return controls(i)
-                End If
+                Return controls(i)
             End If
         Next
 
         ' 見つからなければ先頭に戻る
         For i As Integer = 0 To currentIndex - 1
             If TypeOf controls(i) Is TextBox OrElse TypeOf controls(i) Is ComboBox Then
-                If controls(i).TabStop Then
-                    Return controls(i)
-                End If
+                Return controls(i)
             End If
         Next
 
@@ -1413,7 +1182,6 @@ Public Class Form1
         txtTime.Clear()
         txtBand.Clear()
         txtMode.Clear()
-        TxtOcrResult.Clear()
         LstOcrResult.Items.Clear()
         lstFileInfo.Items.Clear()
     End Sub
@@ -1557,7 +1325,7 @@ Public Class Form1
     Private Sub txtDate_Leave(sender As Object, e As EventArgs) Handles txtDate.Leave
         If txtDate.Text = "" Then Exit Sub
 
-        Dim input = txtDate.Text.Trim
+        Dim input As String = txtDate.Text.Trim()
         input = input.Replace("-", "/")
 
         ' 正規表現：YYYY/MM/DD または YY/MM/DD
@@ -1578,7 +1346,7 @@ Public Class Form1
 
         ' 正規表現：YYYY/MM/DD または YY/MM/DD
         pattern = "^(\d{2}|\d{4})/(0?[1-9]|1[0-2])/(0?[1-9]|[12]\d|3[01])$"
-        If Not Regex.IsMatch(input, pattern) Then
+        If Not System.Text.RegularExpressions.Regex.IsMatch(input, pattern) Then
             MessageBox.Show("日付の形式が正しくありません（YYYY/MM/DD）。", "入力エラー",
                             MessageBoxButtons.OK, MessageBoxIcon.Warning)
             txtDate.Focus()
@@ -1588,9 +1356,9 @@ Public Class Form1
 
         ' --- ここから YY → YYYY の変換 ---
         Dim parts = input.Split("/"c)
-        Dim year = Integer.Parse(parts(0))
-        Dim month = Integer.Parse(parts(1))
-        Dim day = Integer.Parse(parts(2))
+        Dim year As Integer = Integer.Parse(parts(0))
+        Dim month As Integer = Integer.Parse(parts(1))
+        Dim day As Integer = Integer.Parse(parts(2))
 
         If year < 100 Then
             ' 00〜49 → 2000〜2049、50〜99 → 1950〜1999 とする
@@ -1613,8 +1381,8 @@ Public Class Form1
         End Try
 
         ' --- 範囲チェック ---
-        Dim minDate = New Date(1952, 7, 29)
-        Dim maxDate = Date.Today
+        Dim minDate As Date = New Date(1952, 7, 29)
+        Dim maxDate As Date = Date.Today
 
         If dt < minDate OrElse dt > maxDate Then
             MessageBox.Show("日付は 1952/07/29 〜 今日 の範囲で入力してください。", "入力エラー",
@@ -1794,12 +1562,6 @@ Public Class Form1
         End If
     End Sub
 
-    Private Sub AboutToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AboutToolStripMenuItem.Click
-        Dim form As New AboutBox1
-
-        form.ShowDialog()
-
-    End Sub
 End Class
 
 Public Class AppConfig

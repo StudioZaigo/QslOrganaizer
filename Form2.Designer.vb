@@ -22,6 +22,7 @@ Partial Class Form2
     'コード エディターを使って変更しないでください。
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Form2))
         txtCallsign = New TextBox()
         txtOutputHolder = New TextBox()
         txtInputFolder = New TextBox()
@@ -42,7 +43,7 @@ Partial Class Form2
         txtCallsign.CharacterCasing = CharacterCasing.Upper
         txtCallsign.Font = New Font("Yu Gothic UI", 10.2F)
         txtCallsign.ImeMode = ImeMode.Disable
-        txtCallsign.Location = New Point(53, 35)
+        txtCallsign.Location = New Point(53, 38)
         txtCallsign.Name = "txtCallsign"
         txtCallsign.Size = New Size(125, 30)
         txtCallsign.TabIndex = 1
@@ -59,7 +60,7 @@ Partial Class Form2
         txtInputFolder.BorderStyle = BorderStyle.FixedSingle
         txtInputFolder.Font = New Font("Yu Gothic UI", 10.2F)
         txtInputFolder.ImeMode = ImeMode.Disable
-        txtInputFolder.Location = New Point(53, 94)
+        txtInputFolder.Location = New Point(53, 103)
         txtInputFolder.Name = "txtInputFolder"
         txtInputFolder.Size = New Size(632, 30)
         txtInputFolder.TabIndex = 3
@@ -67,7 +68,7 @@ Partial Class Form2
         ' btnOK
         ' 
         btnOK.Font = New Font("Yu Gothic UI", 10.2F)
-        btnOK.Location = New Point(558, 205)
+        btnOK.Location = New Point(559, 213)
         btnOK.Name = "btnOK"
         btnOK.Size = New Size(92, 43)
         btnOK.TabIndex = 9
@@ -77,7 +78,7 @@ Partial Class Form2
         ' btnCancel
         ' 
         btnCancel.Font = New Font("Yu Gothic UI", 10.2F)
-        btnCancel.Location = New Point(675, 205)
+        btnCancel.Location = New Point(676, 213)
         btnCancel.Name = "btnCancel"
         btnCancel.Size = New Size(92, 43)
         btnCancel.TabIndex = 10
@@ -89,7 +90,7 @@ Partial Class Form2
         txtOutputFolder.BorderStyle = BorderStyle.FixedSingle
         txtOutputFolder.Font = New Font("Yu Gothic UI", 10.2F)
         txtOutputFolder.ImeMode = ImeMode.Disable
-        txtOutputFolder.Location = New Point(53, 153)
+        txtOutputFolder.Location = New Point(53, 168)
         txtOutputFolder.Name = "txtOutputFolder"
         txtOutputFolder.Size = New Size(632, 30)
         txtOutputFolder.TabIndex = 6
@@ -97,8 +98,8 @@ Partial Class Form2
         ' btnInputFolder
         ' 
         btnInputFolder.BackColor = SystemColors.Control
-        'btnInputFolder.Image = My.Resources.Resources.icons_フォルダーを開く_48
-        btnInputFolder.Location = New Point(702, 83)
+        btnInputFolder.Image = My.Resources.Resources.icons_フォルダーを開く_48
+        btnInputFolder.Location = New Point(702, 93)
         btnInputFolder.Name = "btnInputFolder"
         btnInputFolder.Size = New Size(47, 49)
         btnInputFolder.TabIndex = 4
@@ -106,13 +107,12 @@ Partial Class Form2
         ' 
         ' btnOutputFolder
         ' 
-        btnOutputFolder.BackgroundImageLayout = ImageLayout.Stretch
-        'btnOutputFolder.Image = My.Resources.Resources.icons_フォルダーを開く_48
-        btnOutputFolder.Location = New Point(702, 143)
+        btnOutputFolder.Image = My.Resources.Resources.icons_フォルダーを開く_48
+        btnOutputFolder.Location = New Point(702, 158)
         btnOutputFolder.Name = "btnOutputFolder"
         btnOutputFolder.Size = New Size(47, 49)
         btnOutputFolder.TabIndex = 8
-        btnOutputFolder.UseVisualStyleBackColor = True
+        btnOutputFolder.UseVisualStyleBackColor = False
         ' 
         ' lblCallsign
         ' 
@@ -130,7 +130,7 @@ Partial Class Form2
         Label2.AutoSize = True
         Label2.Font = New Font("Yu Gothic UI", 10.2F)
         Label2.ForeColor = SystemColors.MenuHighlight
-        Label2.Location = New Point(40, 68)
+        Label2.Location = New Point(40, 74)
         Label2.Name = "Label2"
         Label2.Size = New Size(102, 23)
         Label2.TabIndex = 2
@@ -141,7 +141,7 @@ Partial Class Form2
         Label3.AutoSize = True
         Label3.Font = New Font("Yu Gothic UI", 10.2F)
         Label3.ForeColor = SystemColors.MenuHighlight
-        Label3.Location = New Point(40, 127)
+        Label3.Location = New Point(40, 139)
         Label3.Name = "Label3"
         Label3.Size = New Size(116, 23)
         Label3.TabIndex = 5
@@ -153,7 +153,7 @@ Partial Class Form2
         AutoScaleDimensions = New SizeF(8F, 20F)
         AutoScaleMode = AutoScaleMode.Font
         CancelButton = btnCancel
-        ClientSize = New Size(800, 256)
+        ClientSize = New Size(800, 268)
         Controls.Add(Label3)
         Controls.Add(Label2)
         Controls.Add(lblCallsign)
@@ -166,9 +166,11 @@ Partial Class Form2
         Controls.Add(txtCallsign)
         ForeColor = SystemColors.ControlDarkDark
         FormBorderStyle = FormBorderStyle.FixedDialog
+        Icon = CType(resources.GetObject("$this.Icon"), Icon)
         MaximizeBox = False
         MinimizeBox = False
         Name = "Form2"
+        StartPosition = FormStartPosition.CenterParent
         Text = "Setting"
         ResumeLayout(False)
         PerformLayout()

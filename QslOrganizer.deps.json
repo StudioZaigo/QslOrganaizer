@@ -1,0 +1,57 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "QslOrganizer/0.0.0": {
+        "dependencies": {
+          "OpenCvSharp4": "4.13.0.20260214",
+          "Tesseract": "5.2.0"
+        },
+        "runtime": {
+          "QslOrganizer.dll": {}
+        }
+      },
+      "OpenCvSharp4/4.13.0.20260214": {
+        "runtime": {
+          "lib/net8.0/OpenCvSharp.dll": {
+            "assemblyVersion": "4.13.0.0",
+            "fileVersion": "4.13.0.0"
+          }
+        }
+      },
+      "Tesseract/5.2.0": {
+        "runtime": {
+          "lib/netstandard2.0/Tesseract.dll": {
+            "assemblyVersion": "5.2.0.0",
+            "fileVersion": "5.2.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "QslOrganizer/0.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "OpenCvSharp4/4.13.0.20260214": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-EOFWJa740YI1g1zBqbiTvTYe5k0d3/d74dUxBVt9rCyKsnoaLh7oEl3OvhYUfEUITZzMmaznoKXE8SD+hcEnJQ==",
+      "path": "opencvsharp4/4.13.0.20260214",
+      "hashPath": "opencvsharp4.4.13.0.20260214.nupkg.sha512"
+    },
+    "Tesseract/5.2.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-YB7feJlrTWSXtK8+WaCcseGSPK/1r2d2FWeKGyndlrPwYClrzTlCoHD4/oQEUjKafmpkWlhTZZ7pxiRJYZgj6w==",
+      "path": "tesseract/5.2.0",
+      "hashPath": "tesseract.5.2.0.nupkg.sha512"
+    }
+  }
+}
