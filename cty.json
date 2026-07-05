@@ -1,0 +1,7137 @@
+[
+  {
+    "Prefix": "1A",
+    "Entity": "1A",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "9M0",
+    "Entity": "1S",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BM9S",
+    "Entity": "1S",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BN9S",
+    "Entity": "1S",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BO9S",
+    "Entity": "1S",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BP9S",
+    "Entity": "1S",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BQ9S",
+    "Entity": "1S",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BU9S",
+    "Entity": "1S",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BV9S",
+    "Entity": "1S",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BW9S",
+    "Entity": "1S",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BX9S",
+    "Entity": "1S",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3A",
+    "Entity": "3A",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "3B6",
+    "Entity": "3B6",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "3B7",
+    "Entity": "3B6",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "3B8",
+    "Entity": "3B8",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "3B9",
+    "Entity": "3B9",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "3C",
+    "Entity": "3C",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "3C0",
+    "Entity": "3C0",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "3D2",
+    "Entity": "3D2",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "3DA",
+    "Entity": "3DA",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "3V",
+    "Entity": "3V",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "TS",
+    "Entity": "3V",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "3W",
+    "Entity": "3W",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "XV",
+    "Entity": "3W",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3X",
+    "Entity": "3X",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "4J",
+    "Entity": "4J",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "4K",
+    "Entity": "4J",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "4L",
+    "Entity": "4L",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "4O",
+    "Entity": "4O",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "4P",
+    "Entity": "4S",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "4Q",
+    "Entity": "4S",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "4R",
+    "Entity": "4S",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "4S",
+    "Entity": "4S",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "4W",
+    "Entity": "4W",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "4X",
+    "Entity": "4X",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "4Z",
+    "Entity": "4X",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "5A",
+    "Entity": "5A",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "5B",
+    "Entity": "5B",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "C4",
+    "Entity": "5B",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "H2",
+    "Entity": "5B",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "P3",
+    "Entity": "5B",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "5H",
+    "Entity": "5H",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "5I",
+    "Entity": "5H",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "5N",
+    "Entity": "5N",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "5O",
+    "Entity": "5N",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "5R",
+    "Entity": "5R",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "5S",
+    "Entity": "5R",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "6X",
+    "Entity": "5R",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "5T",
+    "Entity": "5T",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "5U",
+    "Entity": "5U",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "5V",
+    "Entity": "5V",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "5W",
+    "Entity": "5W",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "5X",
+    "Entity": "5X",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "5Y",
+    "Entity": "5Z",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "5Z",
+    "Entity": "5Z",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "6V",
+    "Entity": "6W",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "6W",
+    "Entity": "6W",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "6Y",
+    "Entity": "6Y",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "7O",
+    "Entity": "7O",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "7P",
+    "Entity": "7P",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "7Q",
+    "Entity": "7Q",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "7R",
+    "Entity": "7X",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "7T",
+    "Entity": "7X",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "7U",
+    "Entity": "7X",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "7V",
+    "Entity": "7X",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "7W",
+    "Entity": "7X",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "7X",
+    "Entity": "7X",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "7Y",
+    "Entity": "7X",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "8P",
+    "Entity": "8P",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "8Q",
+    "Entity": "8Q",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "8R",
+    "Entity": "8R",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "9A",
+    "Entity": "9A",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "9G",
+    "Entity": "9G",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "9H",
+    "Entity": "9H",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "9I",
+    "Entity": "9J",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "9J",
+    "Entity": "9J",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "9K",
+    "Entity": "9K",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "NLD",
+    "Entity": "9K",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "9L",
+    "Entity": "9L",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "9M",
+    "Entity": "9M2",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "9W",
+    "Entity": "9M2",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "9N",
+    "Entity": "9N",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "9O",
+    "Entity": "9Q",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "9P",
+    "Entity": "9Q",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "9Q",
+    "Entity": "9Q",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "9R",
+    "Entity": "9Q",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "9S",
+    "Entity": "9Q",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "9T",
+    "Entity": "9Q",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "9U",
+    "Entity": "9U",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "9V",
+    "Entity": "9V",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "S6",
+    "Entity": "9V",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "9X",
+    "Entity": "9X",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "9Y",
+    "Entity": "9Y",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "9Z",
+    "Entity": "9Y",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "8O",
+    "Entity": "A2",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "A2",
+    "Entity": "A2",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "A3",
+    "Entity": "A3",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "A4",
+    "Entity": "A4",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "A5",
+    "Entity": "A5",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "A6",
+    "Entity": "A6",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "A7",
+    "Entity": "A7",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "A9",
+    "Entity": "A9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "6P",
+    "Entity": "AP",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "6Q",
+    "Entity": "AP",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "6R",
+    "Entity": "AP",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "6S",
+    "Entity": "AP",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "AP",
+    "Entity": "AP",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "AQ",
+    "Entity": "AP",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "AR",
+    "Entity": "AP",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "AS",
+    "Entity": "AP",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BM",
+    "Entity": "BV",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BN",
+    "Entity": "BV",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BO",
+    "Entity": "BV",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BP",
+    "Entity": "BV",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BQ",
+    "Entity": "BV",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BU",
+    "Entity": "BV",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BV",
+    "Entity": "BV",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BW",
+    "Entity": "BV",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BX",
+    "Entity": "BV",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BM9P",
+    "Entity": "BV9P",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BN9P",
+    "Entity": "BV9P",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BO9P",
+    "Entity": "BV9P",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BP9P",
+    "Entity": "BV9P",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BQ9P",
+    "Entity": "BV9P",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BU9P",
+    "Entity": "BV9P",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BV9P",
+    "Entity": "BV9P",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BW9P",
+    "Entity": "BV9P",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BX9P",
+    "Entity": "BV9P",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3H",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3H0",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3H9",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3I",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3I0",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3I9",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3J",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3J0",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3J9",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3K",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3K0",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3K9",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3L",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3L0",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3L9",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3M",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3M0",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3M9",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3N",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3N0",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3N9",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3O",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3O0",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3O9",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3P",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3P0",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3P9",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3Q",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3Q0",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3Q9",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3R",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3R0",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3R9",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3S",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3S0",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3S9",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3T",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3T0",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3T9",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3U",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3U0",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3U9",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "B0",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "B2",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "B3",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "B4",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "B5",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "B6",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "B7",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "B8",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "B9",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BA",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BA0",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BA9",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BD",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BD0",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BD9",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BG",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BG0",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BG9",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BH",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BH0",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BH9",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BI",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BI0",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BI9",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BJ",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BJ0",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BJ9",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BL",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BL0",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BL9",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BT",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BT0",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BT9",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BY",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BY0",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BY9",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BZ",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BZ0",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "BZ9",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "XS",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "XS0",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "XS9",
+    "Entity": "BY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "C2",
+    "Entity": "C2",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "C3",
+    "Entity": "C3",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "C5",
+    "Entity": "C5",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "C6",
+    "Entity": "C6",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "C8",
+    "Entity": "C9",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "C9",
+    "Entity": "C9",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "3G",
+    "Entity": "CE",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CA",
+    "Entity": "CE",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CB",
+    "Entity": "CE",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CC",
+    "Entity": "CE",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CD",
+    "Entity": "CE",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CE",
+    "Entity": "CE",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "XQ",
+    "Entity": "CE",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "XR",
+    "Entity": "CE",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "3G0X",
+    "Entity": "CE0X",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CA0X",
+    "Entity": "CE0X",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CB0X",
+    "Entity": "CE0X",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CC0X",
+    "Entity": "CE0X",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CD0X",
+    "Entity": "CE0X",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CE0X",
+    "Entity": "CE0X",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "XQ0X",
+    "Entity": "CE0X",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "XR0X",
+    "Entity": "CE0X",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "3G0",
+    "Entity": "CE0Y",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CA0",
+    "Entity": "CE0Y",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CB0",
+    "Entity": "CE0Y",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CC0",
+    "Entity": "CE0Y",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CD0",
+    "Entity": "CE0Y",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CE0",
+    "Entity": "CE0Y",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "XQ0",
+    "Entity": "CE0Y",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "XR0",
+    "Entity": "CE0Y",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "3G0Z",
+    "Entity": "CE0Z",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CA0Z",
+    "Entity": "CE0Z",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CB0Z",
+    "Entity": "CE0Z",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CC0Z",
+    "Entity": "CE0Z",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CD0Z",
+    "Entity": "CE0Z",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CE0I",
+    "Entity": "CE0Z",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CE0Z",
+    "Entity": "CE0Z",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "XQ0Z",
+    "Entity": "CE0Z",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "XR0Z",
+    "Entity": "CE0Z",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CL",
+    "Entity": "CM",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "CM",
+    "Entity": "CM",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "CO",
+    "Entity": "CM",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "T4",
+    "Entity": "CM",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "5C",
+    "Entity": "CN",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "5D",
+    "Entity": "CN",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "5E",
+    "Entity": "CN",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "5F",
+    "Entity": "CN",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "5G",
+    "Entity": "CN",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "CN",
+    "Entity": "CN",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "CP",
+    "Entity": "CP",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CP2",
+    "Entity": "CP",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CP3",
+    "Entity": "CP",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CP4",
+    "Entity": "CP",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CP5",
+    "Entity": "CP",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CP6",
+    "Entity": "CP",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CP7",
+    "Entity": "CP",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CQ",
+    "Entity": "CT",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "CR",
+    "Entity": "CT",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "CS",
+    "Entity": "CT",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "CT",
+    "Entity": "CT",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "CQ2",
+    "Entity": "CT3",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "CQ3",
+    "Entity": "CT3",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "CQ9",
+    "Entity": "CT3",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "CR3",
+    "Entity": "CT3",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "CR9",
+    "Entity": "CT3",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "CS3",
+    "Entity": "CT3",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "CS9",
+    "Entity": "CT3",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "CT3",
+    "Entity": "CT3",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "CT9",
+    "Entity": "CT3",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "CQ1",
+    "Entity": "CU",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "CQ8",
+    "Entity": "CU",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "CR1",
+    "Entity": "CU",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "CR2",
+    "Entity": "CU",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "CR8",
+    "Entity": "CU",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "CS4",
+    "Entity": "CU",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "CS8",
+    "Entity": "CU",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "CT8",
+    "Entity": "CU",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "CU",
+    "Entity": "CU",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "CV",
+    "Entity": "CX",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CW",
+    "Entity": "CX",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CX",
+    "Entity": "CX",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CY0",
+    "Entity": "CY0",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "CY9",
+    "Entity": "CY9",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "D2",
+    "Entity": "D2",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "D3",
+    "Entity": "D2",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "D4",
+    "Entity": "D4",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "D6",
+    "Entity": "D6",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "DA",
+    "Entity": "DL",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "DB",
+    "Entity": "DL",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "DC",
+    "Entity": "DL",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "DD",
+    "Entity": "DL",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "DE",
+    "Entity": "DL",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "DF",
+    "Entity": "DL",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "DG",
+    "Entity": "DL",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "DH",
+    "Entity": "DL",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "DI",
+    "Entity": "DL",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "DJ",
+    "Entity": "DL",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "DK",
+    "Entity": "DL",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "DL",
+    "Entity": "DL",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "DM",
+    "Entity": "DL",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "DN",
+    "Entity": "DL",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "DO",
+    "Entity": "DL",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "DP",
+    "Entity": "DL",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "DQ",
+    "Entity": "DL",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "DR",
+    "Entity": "DL",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "Y2",
+    "Entity": "DL",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "Y3",
+    "Entity": "DL",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "Y4",
+    "Entity": "DL",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "Y5",
+    "Entity": "DL",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "Y6",
+    "Entity": "DL",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "Y7",
+    "Entity": "DL",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "Y8",
+    "Entity": "DL",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "Y9",
+    "Entity": "DL",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "4D",
+    "Entity": "DU",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "4E",
+    "Entity": "DU",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "4F",
+    "Entity": "DU",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "4G",
+    "Entity": "DU",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "4H",
+    "Entity": "DU",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "4I",
+    "Entity": "DU",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "DU",
+    "Entity": "DU",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "DV",
+    "Entity": "DU",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "DW",
+    "Entity": "DU",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "DX",
+    "Entity": "DU",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "DY",
+    "Entity": "DU",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "DZ",
+    "Entity": "DU",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "E3",
+    "Entity": "E3",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "E4",
+    "Entity": "E4",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "E5",
+    "Entity": "E5/S",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "E6",
+    "Entity": "E6",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "E7",
+    "Entity": "E7",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "AM",
+    "Entity": "EA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "AN",
+    "Entity": "EA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "AO",
+    "Entity": "EA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "EA",
+    "Entity": "EA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "EB",
+    "Entity": "EA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "EC",
+    "Entity": "EA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "ED",
+    "Entity": "EA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "EE",
+    "Entity": "EA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "EF",
+    "Entity": "EA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "EG",
+    "Entity": "EA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "EH",
+    "Entity": "EA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "AM6",
+    "Entity": "EA6",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "AN6",
+    "Entity": "EA6",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "AO6",
+    "Entity": "EA6",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "EA6",
+    "Entity": "EA6",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "EB6",
+    "Entity": "EA6",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "EC6",
+    "Entity": "EA6",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "ED6",
+    "Entity": "EA6",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "EE6",
+    "Entity": "EA6",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "EF6",
+    "Entity": "EA6",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "EG6",
+    "Entity": "EA6",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "EH6",
+    "Entity": "EA6",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "AM8",
+    "Entity": "EA8",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "AN8",
+    "Entity": "EA8",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "AO8",
+    "Entity": "EA8",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "EA8",
+    "Entity": "EA8",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "EB8",
+    "Entity": "EA8",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "EC8",
+    "Entity": "EA8",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "ED8",
+    "Entity": "EA8",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "EE8",
+    "Entity": "EA8",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "EF8",
+    "Entity": "EA8",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "EG8",
+    "Entity": "EA8",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "EH8",
+    "Entity": "EA8",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "AM9",
+    "Entity": "EA9",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "AN9",
+    "Entity": "EA9",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "AO9",
+    "Entity": "EA9",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "EA9",
+    "Entity": "EA9",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "EB9",
+    "Entity": "EA9",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "EC9",
+    "Entity": "EA9",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "ED9",
+    "Entity": "EA9",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "EE9",
+    "Entity": "EA9",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "EF9",
+    "Entity": "EA9",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "EG9",
+    "Entity": "EA9",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "EH9",
+    "Entity": "EA9",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "EI",
+    "Entity": "EI",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "EJ",
+    "Entity": "EI",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "EK",
+    "Entity": "EK",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "5L",
+    "Entity": "EL",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "5M",
+    "Entity": "EL",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "6Z",
+    "Entity": "EL",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "A8",
+    "Entity": "EL",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "D5",
+    "Entity": "EL",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "EL",
+    "Entity": "EL",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "9B",
+    "Entity": "EP",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "9C",
+    "Entity": "EP",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "9D",
+    "Entity": "EP",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "EP",
+    "Entity": "EP",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "EQ",
+    "Entity": "EP",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "ER",
+    "Entity": "ER",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "ES",
+    "Entity": "ES",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "9E",
+    "Entity": "ET",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "9F",
+    "Entity": "ET",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "ET",
+    "Entity": "ET",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "EU",
+    "Entity": "EU",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "EV",
+    "Entity": "EU",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "EW",
+    "Entity": "EU",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "EX",
+    "Entity": "EX",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "EY",
+    "Entity": "EY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "EZ",
+    "Entity": "EZ",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "F",
+    "Entity": "F",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "HW",
+    "Entity": "F",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "HX",
+    "Entity": "F",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "HY",
+    "Entity": "F",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "TH",
+    "Entity": "F",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "TM",
+    "Entity": "F",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "TO",
+    "Entity": "F",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "TP",
+    "Entity": "F",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "TQ",
+    "Entity": "F",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "TV",
+    "Entity": "F",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "TX",
+    "Entity": "F",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "FG",
+    "Entity": "FG",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "FH",
+    "Entity": "FH",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FJ",
+    "Entity": "FJ",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "FK",
+    "Entity": "FK",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "FM",
+    "Entity": "FM",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "FO",
+    "Entity": "FO",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "FP",
+    "Entity": "FP",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "FR",
+    "Entity": "FR",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FS",
+    "Entity": "FS",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "FT0G",
+    "Entity": "FT/G",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT1G",
+    "Entity": "FT/G",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT2G",
+    "Entity": "FT/G",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT3G",
+    "Entity": "FT/G",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT4G",
+    "Entity": "FT/G",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT5G",
+    "Entity": "FT/G",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT6G",
+    "Entity": "FT/G",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT7G",
+    "Entity": "FT/G",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT8G",
+    "Entity": "FT/G",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT9G",
+    "Entity": "FT/G",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT0E",
+    "Entity": "FT/J",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT1E",
+    "Entity": "FT/J",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT2E",
+    "Entity": "FT/J",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT3E",
+    "Entity": "FT/J",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT4E",
+    "Entity": "FT/J",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT6E",
+    "Entity": "FT/J",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT7E",
+    "Entity": "FT/J",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT8E",
+    "Entity": "FT/J",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT9E",
+    "Entity": "FT/J",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT0T",
+    "Entity": "FT/T",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT1T",
+    "Entity": "FT/T",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT2T",
+    "Entity": "FT/T",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT3T",
+    "Entity": "FT/T",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT4T",
+    "Entity": "FT/T",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT5T",
+    "Entity": "FT/T",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT6T",
+    "Entity": "FT/T",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT7T",
+    "Entity": "FT/T",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT8T",
+    "Entity": "FT/T",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT9T",
+    "Entity": "FT/T",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT0W",
+    "Entity": "FT/W",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT4W",
+    "Entity": "FT/W",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT5W",
+    "Entity": "FT/W",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT8W",
+    "Entity": "FT/W",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT0X",
+    "Entity": "FT/X",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT2X",
+    "Entity": "FT/X",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT4X",
+    "Entity": "FT/X",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT5X",
+    "Entity": "FT/X",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT8X",
+    "Entity": "FT/X",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT0Z",
+    "Entity": "FT/Z",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT1Z",
+    "Entity": "FT/Z",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT2Z",
+    "Entity": "FT/Z",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT3Z",
+    "Entity": "FT/Z",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT4Z",
+    "Entity": "FT/Z",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT5Z",
+    "Entity": "FT/Z",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT6Z",
+    "Entity": "FT/Z",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT7Z",
+    "Entity": "FT/Z",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FT8Z",
+    "Entity": "FT/Z",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "FW",
+    "Entity": "FW",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "TW",
+    "Entity": "FW",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "FY",
+    "Entity": "FY",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "2E",
+    "Entity": "G",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "G",
+    "Entity": "G",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "M",
+    "Entity": "G",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "2D",
+    "Entity": "GD",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "GD",
+    "Entity": "GD",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "GT",
+    "Entity": "GD",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "MD",
+    "Entity": "GD",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "MT",
+    "Entity": "GD",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "2I",
+    "Entity": "GI",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "GI",
+    "Entity": "GI",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "GN",
+    "Entity": "GI",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "MI",
+    "Entity": "GI",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "MN",
+    "Entity": "GI",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "2J",
+    "Entity": "GJ",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "GH",
+    "Entity": "GJ",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "GJ",
+    "Entity": "GJ",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "MH",
+    "Entity": "GJ",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "MJ",
+    "Entity": "GJ",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "2A",
+    "Entity": "GM",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "2M",
+    "Entity": "GM",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "GM",
+    "Entity": "GM",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "GS",
+    "Entity": "GM",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "MA",
+    "Entity": "GM",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "MM",
+    "Entity": "GM",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "MS",
+    "Entity": "GM",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "2U",
+    "Entity": "GU",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "GP",
+    "Entity": "GU",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "GU",
+    "Entity": "GU",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "MP",
+    "Entity": "GU",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "MU",
+    "Entity": "GU",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "2W",
+    "Entity": "GW",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "GC",
+    "Entity": "GW",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "GW",
+    "Entity": "GW",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "MC",
+    "Entity": "GW",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "MW",
+    "Entity": "GW",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "H4",
+    "Entity": "H4",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "H40",
+    "Entity": "H40",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "HA",
+    "Entity": "HA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "HG",
+    "Entity": "HA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "HB",
+    "Entity": "HB",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "HE",
+    "Entity": "HB",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "HB0",
+    "Entity": "HB0",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "HE0",
+    "Entity": "HB0",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "HC",
+    "Entity": "HC",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "HD",
+    "Entity": "HC",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "HC8",
+    "Entity": "HC8",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "HD8",
+    "Entity": "HC8",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "4V",
+    "Entity": "HH",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "HH",
+    "Entity": "HH",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "HI",
+    "Entity": "HI",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "5J",
+    "Entity": "HK",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "5K",
+    "Entity": "HK",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "HJ",
+    "Entity": "HK",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "HK",
+    "Entity": "HK",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "5J0",
+    "Entity": "HK0/A",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "5K0",
+    "Entity": "HK0/A",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "HJ0",
+    "Entity": "HK0/A",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "HK0",
+    "Entity": "HK0/A",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "HJ0M",
+    "Entity": "HK0/M",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "HK0M",
+    "Entity": "HK0/M",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "6K",
+    "Entity": "HL",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "6L",
+    "Entity": "HL",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "6M",
+    "Entity": "HL",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "6N",
+    "Entity": "HL",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "D7",
+    "Entity": "HL",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "D8",
+    "Entity": "HL",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "D9",
+    "Entity": "HL",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "DS",
+    "Entity": "HL",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "DT",
+    "Entity": "HL",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "HL",
+    "Entity": "HL",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "KL9K",
+    "Entity": "HL",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "3E",
+    "Entity": "HP",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "3F",
+    "Entity": "HP",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "H3",
+    "Entity": "HP",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "H8",
+    "Entity": "HP",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "H9",
+    "Entity": "HP",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "HO",
+    "Entity": "HP",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "HP",
+    "Entity": "HP",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "HQ",
+    "Entity": "HR",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "HR",
+    "Entity": "HR",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "E2",
+    "Entity": "HS",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "HS",
+    "Entity": "HS",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "HV",
+    "Entity": "HV",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "7Z",
+    "Entity": "HZ",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "8Z",
+    "Entity": "HZ",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "HZ",
+    "Entity": "HZ",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "4U",
+    "Entity": "I",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "I",
+    "Entity": "I",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "IG9",
+    "Entity": "*IG9",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "IH9",
+    "Entity": "*IG9",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "IM0",
+    "Entity": "IS",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "IS0",
+    "Entity": "IS",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "IW0U",
+    "Entity": "IS",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "IW0V",
+    "Entity": "IS",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "IW0W",
+    "Entity": "IS",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "IW0X",
+    "Entity": "IS",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "IW0Y",
+    "Entity": "IS",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "IW0Z",
+    "Entity": "IS",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "IB9",
+    "Entity": "*IT9",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "ID9",
+    "Entity": "*IT9",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "IE9",
+    "Entity": "*IT9",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "IF9",
+    "Entity": "*IT9",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "II9",
+    "Entity": "*IT9",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "IJ9",
+    "Entity": "*IT9",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "IO9",
+    "Entity": "*IT9",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "IP9",
+    "Entity": "*IT9",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "IQ9",
+    "Entity": "*IT9",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "IR9",
+    "Entity": "*IT9",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "IT9",
+    "Entity": "*IT9",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "IU9",
+    "Entity": "*IT9",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "IW9",
+    "Entity": "*IT9",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "IY9",
+    "Entity": "*IT9",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "J2",
+    "Entity": "J2",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "J3",
+    "Entity": "J3",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "J5",
+    "Entity": "J5",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "J6",
+    "Entity": "J6",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "J7",
+    "Entity": "J7",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "J8",
+    "Entity": "J8",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "7J",
+    "Entity": "JA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "7K",
+    "Entity": "JA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "7L",
+    "Entity": "JA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "7M",
+    "Entity": "JA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "7N",
+    "Entity": "JA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "8J",
+    "Entity": "JA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "8K",
+    "Entity": "JA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "8L",
+    "Entity": "JA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "8M",
+    "Entity": "JA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "8N",
+    "Entity": "JA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "JA",
+    "Entity": "JA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "JE",
+    "Entity": "JA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "JF",
+    "Entity": "JA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "JG",
+    "Entity": "JA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "JH",
+    "Entity": "JA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "JI",
+    "Entity": "JA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "JJ",
+    "Entity": "JA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "JK",
+    "Entity": "JA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "JL",
+    "Entity": "JA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "JM",
+    "Entity": "JA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "JN",
+    "Entity": "JA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "JO",
+    "Entity": "JA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "JP",
+    "Entity": "JA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "JQ",
+    "Entity": "JA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "JR",
+    "Entity": "JA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "JS",
+    "Entity": "JA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "JD1",
+    "Entity": "JD/O",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "JT",
+    "Entity": "JT",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "JU",
+    "Entity": "JT",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "JV",
+    "Entity": "JT",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "JT2",
+    "Entity": "JT",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "JU2",
+    "Entity": "JT",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "JV2",
+    "Entity": "JT",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "JT3",
+    "Entity": "JT",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "JU3",
+    "Entity": "JT",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "JV3",
+    "Entity": "JT",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "JW",
+    "Entity": "JW",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "JX",
+    "Entity": "JX",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "JY",
+    "Entity": "JY",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "AA",
+    "Entity": "K",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "AB",
+    "Entity": "K",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "AC",
+    "Entity": "K",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "AD",
+    "Entity": "K",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "AE",
+    "Entity": "K",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "AF",
+    "Entity": "K",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "AG",
+    "Entity": "K",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "AI",
+    "Entity": "K",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "AJ",
+    "Entity": "K",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "AK",
+    "Entity": "K",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "K",
+    "Entity": "K",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "N",
+    "Entity": "K",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "W",
+    "Entity": "K",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "KG4",
+    "Entity": "KG4",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "AH0",
+    "Entity": "KH0",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "KH0",
+    "Entity": "KH0",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "NH0",
+    "Entity": "KH0",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "WH0",
+    "Entity": "KH0",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "AH1",
+    "Entity": "KH1",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "KH1",
+    "Entity": "KH1",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "NH1",
+    "Entity": "KH1",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "WH1",
+    "Entity": "KH1",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "AH2",
+    "Entity": "KH2",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "KH2",
+    "Entity": "KH2",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "NH2",
+    "Entity": "KH2",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "WH2",
+    "Entity": "KH2",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "AH3",
+    "Entity": "KH3",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "KH3",
+    "Entity": "KH3",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "NH3",
+    "Entity": "KH3",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "WH3",
+    "Entity": "KH3",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "AH4",
+    "Entity": "KH4",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "KH4",
+    "Entity": "KH4",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "NH4",
+    "Entity": "KH4",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "WH4",
+    "Entity": "KH4",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "AH5",
+    "Entity": "KH5",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "KH5",
+    "Entity": "KH5",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "NH5",
+    "Entity": "KH5",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "WH5",
+    "Entity": "KH5",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "AH6",
+    "Entity": "KH6",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "AH7",
+    "Entity": "KH6",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "KH6",
+    "Entity": "KH6",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "KH7",
+    "Entity": "KH6",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "NH6",
+    "Entity": "KH6",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "NH7",
+    "Entity": "KH6",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "WH6",
+    "Entity": "KH6",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "WH7",
+    "Entity": "KH6",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "AH7K",
+    "Entity": "KH7K",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "KH7K",
+    "Entity": "KH7K",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "NH7K",
+    "Entity": "KH7K",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "WH7K",
+    "Entity": "KH7K",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "AH8",
+    "Entity": "KH8",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "KH8",
+    "Entity": "KH8",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "NH8",
+    "Entity": "KH8",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "WH8",
+    "Entity": "KH8",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "AH9",
+    "Entity": "KH9",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "KH9",
+    "Entity": "KH9",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "NH9",
+    "Entity": "KH9",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "WH9",
+    "Entity": "KH9",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "AL",
+    "Entity": "KL",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "KL",
+    "Entity": "KL",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "NL",
+    "Entity": "KL",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "WL",
+    "Entity": "KL",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "KP1",
+    "Entity": "KP1",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "NP1",
+    "Entity": "KP1",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "WP1",
+    "Entity": "KP1",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "KP2",
+    "Entity": "KP2",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "NP2",
+    "Entity": "KP2",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "WP2",
+    "Entity": "KP2",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "KP3",
+    "Entity": "KP4",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "KP4",
+    "Entity": "KP4",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "NP3",
+    "Entity": "KP4",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "NP4",
+    "Entity": "KP4",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "WP3",
+    "Entity": "KP4",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "WP4",
+    "Entity": "KP4",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "KP5",
+    "Entity": "KP5",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "NP5",
+    "Entity": "KP5",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "WP5",
+    "Entity": "KP5",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "LA",
+    "Entity": "LA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "LB",
+    "Entity": "LA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "LC",
+    "Entity": "LA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "LD",
+    "Entity": "LA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "LE",
+    "Entity": "LA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "LF",
+    "Entity": "LA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "LG",
+    "Entity": "LA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "LH",
+    "Entity": "LA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "LI",
+    "Entity": "LA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "LJ",
+    "Entity": "LA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "LK",
+    "Entity": "LA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "LL",
+    "Entity": "LA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "LM",
+    "Entity": "LA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "LN",
+    "Entity": "LA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "AY",
+    "Entity": "LU",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "AZ",
+    "Entity": "LU",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "L1",
+    "Entity": "LU",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "L2",
+    "Entity": "LU",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "L3",
+    "Entity": "LU",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "L4",
+    "Entity": "LU",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "L5",
+    "Entity": "LU",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "L6",
+    "Entity": "LU",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "L7",
+    "Entity": "LU",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "L8",
+    "Entity": "LU",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "L9",
+    "Entity": "LU",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "LO",
+    "Entity": "LU",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "LP",
+    "Entity": "LU",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "LQ",
+    "Entity": "LU",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "LR",
+    "Entity": "LU",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "LS",
+    "Entity": "LU",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "LT",
+    "Entity": "LU",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "LU",
+    "Entity": "LU",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "LV",
+    "Entity": "LU",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "LW",
+    "Entity": "LU",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "LX",
+    "Entity": "LX",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "LY",
+    "Entity": "LY",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "LZ",
+    "Entity": "LZ",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "4T",
+    "Entity": "OA",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "OA",
+    "Entity": "OA",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "OB",
+    "Entity": "OA",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "OC",
+    "Entity": "OA",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "OD",
+    "Entity": "OD",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "OE",
+    "Entity": "OE",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "OF",
+    "Entity": "OH",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "OG",
+    "Entity": "OH",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "OH",
+    "Entity": "OH",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "OI",
+    "Entity": "OH",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "OJ",
+    "Entity": "OH",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "OF0",
+    "Entity": "OH0",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "OG0",
+    "Entity": "OH0",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "OH0",
+    "Entity": "OH0",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "OI0",
+    "Entity": "OH0",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "OJ0",
+    "Entity": "OJ0",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "OK",
+    "Entity": "OK",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "OL",
+    "Entity": "OK",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "OM",
+    "Entity": "OM",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "ON",
+    "Entity": "ON",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "OO",
+    "Entity": "ON",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "OP",
+    "Entity": "ON",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "OQ",
+    "Entity": "ON",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "OR",
+    "Entity": "ON",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "OS",
+    "Entity": "ON",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "OT",
+    "Entity": "ON",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "OX",
+    "Entity": "OX",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "XP",
+    "Entity": "OX",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "OW",
+    "Entity": "OY",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "OY",
+    "Entity": "OY",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "5P",
+    "Entity": "OZ",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "5Q",
+    "Entity": "OZ",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "OU",
+    "Entity": "OZ",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "OV",
+    "Entity": "OZ",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "OZ",
+    "Entity": "OZ",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "P2",
+    "Entity": "P2",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "P4",
+    "Entity": "P4",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "P5",
+    "Entity": "P5",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "P6",
+    "Entity": "P5",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "P7",
+    "Entity": "P5",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "P8",
+    "Entity": "P5",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "P9",
+    "Entity": "P5",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "PA",
+    "Entity": "PA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "PB",
+    "Entity": "PA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "PC",
+    "Entity": "PA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "PD",
+    "Entity": "PA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "PE",
+    "Entity": "PA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "PF",
+    "Entity": "PA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "PG",
+    "Entity": "PA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "PH",
+    "Entity": "PA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "PI",
+    "Entity": "PA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "PJ2",
+    "Entity": "PJ2",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PJ4",
+    "Entity": "PJ4",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PJ5",
+    "Entity": "PJ5",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "PJ6",
+    "Entity": "PJ5",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "PJ0",
+    "Entity": "PJ7",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "PJ7",
+    "Entity": "PJ7",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "PJ8",
+    "Entity": "PJ7",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "PP",
+    "Entity": "PY",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PQ",
+    "Entity": "PY",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PR",
+    "Entity": "PY",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PS",
+    "Entity": "PY",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PT",
+    "Entity": "PY",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PU",
+    "Entity": "PY",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PV",
+    "Entity": "PY",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PW",
+    "Entity": "PY",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PX",
+    "Entity": "PY",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PY",
+    "Entity": "PY",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZV",
+    "Entity": "PY",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZW",
+    "Entity": "PY",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZX",
+    "Entity": "PY",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZY",
+    "Entity": "PY",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZZ",
+    "Entity": "PY",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PP0F",
+    "Entity": "PY0F",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PP0ZF",
+    "Entity": "PY0F",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PQ0F",
+    "Entity": "PY0F",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PQ0ZF",
+    "Entity": "PY0F",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PR0F",
+    "Entity": "PY0F",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PR0ZF",
+    "Entity": "PY0F",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PS0F",
+    "Entity": "PY0F",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PS0ZF",
+    "Entity": "PY0F",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PT0F",
+    "Entity": "PY0F",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PT0ZF",
+    "Entity": "PY0F",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PU0F",
+    "Entity": "PY0F",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PU0ZF",
+    "Entity": "PY0F",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PV0F",
+    "Entity": "PY0F",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PV0ZF",
+    "Entity": "PY0F",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PW0F",
+    "Entity": "PY0F",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PW0ZF",
+    "Entity": "PY0F",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PX0F",
+    "Entity": "PY0F",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PX0ZF",
+    "Entity": "PY0F",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PY0F",
+    "Entity": "PY0F",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PY0Z",
+    "Entity": "PY0F",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZV0F",
+    "Entity": "PY0F",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZV0ZF",
+    "Entity": "PY0F",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZW0F",
+    "Entity": "PY0F",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZW0ZF",
+    "Entity": "PY0F",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZX0F",
+    "Entity": "PY0F",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZX0ZF",
+    "Entity": "PY0F",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZY0F",
+    "Entity": "PY0F",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZY0Z",
+    "Entity": "PY0F",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZZ0F",
+    "Entity": "PY0F",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZZ0ZF",
+    "Entity": "PY0F",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PP0S",
+    "Entity": "PY0S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PP0ZS",
+    "Entity": "PY0S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PQ0S",
+    "Entity": "PY0S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PQ0ZS",
+    "Entity": "PY0S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PR0S",
+    "Entity": "PY0S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PR0ZS",
+    "Entity": "PY0S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PS0S",
+    "Entity": "PY0S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PS0ZS",
+    "Entity": "PY0S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PT0S",
+    "Entity": "PY0S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PT0ZS",
+    "Entity": "PY0S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PU0S",
+    "Entity": "PY0S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PU0ZS",
+    "Entity": "PY0S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PV0S",
+    "Entity": "PY0S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PV0ZS",
+    "Entity": "PY0S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PW0S",
+    "Entity": "PY0S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PW0ZS",
+    "Entity": "PY0S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PX0S",
+    "Entity": "PY0S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PX0ZS",
+    "Entity": "PY0S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PY0S",
+    "Entity": "PY0S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PY0ZS",
+    "Entity": "PY0S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZV0S",
+    "Entity": "PY0S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZV0ZS",
+    "Entity": "PY0S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZW0S",
+    "Entity": "PY0S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZW0ZS",
+    "Entity": "PY0S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZX0S",
+    "Entity": "PY0S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZX0ZS",
+    "Entity": "PY0S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZY0S",
+    "Entity": "PY0S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZY0ZS",
+    "Entity": "PY0S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZZ0S",
+    "Entity": "PY0S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZZ0ZS",
+    "Entity": "PY0S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PP0T",
+    "Entity": "PY0T",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PP0ZT",
+    "Entity": "PY0T",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PQ0T",
+    "Entity": "PY0T",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PQ0ZT",
+    "Entity": "PY0T",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PR0T",
+    "Entity": "PY0T",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PR0ZT",
+    "Entity": "PY0T",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PS0T",
+    "Entity": "PY0T",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PS0ZT",
+    "Entity": "PY0T",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PT0T",
+    "Entity": "PY0T",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PT0ZT",
+    "Entity": "PY0T",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PU0T",
+    "Entity": "PY0T",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PU0ZT",
+    "Entity": "PY0T",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PV0T",
+    "Entity": "PY0T",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PV0ZT",
+    "Entity": "PY0T",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PW0T",
+    "Entity": "PY0T",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PW0ZT",
+    "Entity": "PY0T",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PX0T",
+    "Entity": "PY0T",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PX0ZT",
+    "Entity": "PY0T",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PY0T",
+    "Entity": "PY0T",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PY0ZT",
+    "Entity": "PY0T",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZV0T",
+    "Entity": "PY0T",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZV0ZT",
+    "Entity": "PY0T",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZW0T",
+    "Entity": "PY0T",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZW0ZT",
+    "Entity": "PY0T",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZX0T",
+    "Entity": "PY0T",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZX0ZT",
+    "Entity": "PY0T",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZY0T",
+    "Entity": "PY0T",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZY0ZT",
+    "Entity": "PY0T",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZZ0T",
+    "Entity": "PY0T",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "ZZ0ZT",
+    "Entity": "PY0T",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "PZ",
+    "Entity": "PZ",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "RI1F",
+    "Entity": "R1FJ",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "S0",
+    "Entity": "S0",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "S2",
+    "Entity": "S2",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "S3",
+    "Entity": "S2",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "S5",
+    "Entity": "S5",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "S7",
+    "Entity": "S7",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "S9",
+    "Entity": "S9",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "7S",
+    "Entity": "SM",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "8S",
+    "Entity": "SM",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SA",
+    "Entity": "SM",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SB",
+    "Entity": "SM",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SC",
+    "Entity": "SM",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SD",
+    "Entity": "SM",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SE",
+    "Entity": "SM",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SF",
+    "Entity": "SM",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SG",
+    "Entity": "SM",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SH",
+    "Entity": "SM",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SI",
+    "Entity": "SM",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SJ",
+    "Entity": "SM",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SK",
+    "Entity": "SM",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SL",
+    "Entity": "SM",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SM",
+    "Entity": "SM",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "3Z",
+    "Entity": "SP",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "HF",
+    "Entity": "SP",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SN",
+    "Entity": "SP",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SO",
+    "Entity": "SP",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SP",
+    "Entity": "SP",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SQ",
+    "Entity": "SP",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SR",
+    "Entity": "SP",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "6T",
+    "Entity": "ST",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "6U",
+    "Entity": "ST",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "ST",
+    "Entity": "ST",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "6A",
+    "Entity": "SU",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "6B",
+    "Entity": "SU",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "SS",
+    "Entity": "SU",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "SU",
+    "Entity": "SU",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "J4",
+    "Entity": "SV",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SV",
+    "Entity": "SV",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SW",
+    "Entity": "SV",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SX",
+    "Entity": "SV",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SY",
+    "Entity": "SV",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SZ",
+    "Entity": "SV",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "J45",
+    "Entity": "SV5",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SV5",
+    "Entity": "SV5",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SW5",
+    "Entity": "SV5",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SX5",
+    "Entity": "SV5",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SY5",
+    "Entity": "SV5",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SZ5",
+    "Entity": "SV5",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "J49",
+    "Entity": "SV9",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SV9",
+    "Entity": "SV9",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SW9",
+    "Entity": "SV9",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SX9",
+    "Entity": "SV9",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SY9",
+    "Entity": "SV9",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "SZ9",
+    "Entity": "SV9",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "T2",
+    "Entity": "T2",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "T30",
+    "Entity": "T30",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "T31",
+    "Entity": "T31",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "T32",
+    "Entity": "T32",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "T33",
+    "Entity": "T33",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "6O",
+    "Entity": "T5",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "T5",
+    "Entity": "T5",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "T7",
+    "Entity": "T7",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "T8",
+    "Entity": "T8",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "TA",
+    "Entity": "TA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "TB",
+    "Entity": "TA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "TC",
+    "Entity": "TA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "YM",
+    "Entity": "TA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "TA1",
+    "Entity": "*TA1",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "TB1",
+    "Entity": "*TA1",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "TC1",
+    "Entity": "*TA1",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "YM1",
+    "Entity": "*TA1",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "TF",
+    "Entity": "TF",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "TD",
+    "Entity": "TG",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "TG",
+    "Entity": "TG",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "TE",
+    "Entity": "TI",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "TI",
+    "Entity": "TI",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "TE9",
+    "Entity": "TI9",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "TI9",
+    "Entity": "TI9",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "TJ",
+    "Entity": "TJ",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "TK",
+    "Entity": "TK",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "TL",
+    "Entity": "TL",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "TN0",
+    "Entity": "TN",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "TN1",
+    "Entity": "TN",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "TN2",
+    "Entity": "TN",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "TN3",
+    "Entity": "TN",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "TN4",
+    "Entity": "TN",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "TN5",
+    "Entity": "TN",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "TN6",
+    "Entity": "TN",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "TN7",
+    "Entity": "TN",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "TN8",
+    "Entity": "TN",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "TN9",
+    "Entity": "TN",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "TR",
+    "Entity": "TR",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "TT",
+    "Entity": "TT",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "TU0",
+    "Entity": "TU",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "TU1",
+    "Entity": "TU",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "TU2",
+    "Entity": "TU",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "TU3",
+    "Entity": "TU",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "TU4",
+    "Entity": "TU",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "TU5",
+    "Entity": "TU",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "TU6",
+    "Entity": "TU",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "TU7",
+    "Entity": "TU",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "TU8",
+    "Entity": "TU",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "TU9",
+    "Entity": "TU",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "TY",
+    "Entity": "TY",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "TZ",
+    "Entity": "TZ",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "R",
+    "Entity": "UA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "U",
+    "Entity": "UA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "R2F",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "R2K",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RA2",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RC2F",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RC2K",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RD2F",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RD2K",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RE2F",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RE2K",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RF2F",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RF2K",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RG2F",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RG2K",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RJ2F",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RJ2K",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RK2F",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RK2K",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RL2F",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RL2K",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RM2F",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RM2K",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RN2F",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RN2K",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RO2F",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RO2K",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RQ2F",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RQ2K",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RT2F",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RT2K",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RU2F",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RU2K",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RV2F",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RV2K",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RW2F",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RW2K",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RX2F",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RX2K",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RY2F",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RY2K",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RZ2F",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "RZ2K",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "U2F",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "U2K",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "UA2",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "UB2",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "UC2",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "UD2",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "UE2",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "UF2",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "UG2",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "UH2",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "UI2",
+    "Entity": "UA2",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "R0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "R8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "R9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RA0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RA8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RA9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RC0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RC8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RC9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RD0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RD8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RD9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RE0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RE8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RE9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RF0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RF8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RF9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RG0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RG8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RG9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RI0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RI8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RI9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RJ0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RJ8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RJ9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RK0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RK8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RK9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RL0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RL8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RL9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RM0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RM8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RM9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RN0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RN8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RN9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RO0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RO8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RO9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RQ0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RQ8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RQ9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RT0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RT8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RT9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RU0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RU8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RU9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RV0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RV8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RV9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RW0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RW8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RW9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RX0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RX8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RX9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RY0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RY8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RY9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RZ0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RZ8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "RZ9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "U0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "U8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "U9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UA0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UA8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UA9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UB0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UB8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UB9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UC0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UC8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UC9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UD0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UD8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UD9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UE0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UE8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UE9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UF0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UF8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UF9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UG0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UG8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UG9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UH0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UH8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UH9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UI0",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UI8",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UI9",
+    "Entity": "UA9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UJ",
+    "Entity": "UK",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UK",
+    "Entity": "UK",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UL",
+    "Entity": "UK",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UM",
+    "Entity": "UK",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UN",
+    "Entity": "UN",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UO",
+    "Entity": "UN",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UP",
+    "Entity": "UN",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "UQ",
+    "Entity": "UN",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "EM",
+    "Entity": "UR",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "EN",
+    "Entity": "UR",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "EO",
+    "Entity": "UR",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "U5",
+    "Entity": "UR",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "UR",
+    "Entity": "UR",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "US",
+    "Entity": "UR",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "UT",
+    "Entity": "UR",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "UU",
+    "Entity": "UR",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "UV",
+    "Entity": "UR",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "UW",
+    "Entity": "UR",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "UX",
+    "Entity": "UR",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "UY",
+    "Entity": "UR",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "UZ",
+    "Entity": "UR",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "V2",
+    "Entity": "V2",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "V3",
+    "Entity": "V3",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "V4",
+    "Entity": "V4",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "V5",
+    "Entity": "V5",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "V6",
+    "Entity": "V6",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "V7",
+    "Entity": "V7",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "V8",
+    "Entity": "V8",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "CF",
+    "Entity": "VE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "CG",
+    "Entity": "VE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "CJ",
+    "Entity": "VE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "CK",
+    "Entity": "VE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "VA",
+    "Entity": "VE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "VB",
+    "Entity": "VE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "VC",
+    "Entity": "VE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "VE",
+    "Entity": "VE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "VG",
+    "Entity": "VE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "VX",
+    "Entity": "VE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "VY9",
+    "Entity": "VE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "XL",
+    "Entity": "VE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "XM",
+    "Entity": "VE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "AX",
+    "Entity": "VK",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VI",
+    "Entity": "VK",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VJ",
+    "Entity": "VK",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VK",
+    "Entity": "VK",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VL",
+    "Entity": "VK",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "AX9C",
+    "Entity": "VK9C",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "AX9Y",
+    "Entity": "VK9C",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VI9C",
+    "Entity": "VK9C",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VI9Y",
+    "Entity": "VK9C",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VK9C",
+    "Entity": "VK9C",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VK9FC",
+    "Entity": "VK9C",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VK9KC",
+    "Entity": "VK9C",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VK9Y",
+    "Entity": "VK9C",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VK9ZY",
+    "Entity": "VK9C",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VZ9Y",
+    "Entity": "VK9C",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VK9FL",
+    "Entity": "VK9L",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "AX9M",
+    "Entity": "VK9M",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VI9M",
+    "Entity": "VK9M",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VK9M",
+    "Entity": "VK9M",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VZ9M",
+    "Entity": "VK9M",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "AX9",
+    "Entity": "VK9N",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VI9",
+    "Entity": "VK9N",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VK9",
+    "Entity": "VK9N",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "AX9W",
+    "Entity": "VK9W",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "AX9Z",
+    "Entity": "VK9W",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VI9W",
+    "Entity": "VK9W",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VI9Z",
+    "Entity": "VK9W",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VK9FW",
+    "Entity": "VK9W",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VK9W",
+    "Entity": "VK9W",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VK9Z",
+    "Entity": "VK9W",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VZ9W",
+    "Entity": "VK9W",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "AX9X",
+    "Entity": "VK9X",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VI9X",
+    "Entity": "VK9X",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VK9FX",
+    "Entity": "VK9X",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VK9KX",
+    "Entity": "VK9X",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VK9X",
+    "Entity": "VK9X",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VZ9X",
+    "Entity": "VK9X",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VP2E",
+    "Entity": "VP2E",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "VP2M",
+    "Entity": "VP2M",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "VP2V",
+    "Entity": "VP2V",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "VP5",
+    "Entity": "VP5",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "VQ5",
+    "Entity": "VP5",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "VP6",
+    "Entity": "VP6",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "VP8",
+    "Entity": "VP8",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "VP0G",
+    "Entity": "VP8/G",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "CE9",
+    "Entity": "VP8/H",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "XR9",
+    "Entity": "VP8/H",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "VP0S",
+    "Entity": "VP8/S",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "VP9",
+    "Entity": "VP9",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "VQ9",
+    "Entity": "VQ9",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "VR",
+    "Entity": "VR",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "8T",
+    "Entity": "VU",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "8U",
+    "Entity": "VU",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "8V",
+    "Entity": "VU",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "8W",
+    "Entity": "VU",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "8X",
+    "Entity": "VU",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "8Y",
+    "Entity": "VU",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "AT",
+    "Entity": "VU",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "AU",
+    "Entity": "VU",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "AV",
+    "Entity": "VU",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "AW",
+    "Entity": "VU",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "VT",
+    "Entity": "VU",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "VU",
+    "Entity": "VU",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "VV",
+    "Entity": "VU",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "VW",
+    "Entity": "VU",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "VU4",
+    "Entity": "VU4",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "VU7",
+    "Entity": "VU7",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "4A",
+    "Entity": "XE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "4B",
+    "Entity": "XE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "4C",
+    "Entity": "XE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "6D",
+    "Entity": "XE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "6E",
+    "Entity": "XE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "6F",
+    "Entity": "XE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "6G",
+    "Entity": "XE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "6H",
+    "Entity": "XE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "6I",
+    "Entity": "XE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "6J",
+    "Entity": "XE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "XA",
+    "Entity": "XE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "XB",
+    "Entity": "XE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "XC",
+    "Entity": "XE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "XD",
+    "Entity": "XE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "XE",
+    "Entity": "XE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "XF",
+    "Entity": "XE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "XG",
+    "Entity": "XE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "XH",
+    "Entity": "XE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "XI",
+    "Entity": "XE",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "4A4",
+    "Entity": "XF4",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "4B4",
+    "Entity": "XF4",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "4C4",
+    "Entity": "XF4",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "6D4",
+    "Entity": "XF4",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "6E4",
+    "Entity": "XF4",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "6F4",
+    "Entity": "XF4",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "6G4",
+    "Entity": "XF4",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "6H4",
+    "Entity": "XF4",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "6I4",
+    "Entity": "XF4",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "6J4",
+    "Entity": "XF4",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "XA4",
+    "Entity": "XF4",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "XB4",
+    "Entity": "XF4",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "XC4",
+    "Entity": "XF4",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "XD4",
+    "Entity": "XF4",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "XE4",
+    "Entity": "XF4",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "XF4",
+    "Entity": "XF4",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "XG4",
+    "Entity": "XF4",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "XH4",
+    "Entity": "XF4",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "XI4",
+    "Entity": "XF4",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "XT",
+    "Entity": "XT",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "XU",
+    "Entity": "XU",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "XW",
+    "Entity": "XW",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "XX9",
+    "Entity": "XX9",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "XY",
+    "Entity": "XZ",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "XZ",
+    "Entity": "XZ",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "T6",
+    "Entity": "YA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "YA",
+    "Entity": "YA",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "7A",
+    "Entity": "YB",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "7B",
+    "Entity": "YB",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "7C",
+    "Entity": "YB",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "7D",
+    "Entity": "YB",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "7E",
+    "Entity": "YB",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "7F",
+    "Entity": "YB",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "7G",
+    "Entity": "YB",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "7H",
+    "Entity": "YB",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "7I",
+    "Entity": "YB",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "8A",
+    "Entity": "YB",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "8B",
+    "Entity": "YB",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "8C",
+    "Entity": "YB",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "8D",
+    "Entity": "YB",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "8E",
+    "Entity": "YB",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "8F",
+    "Entity": "YB",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "8G",
+    "Entity": "YB",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "8H",
+    "Entity": "YB",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "8I",
+    "Entity": "YB",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "PK",
+    "Entity": "YB",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "PL",
+    "Entity": "YB",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "PM",
+    "Entity": "YB",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "PN",
+    "Entity": "YB",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "PO",
+    "Entity": "YB",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "YB",
+    "Entity": "YB",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "YC",
+    "Entity": "YB",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "YD",
+    "Entity": "YB",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "YE",
+    "Entity": "YB",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "YF",
+    "Entity": "YB",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "YG",
+    "Entity": "YB",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "YH",
+    "Entity": "YB",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "HN0",
+    "Entity": "YI",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "HN1",
+    "Entity": "YI",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "HN2",
+    "Entity": "YI",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "HN3",
+    "Entity": "YI",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "HN4",
+    "Entity": "YI",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "HN5",
+    "Entity": "YI",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "HN6",
+    "Entity": "YI",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "HN7",
+    "Entity": "YI",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "HN8",
+    "Entity": "YI",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "HN9",
+    "Entity": "YI",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "YI",
+    "Entity": "YI",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "YJ",
+    "Entity": "YJ",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "6C",
+    "Entity": "YK",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "YK",
+    "Entity": "YK",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "YL",
+    "Entity": "YL",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "H6",
+    "Entity": "YN",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "H7",
+    "Entity": "YN",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "HT",
+    "Entity": "YN",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "YN",
+    "Entity": "YN",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "YO",
+    "Entity": "YO",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "YP",
+    "Entity": "YO",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "YQ",
+    "Entity": "YO",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "YR",
+    "Entity": "YO",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "HU",
+    "Entity": "YS",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "YS",
+    "Entity": "YS",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "YT",
+    "Entity": "YU",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "YU",
+    "Entity": "YU",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "4M",
+    "Entity": "YV",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "YV",
+    "Entity": "YV",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "YW",
+    "Entity": "YV",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "YX",
+    "Entity": "YV",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "YY",
+    "Entity": "YV",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "4M0",
+    "Entity": "YV0",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "YV0",
+    "Entity": "YV0",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "YW0",
+    "Entity": "YV0",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "YX0",
+    "Entity": "YV0",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "YY0",
+    "Entity": "YV0",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "Z2",
+    "Entity": "Z2",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "Z3",
+    "Entity": "Z3",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "Z6",
+    "Entity": "Z6",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "Z8",
+    "Entity": "Z8",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "ZA",
+    "Entity": "ZA",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "ZB",
+    "Entity": "ZB",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "ZG",
+    "Entity": "ZB",
+    "Continent": "EU"
+  },
+  {
+    "Prefix": "ZC4",
+    "Entity": "ZC4",
+    "Continent": "AS"
+  },
+  {
+    "Prefix": "ZD7",
+    "Entity": "ZD7",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "ZD8",
+    "Entity": "ZD8",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "ZD9",
+    "Entity": "ZD9",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "ZF",
+    "Entity": "ZF",
+    "Continent": "NA"
+  },
+  {
+    "Prefix": "ZK3",
+    "Entity": "ZK3",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "ZK",
+    "Entity": "ZL",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "ZL",
+    "Entity": "ZL",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "ZL50",
+    "Entity": "ZL",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "ZM",
+    "Entity": "ZL",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "ZL7",
+    "Entity": "ZL7",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "ZM7",
+    "Entity": "ZL7",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "ZL8",
+    "Entity": "ZL8",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "ZM8",
+    "Entity": "ZL8",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "ZL9",
+    "Entity": "ZL9",
+    "Continent": "OC"
+  },
+  {
+    "Prefix": "ZP",
+    "Entity": "ZP",
+    "Continent": "SA"
+  },
+  {
+    "Prefix": "H5",
+    "Entity": "ZS",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "S4",
+    "Entity": "ZS",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "S8",
+    "Entity": "ZS",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "V9",
+    "Entity": "ZS",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "ZR",
+    "Entity": "ZS",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "ZS",
+    "Entity": "ZS",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "ZT",
+    "Entity": "ZS",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "ZU",
+    "Entity": "ZS",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "ZR8",
+    "Entity": "ZS8",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "ZS8",
+    "Entity": "ZS8",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "ZT8",
+    "Entity": "ZS8",
+    "Continent": "AF"
+  },
+  {
+    "Prefix": "ZU8",
+    "Entity": "ZS8",
+    "Continent": "AF"
+  }
+]

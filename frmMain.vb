@@ -3,15 +3,12 @@ Imports System.IO
 Imports System.Runtime.InteropServices
 Imports System.Text.Json
 Imports System.Text.RegularExpressions
+Imports System.Windows
 Imports System.Windows.Forms.VisualStyles.VisualStyleElement.Button
 Imports Microsoft.VisualBasic
 'Imports OpenCvSharp
 Imports Tesseract
 
-'Public Enum AutoMode
-'    AutoOff
-'    AutoOn
-'End Enum
 
 Public Enum DateFormats As Integer
     InvalidFormat       ' 無効な形式
@@ -38,8 +35,12 @@ Public Class frmMain
     'Private CurrentAutoMode As AutoMode = AutoMode.AutoOff
 
     Public InputFileFormat As System.Drawing.Imaging.ImageFormat
-    Private Shared mySettings As New AppSettings With
-        {.MyCallsigns = "User1", .InputFolder = "C: \Input", .OutputFolder = "C:\Output", .CtyTimeStamp = DateTime.MinValue}
+    Private Shared MyCallsigns As String
+    Private Shared InputFolder As String
+    Private Shared OutputFolder As String
+
+    '    New AppSettings With
+    '    {.MyCallsigns = "User1", .InputFolder = "C: \Input", .OutputFolder = "C:\Output", .CtyTimeStamp = DateTime.MinValue}
     Private ArrayMyCallsigns() As String
 
     Public Shared qsoCallsign As String
@@ -55,78 +56,6 @@ Public Class frmMain
         End If
     End Sub
 
-    Private Sub btnOpenImage_Click(sender As Object, e As EventArgs) Handles btnOpenImage.Click
-
-        Static InitSub = True
-
-        Dim dlg As New OpenFileDialog
-        Dim input = "qsl_original.jpg"
-        Dim output = "qsl_corrected.jpg"
-
-        dlg.Filter = "画像ファイル|*.jpg;*.jpeg;*.png;*.bmp"
-        If InitSub Then
-            dlg.InitialDirectory = mySettings.InputFolder
-            InitSub = False
-        End If
-
-        ' 古い画像を開放
-        If PicQsl.Image IsNot Nothing Then
-            PicQsl.Image.Dispose()
-            PicQsl.Image = Nothing
-        End If
-
-        ClearForm(False)
-
-        If dlg.ShowDialog = DialogResult.OK Then
-            currentImagePath = dlg.FileName
-
-            ' 新しい画像を安全に読み込む
-            Dim img = Image.FromFile(dlg.FileName)
-            SetImageFile(dlg.FileName)
-
-            'Using img = Image.FromFile(dlg.FileName)
-            '    ' PictureBoxに表示する場合
-            '    'PictureBox1.Image = New Bitmap(img)
-
-
-            '    SetImageFile(dlg.FileName)
-            'End Using ' ここで自動的に開放される
-
-            ' 画像の上下左右を自動判断し,方向をそろえる機能
-            ' 処理が重いので組み込まない
-            'PicQsl.Image = AutoRotateImageByOCR(PicQsl.Image, System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "tessdata"))
-
-            InputFileName = dlg.FileName
-            InputFileFormat = img.RawFormat
-
-            img.Dispose()
-
-            If InputFileName = "" Then
-                Text = "QslOrganizer"
-            Else
-                Text = "QslOrganizer - " & InputFileName
-            End If
-
-            CheckFileName(dlg.FileName)
-            cmbCallsign.Select()
-        End If
-
-        Dim folder = Path.GetDirectoryName(dlg.FileName)
-        Dim files = Directory.GetFiles(folder, "*.jpg").ToList()
-
-        ' エクスプローラと同じ順番に並べる
-        FileList = ExplorerSort.SortLikeExplorer(files)
-
-        ' 現在のファイルの位置をセット
-        FileIndex = FileList.IndexOf(dlg.FileName) + 1
-
-        If chkAuto.Checked Then
-            LoadNextFile()
-            CheckFileName(InputFileName)
-            RunAutoOCR()
-        End If
-
-    End Sub
 
     Private Sub RunAutoOCR()
         If PicQsl.Image Is Nothing Then Exit Sub
@@ -433,27 +362,6 @@ Public Class frmMain
     End Function
 
 
-    Private Sub btnTest_Click(sender As Object, e As EventArgs) Handles btnTest.Click
-        '    Dim d As Double
-
-        '    Dim input1 As String = InputBox("データ1を入力してください", "データ入力", "デフォルト値")
-        '    Dim input2 As String = InputBox("データ2を入力してください", "データ入力", "デフォルト値")
-
-        '    If input1 = "" Then
-        '        MessageBox.Show("データ１キャンセルされたか、空文字です。")
-        '        Exit Sub
-        '    End If
-        '    If input2 = "" Then
-        '        MessageBox.Show("データ２キャンセルされたか、空文字です。")
-        '        Exit Sub
-        '    End If
-
-        LoadCtyDatabase()
-
-        '    'Dim s As String = ExtractFrequency(" 24 ")
-
-        '    MessageBox.Show(d)
-    End Sub
 
 
     ' 傾き補正　役立たず
@@ -588,79 +496,6 @@ Public Class frmMain
 
 
     Private ocr As New OcrEngine()
-
-    Private Sub btnOfflineOcr_Click(sender As Object, e As EventArgs) Handles btnOfflineOcr.Click
-
-        If currentImagePath = "" Then
-            MessageBox.Show("先に画像を開いてください")
-            Exit Sub
-        End If
-
-        'Dim text = ocr.RecognizeText(currentImagePath)
-        'Dim text = ocr.RecognizeTextFromImage(PicQsl.Image)
-        Dim text = RunOCR(PicQsl.Image)
-
-        If text = "" Then
-            MessageBox.Show("OCR結果が空です")
-            Exit Sub
-        End If
-
-        ' とりあえずメッセージで全文を確認5
-        Dim preview = If(text.Length > 500, text.Substring(0, 500) & " ...", text)
-        Dim s = preview.Split(vbCr)
-
-        LstOcrResult.Items.Clear()
-        LstOcrResult.Items.AddRange(text.Split(New String() {vbLf}, StringSplitOptions.RemoveEmptyEntries))
-
-        ' 全体としての正規化
-        text = Trim(text.Trim.ToUpper)
-        text = text.Replace("　", " ")               ' 全角スペースを半角に置き換え
-        text = text.Replace("|", " ")               ' 縦罫線を半角スペースに置き換え
-        text = text.Replace("[", " ")
-        text = text.Replace("]", "J")
-
-        text = text.Replace("€", "0")               ' €はCの誤読にも
-        text = text.Replace("§", "8")
-        text = text.Replace(ChrW(&H2014), "-"c)     '  EM DASHを半角"-"に置き換える
-        'Dim dashChars = {ChrW(&H2014), ChrW(&H2013), ChrW(&H2212), ChrW(&H2010), ChrW(&H2015)}     ' 今後のため残す
-
-        text = Regex.Replace(text, " +", " ")       ' 連続する複数のスペースをひとつにする
-
-        UsedRanges.Clear()      ' OCR → Extract の処理へ    ' 既出の文字列リストをクリアする
-
-        Dim candidates As New List(Of String)
-        If cmbCallsign.Text <> "" Then candidates.Add(cmbCallsign.Text)
-        Dim lst = RegexExtractor.ExtractCallsignCandidates(text)         ' Callsign項目を抽出
-        candidates.AddRange(lst)         ' Callsign項目を抽出
-        candidates = RegexExtractor.RemoveMyCallsign(mySettings.MyCallsigns, candidates)    ' 自分のコールサインを除外
-        Dim callsign = RegexExtractor.ChooseBestCallsign(candidates, ArrayMyCallsigns(0))         ' 最も正しいものを選ぶ
-        qsoCallsign = callsign
-
-        qsoDate = RegexExtractor.ExtractDate(text)
-        qsoTime = RegexExtractor.ExtractTime(text)
-        mode = RegexExtractor.ExtractMode(text)
-        freq = RegexExtractor.ExtractBand(text)
-
-        ' UI に反映
-        cmbCallsign.Items.Clear()
-
-        For Each cs In candidates
-            cmbCallsign.Items.Add(cs)
-        Next
-        If cmbCallsign.Text = "" Then
-            cmbCallsign.Text = callsign
-        End If
-        cmbCallsign.Text = callsign
-        txtDate.Text = qsoDate
-        txtTime.Text = qsoTime
-        txtMode.Text = mode
-        txtBand.Text = freq
-
-        SetButtons()
-
-        cmbCallsign.Select()
-    End Sub
-
     Private Function RunOCR(img As Image) As String
         If chkAuto.Checked Then
             Return ocr.RecognizeTextFromImage(img)
@@ -673,68 +508,7 @@ Public Class frmMain
     End Function
 
 
-    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
-        Me.Height = 600
-        PnlList.Height = PnlPic.Height
-        LstOcrResult.Dock = DockStyle.Fill
-
-        ' 設定を読み込み
-        mySettings = LoadSettings()
-        LoadCtyDatabase()               ' cty.json 読み込み
-
-        ArrayMyCallsigns = mySettings.MyCallsigns.Split(","c)
-
-        ' 例：自分のコールサインを表示
-        'MyCallsign = MyCallsign
-        'InputFolder = InputFolder
-        'OutputFolder = OutputFolder
-
-        For Each c As Control In Controls
-            If TypeOf c Is ComboBox Then
-                AddHandler c.KeyPress, AddressOf ComboBox_KeyPress
-            End If
-        Next
-
-        For Each c As Control In Controls
-            If TypeOf c Is TextBox OrElse TypeOf c Is ComboBox Then
-                AddHandler c.Enter, AddressOf Control_Enter
-                AddHandler c.Leave, AddressOf Control_Leave
-                AddHandler c.KeyDown, AddressOf Control_KeyDown
-            End If
-        Next
-
-        ' 例：コールサイン欄
-        'SetPlaceholder(cmbCallsign, "コールサインを入力")
-
-        ' 例：日付欄
-        'SetPlaceholder(txtDate, "YYYY/MM/DD")
-
-        ' 例：時刻欄
-        'SetPlaceholder(txtTime, "HH:MM")
-        'SetPlaceholder(txtBand, "Band")
-        'SetPlaceholder(txtMode, "Mode")
-
-        ' イベント割り当て（TextBox 全体に適用）
-        For Each c As Control In Controls
-            If TypeOf c Is TextBox Then
-                AddHandler c.Enter, AddressOf TextBox_Enter
-                AddHandler c.Leave, AddressOf TextBox_Leave
-            End If
-        Next
-
-        SetButtonColer()
-
-        ClearForm(True)
-
-        If mySettings.MyCallsigns = "" OrElse mySettings.InputFolder = "" OrElse mySettings.OutputFolder = "" Then
-            frmSetting.Show()
-        End If
-
-        chkAuto.Checked = False
-        'btnMode_Click(btnMode, EventArgs.Empty)
-
-    End Sub
 
     Private Sub SetButtonColer()
         If chkAuto.Checked Then
@@ -764,26 +538,6 @@ Public Class frmMain
         End If
     End Sub
 
-    Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) Handles cmbCallsign.KeyDown, btnOpenImage.KeyDown, btnOfflineOcr.KeyDown, btnSave.KeyDown, btnOnlineOcr.KeyDown, txtDate.KeyDown, txtTime.KeyDown, txtBand.KeyDown, txtMode.KeyDown
-        If e.KeyCode = Keys.Enter Then
-            e.SuppressKeyPress = True
-
-            Dim current = CType(sender, Control)
-            Dim nextCtrl As Control
-
-            If e.Shift Then
-                ' Shift + Enter → 前へ
-                nextCtrl = GetPrevInputControl(current)
-            Else
-                ' Enter → 次へ
-                nextCtrl = GetNextInputControl(current)
-            End If
-
-            If nextCtrl IsNot Nothing Then
-                nextCtrl.Focus()
-            End If
-        End If
-    End Sub
 
 
     Private Sub ComboBox_KeyPress(sender As Object, e As KeyPressEventArgs)
@@ -827,13 +581,6 @@ Public Class frmMain
         e.DrawFocusRectangle()
     End Sub
 
-    Private Sub ComboBox_Leave(sender As Object, e As EventArgs) Handles cmbCallsign.Leave
-        Dim cb As ComboBox = CType(sender, ComboBox)
-
-        If cb.Text.Trim() = "" Then
-            cb.Text = ""
-        End If
-    End Sub
 
     Private Function GetPrevInputControl(current As Control) As Control
         Dim parent As Control = current.Parent
@@ -885,18 +632,6 @@ Public Class frmMain
     End Function
 
 
-    Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
-        SaveImageWithRules(InputFileName)
-        PicQsl.Image = Nothing
-        SetImage(Nothing)
-        ClearForm(True)
-
-        ' ★ 保存が成功したら次のファイルを読み込む
-        If chkAuto.Checked Then
-            LoadNextFile()
-            RunAutoOCR()
-        End If
-    End Sub
 
     Private Function SaveImageWithRules(inputImagePath As String) As Boolean
 
@@ -924,7 +659,7 @@ Public Class frmMain
         End If
 
         '=== 保存先フォルダ決定 ===
-        Dim baseFolder As String = mySettings.OutputFolder
+        Dim baseFolder As String = OutputFolder
         If baseFolder = "" Then
             MessageBox.Show("OutputFolder が設定されていません。")
             Return False
@@ -983,7 +718,7 @@ Public Class frmMain
         Dim savePath As String = Path.Combine(saveFolder, saveName)
 
         If File.Exists(savePath) Then
-            MessageBox.Show($"[savePath] ファイルは既に存在します。")
+            MessageBox.Show($"{savePath} ファイルは既に存在します。")
             Return False
         End If
 
@@ -1036,78 +771,78 @@ Public Class frmMain
 
     End Function
 
-    Private Sub txtDate_Leave(sender As Object, e As EventArgs) Handles txtDate.Leave
-        If txtDate.Text <> "" Then
-            Dim input = txtDate.Text.Trim
-            Dim year As Integer
-            Dim month As UInteger
-            Dim day As Integer
-            Dim parts = input.Split("/"c)
+    Private Sub txtDate_Leave(sender As Object, e As EventArgs)
+        'If txtDate.Text <> "" Then
+        '    Dim input = txtDate.Text.Trim
+        '    Dim year As Integer
+        '    Dim month As UInteger
+        '    Dim day As Integer
+        '    Dim parts = input.Split("/"c)
 
-            ' 正規表現：YYYY/MM/DD または YY/MM/DD
-            Dim pattern = "^(\d{2}|\d{4})/(0?[1-9]|1[0-2])/(0?[1-9]|[12]\d|3[01])$"
-            If Not Regex.IsMatch(input, pattern) Then
-                '         MessageBox.Show("日付の形式が正しくありません（YYYY/MM/DD）。", "入力エラー",
-                '        MessageBoxButtons.OK, MessageBoxIcon.Warning)
-                '                txtDate.Focus()
-                '                txtDate.SelectAll()
-                '                Exit Sub
+        '    ' 正規表現：YYYY/MM/DD または YY/MM/DD
+        '    Dim pattern = "^(\d{2}|\d{4})/(0?[1-9]|1[0-2])/(0?[1-9]|[12]\d|3[01])$"
+        '    If Not Regex.IsMatch(input, pattern) Then
+        '        '         MessageBox.Show("日付の形式が正しくありません（YYYY/MM/DD）。", "入力エラー",
+        '        '        MessageBoxButtons.OK, MessageBoxIcon.Warning)
+        '        '                txtDate.Focus()
+        '        '                txtDate.SelectAll()
+        '        '                Exit Sub
 
 
-                If input.Length = 8 Then
-                    year = Mid(input, 1, 4)
-                    month = Mid(input, 5, 2)
-                    day = Mid(input, 7, 2)
-                End If
-                If input.Length = 6 Then
-                    year = Mid(input, 1, 2)
-                    month = Mid(input, 3, 2)
-                    day = Mid(input, 5, 2)
-                End If
-            Else
+        '        If input.Length = 8 Then
+        '            year = Mid(input, 1, 4)
+        '            month = Mid(input, 5, 2)
+        '            day = Mid(input, 7, 2)
+        '        End If
+        '        If input.Length = 6 Then
+        '            year = Mid(input, 1, 2)
+        '            month = Mid(input, 3, 2)
+        '            day = Mid(input, 5, 2)
+        '        End If
+        '    Else
 
-                ' --- ここから YY → YYYY の変換 ---
-                year = Integer.Parse(parts(0))
-                month = Integer.Parse(parts(1))
-                day = Integer.Parse(parts(2))
-            End If
+        '        ' --- ここから YY → YYYY の変換 ---
+        '        year = Integer.Parse(parts(0))
+        '        month = Integer.Parse(parts(1))
+        '        day = Integer.Parse(parts(2))
+        '    End If
 
-            If year < 100 Then
-                ' 00〜49 → 2000〜2049、50〜99 → 1950〜1999 とする
-                If year <= 49 Then
-                    year += 2000
-                Else
-                    year += 1900
-                End If
-            End If
+        '    If year < 100 Then
+        '        ' 00〜49 → 2000〜2049、50〜99 → 1950〜1999 とする
+        '        If year <= 49 Then
+        '            year += 2000
+        '        Else
+        '            year += 1900
+        '        End If
+        '    End If
 
-            Dim dt As Date
-            Try
-                dt = New Date(year, month, day)
-            Catch ex As Exception
-                MessageBox.Show("存在しない日付です。", "入力エラー",
-                            MessageBoxButtons.OK, MessageBoxIcon.Warning)
-                txtDate.Focus()
-                txtDate.SelectAll()
-                Exit Sub
-            End Try
+        '    Dim dt As Date
+        '    Try
+        '        dt = New Date(year, month, day)
+        '    Catch ex As Exception
+        '        MessageBox.Show("存在しない日付です。", "入力エラー",
+        '                    MessageBoxButtons.OK, MessageBoxIcon.Warning)
+        '        txtDate.Focus()
+        '        txtDate.SelectAll()
+        '        Exit Sub
+        '    End Try
 
-            ' --- 範囲チェック ---
-            Dim minDate = New Date(1952, 7, 29)
-            Dim maxDate = Date.Today
+        '    ' --- 範囲チェック ---
+        '    Dim minDate = New Date(1952, 7, 29)
+        '    Dim maxDate = Date.Today
 
-            If dt < minDate OrElse dt > maxDate Then
-                MessageBox.Show("日付は 1952/07/29 〜 今日 の範囲で入力してください。", "入力エラー",
-                            MessageBoxButtons.OK, MessageBoxIcon.Warning)
-                txtDate.Focus()
-                txtDate.SelectAll()
-                Exit Sub
-            End If
+        '    If dt < minDate OrElse dt > maxDate Then
+        '        MessageBox.Show("日付は 1952/07/29 〜 今日 の範囲で入力してください。", "入力エラー",
+        '                    MessageBoxButtons.OK, MessageBoxIcon.Warning)
+        '        txtDate.Focus()
+        '        txtDate.SelectAll()
+        '        Exit Sub
+        '    End If
 
-            ' 正常 → YYYY/MM/DD に整形して戻す
-            txtDate.Text = dt.ToString("yyyy/MM/dd")
+        '    ' 正常 → YYYY/MM/DD に整形して戻す
+        '    txtDate.Text = dt.ToString("yyyy/MM/dd")
 
-        End If
+        'End If
     End Sub
 
     Private Sub txtTime_Leave(sender As Object, e As EventArgs)
@@ -1254,80 +989,109 @@ Public Class frmMain
         'End If
     End Sub
 
-    Private Sub Form2Open()
-        Dim form As New frmSetting
+    Private Sub frmSettingOpen()
+        Using form As New frmSetting()
 
-        ' 設定を読み込み
-        mySettings = LoadSettings()
+            ' 設定を読み込み
+            AppSettings.LoadJson(AppSettings.SettingsFile)
 
-        form.txtMyCallsigns.Text = mySettings.MyCallsigns
-        form.txtInputFolder.Text = mySettings.InputFolder
-        form.txtOutputFolder.Text = mySettings.OutputFolder
+            form.txtMyCallsigns.Text = AppSettings.GetJson("General", "MyCallsigns", "")
+            form.txtInputFolder.Text = AppSettings.GetJson("General", "InputFolder", "")
+            form.txtOutputFolder.Text = AppSettings.GetJson("General", "OutputFolder", "")
 
-        If form.ShowDialog() = DialogResult.OK Then
-            ' 設定を保存
-            mySettings.MyCallsigns = form.txtMyCallsigns.Text
-            mySettings.InputFolder = form.txtInputFolder.Text
-            mySettings.OutputFolder = form.txtOutputFolder.Text
-            SaveSettings(mySettings)
-            ArrayMyCallsigns = mySettings.MyCallsigns.Split(","c)
-        End If
+            If form.ShowDialog() = DialogResult.OK Then
+                ' 設定を保存
+                AppSettings.SetJson("General", "MyCallsigns", form.txtMyCallsigns.Text)
+                AppSettings.SetJson("General", "InputFolder", form.txtInputFolder.Text)
+                AppSettings.SetJson("General", "OutputFolder", form.txtOutputFolder.Text)
+
+                AppSettings.SaveJson(AppSettings.SettingsFile)
+
+                MyCallsigns = form.txtMyCallsigns.Text
+                InputFolder = form.txtInputFolder.Text
+                OutputFolder = form.txtOutputFolder.Text
+
+            End If
+        End Using
     End Sub
 
-    Private Sub mnuSetting_Click(sender As Object, e As EventArgs) Handles mnuSetting.Click
-        Form2Open()
+    Private Sub frmAboutOpen()
+        Using form As New AboutBox1
+            form.ShowDialog()
+        End Using
     End Sub
 
     Public Class AppSettings
-        Public Property MyCallsigns As String
-        Public Property InputFolder As String
-        Public Property OutputFolder As String
-        Public Property CtyTimeStamp As String
+
+        'Public Shared exePath = Process.GetCurrentProcess().MainModule.FileName
+        'Public Shared AsyncbasePath = Path.GetDirectoryName(exePath)
+        'Public Shared SettingsFile As String = Path.Combine(SettingsFile, "QslOrganizer.json")
+
+
+        Public Shared basePath As String = AppDomain.CurrentDomain.BaseDirectory
+        Public Shared SettingsFile As String = Path.Combine(basePath, My.Application.Info.Title & ".json")
+        Public Shared JsonSettings As Dictionary(Of String, Object)
+
+        Public Shared Sub LoadJson(FileName As String)
+
+            Dim json As String
+            If System.IO.File.Exists(AppSettings.SettingsFile) Then
+                json = File.ReadAllText(FileName)
+            Else
+                json = "{ ""General"": {  }}"
+            End If
+
+
+            JsonSettings = JsonSerializer.Deserialize(Of Dictionary(Of String, Object))(json,
+        New JsonSerializerOptions With {.PropertyNameCaseInsensitive = True}
+        )
+
+            For Each section In JsonSettings.Keys.ToList()
+                Dim sec = CType(JsonSettings(section), JsonElement)
+                Dim dict = JsonSerializer.Deserialize(Of Dictionary(Of String, Object))(sec.GetRawText())
+                JsonSettings(section) = dict
+            Next
+        End Sub
+
+        Public Shared Sub SaveJson(FileName As String)
+            Dim jsonString As String = JsonSerializer.Serialize(JsonSettings,
+        New JsonSerializerOptions With {.WriteIndented = True}
+    )
+            File.WriteAllText(FileName, jsonString)
+        End Sub
+
+        Public Shared Function GetJson(section As String, key As String, Initial As String) As String
+            If Not JsonSettings.ContainsKey(section) Then Return Initial
+
+            Dim sec = CType(JsonSettings(section), Dictionary(Of String, Object))
+
+            If Not sec.ContainsKey(key) Then Return Initial
+
+            Return sec(key).ToString()
+        End Function
+
+        Public Shared Function SetJson(section As String, key As String, value As String) As Boolean
+            ' セクションがなければ作る
+            If Not JsonSettings.ContainsKey(section) Then
+                JsonSettings(section) = New Dictionary(Of String, Object)
+            End If
+
+            Dim sec = CType(JsonSettings(section), Dictionary(Of String, Object))
+
+            ' キーを更新
+            sec(key) = value
+
+            Return True
+        End Function
+
     End Class
 
-    Dim basePath = AppDomain.CurrentDomain.BaseDirectory
-    Dim SettingsFile = Path.Combine(basePath, "settings.json")
-
-    ' --- 保存するメソッド ---
-    Public Sub SaveSettings(settings As AppSettings)
-        Dim basePath = AppDomain.CurrentDomain.BaseDirectory
-        'Dim SettingsFile = Path.Combine(basePath, "settings.json")
-        Dim SettingsFile = Path.Combine(basePath, My.Application.Info.Title & ".json")
-
-        ' JSONに変換 (書き込み)
-        Dim jsonString As String = JsonSerializer.Serialize(settings, New JsonSerializerOptions With {.WriteIndented = True})
-        File.WriteAllText(SettingsFile, jsonString)
-    End Sub
-
-    ' --- 読み出すメソッド ---
-    Public Shared Function LoadSettings() As AppSettings
-        Dim basePath = AppDomain.CurrentDomain.BaseDirectory
-        'Dim SettingsFile = Path.Combine(basePath, "settings.json")
-        Dim SettingsFile = Path.Combine(basePath, My.Application.Info.Title & ".json")
-
-        If Not File.Exists(SettingsFile) Then
-            ' ファイルがない場合はデフォルト設定を返す
-            Return New AppSettings With {.MyCallsigns = "", .InputFolder = "", .OutputFolder = "", .CtyTimeStamp = ""}
-        End If
-
-        ' ファイルから読み込んでJSONをデシリアライズ
-        Dim jsonString As String = File.ReadAllText(SettingsFile)
-        Return JsonSerializer.Deserialize(Of AppSettings)(jsonString)
-    End Function
 
     Private Sub TxtOcrResult_TextChanged(sender As Object, e As EventArgs)
 
     End Sub
 
-    Private Sub LstOcrResult_SelectedIndexChanged(sender As Object, e As EventArgs) Handles LstOcrResult.SelectedIndexChanged
-        ' "コピーするテキスト" をクリップボードに保存
-        Clipboard.SetText(String.Join(Environment.NewLine, LstOcrResult.Items.Cast(Of String)))
 
-    End Sub
-
-    Private Sub btnExit_Click(sender As Object, e As EventArgs) Handles btnExit.Click
-        Application.Exit()
-    End Sub
 
     Shared Function Levenshtein(a As String, b As String) As Integer
         Dim dp(a.Length, b.Length) As Integer
@@ -1358,38 +1122,12 @@ Public Class frmMain
         Return 1 - d / maxLen
     End Function
 
-    Private Sub cmbCallsign_TextChanged(sender As Object, e As EventArgs) Handles cmbCallsign.TextChanged
-        cmbCallsign.Text = cmbCallsign.Text.Trim
 
-        Dim cb = DirectCast(sender, ComboBox)
-        Dim start As Integer = cb.SelectionStart
-        cb.Text = cb.Text.ToUpper() ' 小文字にする場合は .ToLower()
-        cb.SelectionStart = start
 
-        qsoCallsign = cmbCallsign.Text
 
-        SetSaveButton()
-    End Sub
 
-    Private Sub txtDate_TextChanged(sender As Object, e As EventArgs) Handles txtDate.TextChanged
-        txtDate.Text = txtDate.Text.Trim
-        SetSaveButton()
-    End Sub
 
-    Private Sub txtTime_TextChanged(sender As Object, e As EventArgs) Handles txtTime.TextChanged
-        txtTime.Text = txtTime.Text.Trim
-        SetSaveButton()
-    End Sub
 
-    Private Sub txtBand_TextChanged(sender As Object, e As EventArgs) Handles txtBand.TextChanged
-        txtBand.Text = txtBand.Text.Trim
-        SetSaveButton()
-    End Sub
-
-    Private Sub txtMode_TextChanged(sender As Object, e As EventArgs) Handles txtMode.TextChanged
-        txtMode.Text = txtMode.Text.Trim
-        SetSaveButton()
-    End Sub
 
     Private Sub SetSaveButton()
         If ((cmbCallsign.Text <> "") AndAlso (txtDate.Text <> "") AndAlso (txtTime.Text <> "") AndAlso (txtBand.Text <> "") AndAlso (txtMode.Text <> "")) _
@@ -1400,23 +1138,7 @@ Public Class frmMain
         End If
     End Sub
 
-    Private Sub btnOpenImage_Click_1(sender As Object, e As EventArgs)
-
-    End Sub
-
-    Private Sub btnOnlineOcr_Click(sender As Object, e As EventArgs) Handles btnOnlineOcr.Click
-
-    End Sub
-
-    Private Sub btnSave_Click_1(sender As Object, e As EventArgs)
-
-    End Sub
-
-    Private Sub txtDate_Leave_1(sender As Object, e As EventArgs)
-
-    End Sub
-
-    Private Sub Form1_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Sub frmMain_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         PicQsl.Top = 0
 
         With PicQsl
@@ -1448,57 +1170,588 @@ Public Class frmMain
 
     End Sub
 
-    Private Sub txtTime_Leave_1(sender As Object, e As EventArgs) Handles txtTime.Leave
-        Dim hour As String
-        Dim minutes As String
 
-        If txtTime.Text = "" Then Return
-        Dim input = txtTime.Text.Trim
+    '------------------------------------------------------------------------------------------------------------------
+    '
+    ' ここから先、コントロールのイベント処理
+    '
+    '---------------------------------------------------------------------------   ------------------------------------
 
-        Dim foundIndex = input.IndexOf(":")
-        If foundIndex >= 0 Then
-            hour = "00" & input.Substring(0, foundIndex)
-            minutes = "00" & input.Substring(foundIndex + 1, input.Length - foundIndex - 1)
-        Else
-            hour = "00" & input.Substring(0, input.Length - 2)
-            minutes = "00" & input.Substring(input.Length - 2, 2)
+    Private Sub frmMain_Activated(sender As Object, e As EventArgs) Handles MyBase.Activated
+        Debug.Print(Me.ActiveControl.Name)
 
-        End If
-        hour = hour.Substring(hour.Length - 2, 2)
-        minutes = minutes.Substring(minutes.Length - 2, 2)
-        input = hour & ":" & minutes
-        txtTime.Text = input
+        If (TypeOf Me.ActiveControl IsNot TextBox) AndAlso (TypeOf Me.ActiveControl IsNot ComboBox) Then
+            cmbCallsign.Select()
 
-        ' 正規表現：HH:MM
-        Dim pattern = "^([0-1]\d|2[0-3]):([0-5]\d)$"
-        If Not Regex.IsMatch(input, pattern) Then
-            MessageBox.Show("時間の形式が正しくありません（HH:MM）。", "入力エラー", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-            txtTime.Focus()
-            txtTime.SelectAll()
-            Exit Sub
         End If
 
     End Sub
 
+    Private Sub frmMain_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
+        ' 設定を読み込み
+        AppSettings.LoadJson(AppSettings.SettingsFile)
+
+        Dim AppWindowTop = Me.Top
+        Dim AppWindowLeft = Me.Left
+
+        AppSettings.SetJson(Me.Name, "Top", AppWindowTop.ToString())            ' 設定を保存
+        AppSettings.SetJson(Me.Name, "Left", AppWindowLeft.ToString())
+
+        AppSettings.SaveJson(AppSettings.SettingsFile)                          ' 設定を書き込み
+    End Sub
 
     Private Sub frmMain_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
-        If e.Control AndAlso e.KeyCode = Keys.Enter Then
-            ' 警告音（ピピッという音）を鳴らさないようにする
-            e.SuppressKeyPress = True
+        If e.Control Then
+            If e.KeyCode = Keys.Enter Then
+                ' 警告音（ピピッという音）を鳴らさないようにする
+                e.SuppressKeyPress = True
 
-            ' ここに実行したい処理を書く
-            btnSave.PerformClick()
-            '           MessageBox.Show("Ctrl + Enter が押されました！")
+                ' ここに実行したい処理を書く
+                btnSave.PerformClick()
+                '           MessageBox.Show("Ctrl + Enter が押されました！") 
+            ElseIf e.KeyCode = Keys.Delete Then
+                If txtDate.Text <> "" OrElse txtTime.Text <> "" OrElse txtBand.Text <> "" OrElse txtMode.Text <> "" Then
+                    txtDate.Text = ""
+                    txtTime.Text = ""
+                    txtBand.Text = ""
+                    txtMode.Text = ""
+                ElseIf cmbCallsign.Text <> "" AndAlso txtDate.Text = "" AndAlso txtTime.Text = "" AndAlso txtBand.Text = "" AndAlso txtMode.Text = "" Then
+                    cmbCallsign.Text = ""
+                End If
+                cmbCallsign.Select()
+            End If
         End If
     End Sub
 
-    Private Sub chkAuto_CheckedChanged(sender As Object, e As EventArgs) Handles chkAuto.CheckedChanged
+    Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+        Me.Height = 600
+        PnlList.Height = PnlPic.Height
+        LstOcrResult.Dock = DockStyle.Fill
+
+        ' 設定を読み込み
+
+
+        AppSettings.LoadJson(AppSettings.SettingsFile)
+            'Else
+            '    AppSettings.SettingsFile
+            'End If
+
+            Dim DisplayWorkRect As Rectangle
+        DisplayWorkRect = Screen.PrimaryScreen.WorkingArea
+
+        Dim AppWindowTop = AppSettings.GetJson(Me.Name, "Top", "-1")
+        Dim AppWindowLeft = AppSettings.GetJson("frmMain", "Left", "-1")
+        If (AppWindowTop = -1) AndAlso (AppWindowLeft = -1) Then
+            Me.Top = (DisplayWorkRect.Height - Me.Height) / 2
+            Me.Left = (DisplayWorkRect.Width - Me.Width) / 2
+        Else
+            Me.Top = AppWindowTop
+            Me.Left = AppWindowLeft
+        End If
+
+        Dim IntFolder = System.Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
+        MyCallsigns = AppSettings.GetJson("General", "MyCallsigns", "")
+        InputFolder = AppSettings.GetJson("General", "InputFolder", IntFolder)
+
+        OutputFolder = AppSettings.GetJson("General", "OutputFolder", IntFolder)
+
+        'If InputFolder.Trim = "" Then
+        '    InputFolder = IntFolder
+        'End If
+        'If OutputFolder.Trim = "" Then
+        '    OutputFolder = IntFolder
+        'End If
+
+        LoadCtyDatabase()               ' cty.json 読み込み
+
+        ArrayMyCallsigns = MyCallsigns.Split(","c)
+
+        For Each c As Control In Controls
+            If TypeOf c Is ComboBox Then
+                AddHandler c.KeyPress, AddressOf ComboBox_KeyPress
+            End If
+        Next
+
+        For Each c As Control In Controls
+            If TypeOf c Is TextBox OrElse TypeOf c Is ComboBox Then
+                AddHandler c.Enter, AddressOf Control_Enter
+                AddHandler c.Leave, AddressOf Control_Leave
+                AddHandler c.KeyDown, AddressOf Control_KeyDown
+            End If
+        Next
+
+        ' 例：コールサイン欄
+        'SetPlaceholder(cmbCallsign, "コールサインを入力")
+
+        ' 例：日付欄
+        'SetPlaceholder(txtDate, "YYYY/MM/DD")
+
+        ' 例：時刻欄
+        'SetPlaceholder(txtTime, "HH:MM")
+        'SetPlaceholder(txtBand, "Band")
+        'SetPlaceholder(txtMode, "Mode")
+
+        ' イベント割り当て（TextBox 全体に適用）
+        For Each c As Control In Controls
+            If TypeOf c Is TextBox Then
+                AddHandler c.Enter, AddressOf TextBox_Enter
+                AddHandler c.Leave, AddressOf TextBox_Leave
+            End If
+        Next
 
         SetButtonColer()
 
+        ClearForm(True)
+
+        If MyCallsigns = "" OrElse InputFolder = "" OrElse OutputFolder = "" Then
+            frmSettingOpen()
+        End If
+
+        chkAuto.Checked = False
+
     End Sub
 
+    Private Sub LstOcrResult_SelectedIndexChanged(sender As Object, e As EventArgs) Handles LstOcrResult.SelectedIndexChanged
+        ' "コピーするテキスト" をクリップボードに保存
+        Clipboard.SetText(String.Join(Environment.NewLine, LstOcrResult.Items.Cast(Of String)))
+
+    End Sub
+
+    Private Sub cmbCallsign_TextChanged(sender As Object, e As EventArgs) Handles cmbCallsign.TextChanged
+        cmbCallsign.Text = cmbCallsign.Text.Trim
+
+        Dim cb = DirectCast(sender, ComboBox)
+        Dim start As Integer = cb.SelectionStart
+        cb.Text = cb.Text.ToUpper() ' 小文字にする場合は .ToLower()
+        cb.SelectionStart = start
+
+        qsoCallsign = cmbCallsign.Text
+
+        SetSaveButton()
+    End Sub
+
+    Private Sub ComboBox_Leave(sender As Object, e As EventArgs) Handles cmbCallsign.Leave
+        Dim cb As ComboBox = CType(sender, ComboBox)
+
+        If cb.Text.Trim() = "" Then
+            cb.Text = ""
+        End If
+    End Sub
+
+    Private Sub txtDate_TextChanged(sender As Object, e As EventArgs) Handles txtDate.TextChanged
+        txtDate.Text = txtDate.Text.Trim
+        SetSaveButton()
+    End Sub
+
+    Private Sub txtDate_Validating(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles txtDate.Validating
+
+        txtDate.Text = txtDate.Text.Trim.ToUpper
+
+        If txtDate.Text = "" Then Exit Sub
+
+        txtDate.Text = txtDate.Text.Replace("-", "/")
+
+        Dim year As String = "0000"
+        Dim month As String = "00"
+        Dim day As String = "00"
+        Dim ymd As String
+
+        Dim parts = txtDate.Text.Split("/"c)
+
+        If parts.Count = 3 Then
+            year = parts(0)
+            month = parts(1)
+            day = parts(2)
+        ElseIf parts.Count = 2 Then
+            month = parts(0)
+            day = parts(1)
+            If (month > Now.Month) OrElse ((month = Now.Month) AndAlso (day > Now.Day)) Then
+                year = Now.Year - 1
+            Else
+                year = Now.Year
+            End If
+        ElseIf parts.Count = 1 Then
+            ymd = "0000" & txtDate.Text
+            day = ymd.Substring(ymd.Length - 2, 2)
+            month = ymd.Substring(ymd.Length - 4, 2)
+            Select Case txtDate.Text.Length
+                Case 3, 4
+                    year = Now.Year
+                Case 6
+                    year = Now.Year - (Now.Year Mod 100) + txtDate.Text.Substring(0, 2)
+
+                    '       dt = New Date(year, month, day)
+                    If New Date(year, month, day) > Now Then
+                        year = (Now.Year - (Now.Year Mod 100) - 1).ToString().Substring(0, 2) & txtDate.Text.Substring(0, 2)
+
+                    End If
+                    'If (month > Now.Month) OrElse ((month = Now.Month) AndAlso (day > Now.Day)) Then
+                    '    year = Now.Year - 1
+                    'Else
+                    '    year = Now.Year
+                    '    year = Now.Year - (Now.Year Mod 100) + txtDate.Text.Substring(0, 2)
+                    'End If
+
+
+                Case 8
+                    year = txtDate.Text.Substring(0, 4)
+            End Select
+        End If
+
+        If year.Length = 2 Then
+            year = Now.Year - (Now.Year Mod 100) + year
+        End If
+        If month.Length <> 2 Then
+            month = ("00" & month)
+            month = month.Substring(month.Length - 2, 2)
+        End If
+        If day.Length <> 2 Then
+            day = ("00" & day)
+            day = day.Substring(day.Length - 2, 2)
+        End If
+
+        ymd = year & "/" & month & "/" & day
+
+        ' 正規表現：YYYY/MM/DD または YY/MM/DD
+        Dim pattern = "^(19|20)\d{2}/(0[1-9]|1[0-2])/([0-2]\d|3[01])$"
+        If Not Regex.IsMatch(ymd, pattern) Then
+            MessageBox.Show("日付の形式が正しくありません（YYYY/MM/DD）。", "入力エラー")
+            e.Cancel = True
+            Exit Sub
+        End If
+
+        Dim dt As Date
+        Try
+            dt = New Date(year, month, day)
+            If dt > Now Then
+                MessageBox.Show("日付は未来の日付に設定できません。", "入力エラー")
+                e.Cancel = True
+                Exit Sub
+            End If
+        Catch ex As Exception
+            MessageBox.Show("存在しない日付です。", "入力エラー",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            e.Cancel = True
+            Exit Sub
+        End Try
+
+        ' --- 範囲チェック ---
+        Dim minDate = New Date(1952, 7, 29)
+        Dim maxDate = Date.Today
+
+        If dt < minDate OrElse dt > maxDate Then
+            MessageBox.Show("日付は 1952/07/29 〜 今日 の範囲で入力してください。", "入力エラー",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            e.Cancel = True
+            Exit Sub
+        End If
+
+        ' 正常 → YYYY/MM/DD に整形して戻す
+        txtDate.Text = dt.ToString("yyyy/MM/dd")
+    End Sub
+
+    Private Sub txtTime_TextChanged(sender As Object, e As EventArgs) Handles txtTime.TextChanged
+        txtTime.Text = txtTime.Text.Trim
+        SetSaveButton()
+    End Sub
+
+    Private Sub txtTime_Validating(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles txtTime.Validating
+        txtTime.Text = txtTime.Text.Trim.ToUpper
+
+        If txtTime.Text = "" Then Exit Sub
+
+        Dim hour As String
+        Dim minutes As String
+
+        Dim foundIndex = txtTime.Text.IndexOf(":")
+        If foundIndex >= 0 Then
+            hour = "00" & txtTime.Text.Substring(0, foundIndex)
+            minutes = "00" & txtTime.Text.Substring(foundIndex + 1, txtTime.Text.Length - foundIndex - 1)
+            hour = hour.Substring(hour.Length - 2, 2)
+            minutes = minutes.Substring(minutes.Length - 2, 2)
+        Else
+            Dim t = "0000" & txtTime.Text
+            hour = t.Substring(t.Length - 4, 2)
+            minutes = t.Substring(t.Length - 2, 2)
+
+        End If
+        txtTime.Text = hour & ":" & minutes
+
+        ' 正規表現：HH:MM
+        Dim pattern = "^([0-1]\d|2[0-3]):([0-5]\d)$"
+        If Not Regex.IsMatch(txtTime.Text, pattern) Then
+            MessageBox.Show("時間の形式が正しくありません（HH:MM）。", "入力エラー", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            e.Cancel = True
+        End If
+
+    End Sub
+
+    Private Sub txtBand_TextChanged(sender As Object, e As EventArgs) Handles txtBand.TextChanged
+        txtBand.Text = txtBand.Text.Trim
+        SetSaveButton()
+    End Sub
+
+    Private Sub txtBand_Validating(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles txtBand.Validating
+        txtBand.Text = txtBand.Text.Trim.ToUpper
+
+        If txtBand.Text = "" Then Exit Sub
+
+        If txtBand.Text.Substring(txtBand.Text.Length - 1, 1) = "M" Then
+            For Each b In BandList.Bands        ' 40M, 2M 等の波長表示
+                If txtBand.Text.Contains(b) Then Exit Sub
+            Next
+        Else
+            Dim b = ConvertFreqToBand(txtBand.Text)
+            If b <> "" Then
+                txtBand.Text = b
+                Exit Sub
+            End If
+
+        End If
+
+        Dim ErrMess1 = "Bandの値が誤りです"
+        Dim ErrMess2 = "エラー"
+        MessageBox.Show(ErrMess1, ErrMess2, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        e.Cancel = True
+    End Sub
+
+    Private Sub txtMode_TextChanged(sender As Object, e As EventArgs) Handles txtMode.TextChanged
+        txtMode.Text = txtMode.Text.Trim
+        SetSaveButton()
+    End Sub
+
+    Private Sub txtMode_Validating(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles txtMode.Validating
+        txtMode.Text = txtMode.Text.Trim.ToUpper
+
+        If txtMode.Text = "" Then Exit Sub
+
+        For Each m In ModeList.Modes        ' 40M, 2M 等の波長表示
+            If txtMode.Text.Contains(m) Then Exit Sub
+        Next
+
+        If ModeList.AliasModes.ContainsKey(txtMode.Text) Then
+            txtMode.Text = ModeList.AliasModes(txtMode.Text)
+            Exit Sub
+        End If
+
+        Dim ErrMess1 = "Modeの値が誤りです"
+        Dim ErrMess2 = "エラー"
+        MessageBox.Show(ErrMess1, ErrMess2, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        e.Cancel = True
+
+    End Sub
+
+    Private Sub btnOpenImage_Click(sender As Object, e As EventArgs) Handles btnOpenImage.Click
+
+        Static InitSub = True
+
+        Dim dlg As New OpenFileDialog
+        Dim input = "qsl_original.jpg"
+        Dim output = "qsl_corrected.jpg"
+
+        dlg.Filter = "画像ファイル|*.jpg;*.jpeg;*.png;*.bmp"
+        If InitSub Then
+            dlg.InitialDirectory = InputFolder
+            InitSub = False
+        End If
+
+        ' 古い画像を開放
+        If PicQsl.Image IsNot Nothing Then
+            PicQsl.Image.Dispose()
+            PicQsl.Image = Nothing
+        End If
+
+        ClearForm(False)
+
+        If dlg.ShowDialog = DialogResult.OK Then
+            currentImagePath = dlg.FileName
+
+            ' 新しい画像を安全に読み込む
+            Dim img = Image.FromFile(dlg.FileName)
+            SetImageFile(dlg.FileName)
+
+            'Using img = Image.FromFile(dlg.FileName)
+            '    ' PictureBoxに表示する場合
+            '    'PictureBox1.Image = New Bitmap(img)
+
+
+            '    SetImageFile(dlg.FileName)
+            'End Using ' ここで自動的に開放される
+
+            ' 画像の上下左右を自動判断し,方向をそろえる機能
+            ' 処理が重いので組み込まない
+            'PicQsl.Image = AutoRotateImageByOCR(PicQsl.Image, System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "tessdata"))
+
+            InputFileName = dlg.FileName
+            InputFileFormat = img.RawFormat
+
+            img.Dispose()
+
+            If InputFileName = "" Then
+                Text = "QslOrganizer"
+            Else
+                Text = "QslOrganizer - " & InputFileName
+            End If
+
+            CheckFileName(dlg.FileName)
+            cmbCallsign.Select()
+            '     End If
+
+            Dim folder = Path.GetDirectoryName(dlg.FileName)
+            Dim files = Directory.GetFiles(folder, "*.jpg").ToList()
+
+            ' エクスプローラと同じ順番に並べる
+            FileList = ExplorerSort.SortLikeExplorer(files)
+
+            ' 現在のファイルの位置をセット
+            FileIndex = FileList.IndexOf(dlg.FileName) + 1
+
+            If chkAuto.Checked Then
+                LoadNextFile()
+                CheckFileName(InputFileName)
+                RunAutoOCR()
+            End If
+        End If
+
+    End Sub
+
+    Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) Handles cmbCallsign.KeyDown, btnOpenImage.KeyDown, btnOfflineOcr.KeyDown, btnSave.KeyDown, btnOnlineOcr.KeyDown, txtDate.KeyDown, txtTime.KeyDown, txtBand.KeyDown, txtMode.KeyDown, btnOnlineOcr.KeyDown
+        If e.KeyCode = Keys.Enter Then
+            e.SuppressKeyPress = True
+
+            Dim current = CType(sender, Control)
+            Dim nextCtrl As Control
+
+            If e.Shift Then
+                ' Shift + Enter → 前へ
+                nextCtrl = GetPrevInputControl(current)
+            Else
+                ' Enter → 次へ
+                nextCtrl = GetNextInputControl(current)
+            End If
+
+            If nextCtrl IsNot Nothing Then
+                nextCtrl.Focus()
+            End If
+        End If
+    End Sub
+
+    Private Sub btnOfflineOcr_Click(sender As Object, e As EventArgs) Handles btnOfflineOcr.Click
+
+        If currentImagePath = "" Then
+            MessageBox.Show("先に画像を開いてください")
+            Exit Sub
+        End If
+
+        'Dim text = ocr.RecognizeText(currentImagePath)
+        'Dim text = ocr.RecognizeTextFromImage(PicQsl.Image)
+        Dim text = RunOCR(PicQsl.Image)
+
+        If text = "" Then
+            MessageBox.Show("OCR結果が空です")
+            Exit Sub
+        End If
+
+        ' とりあえずメッセージで全文を確認5
+        Dim preview = If(text.Length > 500, text.Substring(0, 500) & " ...", text)
+        Dim s = preview.Split(vbCr)
+
+        LstOcrResult.Items.Clear()
+        LstOcrResult.Items.AddRange(text.Split(New String() {vbLf}, StringSplitOptions.RemoveEmptyEntries))
+
+        ' 全体としての正規化
+        text = Trim(text.Trim.ToUpper)
+        text = text.Replace("　", " ")               ' 全角スペースを半角スペースに置き換え 
+        text = text.Replace("|", " ")               ' 縦罫線を半角スペースに置き換え
+        text = text.Replace("[", " ")
+        text = text.Replace("]", "J")
+        text = text.Replace("{", " ")
+
+        text = text.Replace("€", "0")               ' €はCの誤読にも
+        text = text.Replace("§", "8")
+        text = text.Replace(ChrW(&H2014), "-"c)     '  EM DASHを半角"-"に置き換える
+        'Dim dashChars = {ChrW(&H2014), ChrW(&H2013), ChrW(&H2212), ChrW(&H2010), ChrW(&H2015)}     ' 今後のため残す
+
+        text = Regex.Replace(text, " +", " ")       ' 連続する複数のスペースをひとつにする
+
+        UsedRanges.Clear()      ' OCR → Extract の処理へ    ' 既出の文字列リストをクリアする
+
+        Dim candidates As New List(Of String)
+        If cmbCallsign.Text <> "" Then candidates.Add(cmbCallsign.Text)
+        Dim lst = RegexExtractor.ExtractCallsignCandidates(text)         ' Callsign項目を抽出
+        candidates.AddRange(lst)         ' Callsign項目を抽出
+        candidates = RegexExtractor.RemoveMyCallsign(MyCallsigns, candidates)    ' 自分のコールサインを除外
+        Dim callsign = RegexExtractor.ChooseBestCallsign(candidates, ArrayMyCallsigns(0))         ' 最も正しいものを選ぶ
+        qsoCallsign = callsign
+
+        qsoDate = RegexExtractor.ExtractDate(text)
+        qsoTime = RegexExtractor.ExtractTime(text)
+        mode = RegexExtractor.ExtractMode(text)
+        freq = RegexExtractor.ExtractBand(text)
+
+        ' UI に反映
+        cmbCallsign.Items.Clear()
+
+        For Each cs In candidates
+            cmbCallsign.Items.Add(cs)
+        Next
+        If cmbCallsign.Text = "" Then
+            cmbCallsign.Text = callsign
+        End If
+        cmbCallsign.Text = callsign
+        txtDate.Text = qsoDate
+        txtTime.Text = qsoTime
+        txtMode.Text = mode
+        txtBand.Text = freq
+
+        SetButtons()
+
+        cmbCallsign.Select()
+    End Sub
+
+    Private Sub btnOnlineOcr_Click(sender As Object, e As EventArgs) Handles btnOnlineOcr.Click
+
+    End Sub
+
+    Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
+        SaveImageWithRules(InputFileName)
+        PicQsl.Image = Nothing
+        SetImage(Nothing)
+        ClearForm(True)
+
+        ' ★ 保存が成功したら次のファイルを読み込む
+        If chkAuto.Checked Then
+            LoadNextFile()
+            RunAutoOCR()
+        End If
+    End Sub
+
+    Private Sub btnExit_Click(sender As Object, e As EventArgs) Handles btnExit.Click
+        Application.Exit()
+    End Sub
+
+    Private Sub btnTest_Click(sender As Object, e As EventArgs) Handles btnTest.Click
+
+        Dim pattern = "(?<=\s|:|;|\b)(\d{1,7})([.,\.]{0,2})(\d{0,6})(?=[\s\]MKG]|$)"           ' 直前が空白であり、直後が数字以外であること
+        Dim text = "7 DEC'24 09:20 +14 7 F18
+"
+        '     ' まず変換する前に実行する
+        For Each m In Regex.Matches(text, pattern)
+
+            MessageBox.Show(m.Groups(0).Value & " index=" & m.groups(0).index & " length=" & m.groups(0).length)
+
+        Next
+    End Sub
+
+    Private Sub mnuSetting_Click(sender As Object, e As EventArgs) Handles mnuSetting.Click
+        frmSettingOpen()
+    End Sub
+
+    Private Sub mnuAbout_Click(sender As Object, e As EventArgs) Handles mnuAbout.Click
+        Using form As New AboutBox1
+            form.ShowDialog()
+        End Using
+    End Sub
 
 End Class
-
-

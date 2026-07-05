@@ -26,7 +26,7 @@ Partial Class frmMain
         MenuStrip1 = New MenuStrip()
         mnuSetting = New ToolStripMenuItem()
         DeskewToolStripMenuItem = New ToolStripMenuItem()
-        AboutToolStripMenuItem = New ToolStripMenuItem()
+        mnuAbout = New ToolStripMenuItem()
         ImAGEToolStripMenuItem = New ToolStripMenuItem()
         pnlBtn = New Panel()
         chkAuto = New CheckBox()
@@ -63,11 +63,11 @@ Partial Class frmMain
         ' MenuStrip1
         ' 
         MenuStrip1.ImageScalingSize = New Size(20, 20)
-        MenuStrip1.Items.AddRange(New ToolStripItem() {mnuSetting, DeskewToolStripMenuItem, AboutToolStripMenuItem, ImAGEToolStripMenuItem})
+        MenuStrip1.Items.AddRange(New ToolStripItem() {mnuSetting, DeskewToolStripMenuItem, mnuAbout, ImAGEToolStripMenuItem})
         MenuStrip1.Location = New Point(0, 0)
         MenuStrip1.Name = "MenuStrip1"
-        MenuStrip1.Padding = New Padding(5, 2, 0, 2)
-        MenuStrip1.Size = New Size(887, 24)
+        MenuStrip1.Padding = New Padding(6, 3, 0, 3)
+        MenuStrip1.Size = New Size(1014, 30)
         MenuStrip1.TabIndex = 16
         MenuStrip1.Text = "MenuStrip1"
         ' 
@@ -75,7 +75,7 @@ Partial Class frmMain
         ' 
         mnuSetting.Name = "mnuSetting"
         mnuSetting.ShortcutKeys = Keys.Control Or Keys.S
-        mnuSetting.Size = New Size(56, 20)
+        mnuSetting.Size = New Size(70, 24)
         mnuSetting.Text = "Setting"
         ' 
         ' DeskewToolStripMenuItem
@@ -83,20 +83,20 @@ Partial Class frmMain
         DeskewToolStripMenuItem.Enabled = False
         DeskewToolStripMenuItem.Name = "DeskewToolStripMenuItem"
         DeskewToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.D
-        DeskewToolStripMenuItem.Size = New Size(59, 20)
+        DeskewToolStripMenuItem.Size = New Size(74, 24)
         DeskewToolStripMenuItem.Text = "Deskew"
         ' 
-        ' AboutToolStripMenuItem
+        ' mnuAbout
         ' 
-        AboutToolStripMenuItem.Name = "AboutToolStripMenuItem"
-        AboutToolStripMenuItem.Size = New Size(52, 20)
-        AboutToolStripMenuItem.Text = "About"
+        mnuAbout.Name = "mnuAbout"
+        mnuAbout.Size = New Size(64, 24)
+        mnuAbout.Text = "About"
         ' 
         ' ImAGEToolStripMenuItem
         ' 
         ImAGEToolStripMenuItem.Name = "ImAGEToolStripMenuItem"
         ImAGEToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.O
-        ImAGEToolStripMenuItem.Size = New Size(72, 20)
+        ImAGEToolStripMenuItem.Size = New Size(89, 24)
         ImAGEToolStripMenuItem.Text = "Open QSL"
         ImAGEToolStripMenuItem.Visible = False
         ' 
@@ -124,19 +124,17 @@ Partial Class frmMain
         pnlBtn.Controls.Add(txtMode)
         pnlBtn.Controls.Add(txtDate)
         pnlBtn.Dock = DockStyle.Bottom
-        pnlBtn.Location = New Point(0, 447)
-        pnlBtn.Margin = New Padding(3, 2, 3, 2)
+        pnlBtn.Location = New Point(0, 596)
         pnlBtn.Name = "pnlBtn"
-        pnlBtn.Size = New Size(887, 107)
+        pnlBtn.Size = New Size(1014, 143)
         pnlBtn.TabIndex = 25
         ' 
         ' chkAuto
         ' 
         chkAuto.AutoSize = True
-        chkAuto.Location = New Point(748, 74)
-        chkAuto.Margin = New Padding(3, 2, 3, 2)
+        chkAuto.Location = New Point(855, 99)
         chkAuto.Name = "chkAuto"
-        chkAuto.Size = New Size(52, 19)
+        chkAuto.Size = New Size(63, 24)
         chkAuto.TabIndex = 45
         chkAuto.Text = "&Auto"
         chkAuto.UseVisualStyleBackColor = True
@@ -146,10 +144,9 @@ Partial Class frmMain
         lstFileInfo.BackColor = SystemColors.Menu
         lstFileInfo.BorderStyle = BorderStyle.None
         lstFileInfo.FormattingEnabled = True
-        lstFileInfo.Location = New Point(13, 11)
-        lstFileInfo.Margin = New Padding(3, 2, 3, 2)
+        lstFileInfo.Location = New Point(15, 15)
         lstFileInfo.Name = "lstFileInfo"
-        lstFileInfo.Size = New Size(189, 90)
+        lstFileInfo.Size = New Size(216, 120)
         lstFileInfo.TabIndex = 43
         lstFileInfo.TabStop = False
         ' 
@@ -158,9 +155,9 @@ Partial Class frmMain
         Label5.AutoSize = True
         Label5.Font = New Font("Yu Gothic UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, CByte(128))
         Label5.ForeColor = SystemColors.MenuHighlight
-        Label5.Location = New Point(748, 10)
+        Label5.Location = New Point(855, 13)
         Label5.Name = "Label5"
-        Label5.Size = New Size(45, 19)
+        Label5.Size = New Size(54, 23)
         Label5.TabIndex = 33
         Label5.Text = "&Mode"
         ' 
@@ -169,9 +166,9 @@ Partial Class frmMain
         Label4.AutoSize = True
         Label4.Font = New Font("Yu Gothic UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, CByte(128))
         Label4.ForeColor = SystemColors.MenuHighlight
-        Label4.Location = New Point(620, 10)
+        Label4.Location = New Point(709, 13)
         Label4.Name = "Label4"
-        Label4.Size = New Size(40, 19)
+        Label4.Size = New Size(49, 23)
         Label4.TabIndex = 31
         Label4.Text = "&Band"
         ' 
@@ -180,9 +177,9 @@ Partial Class frmMain
         Label3.AutoSize = True
         Label3.Font = New Font("Yu Gothic UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, CByte(128))
         Label3.ForeColor = SystemColors.MenuHighlight
-        Label3.Location = New Point(485, 10)
+        Label3.Location = New Point(554, 13)
         Label3.Name = "Label3"
-        Label3.Size = New Size(38, 19)
+        Label3.Size = New Size(47, 23)
         Label3.TabIndex = 29
         Label3.Text = "&Time"
         ' 
@@ -191,9 +188,9 @@ Partial Class frmMain
         Label2.AutoSize = True
         Label2.Font = New Font("Yu Gothic UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, CByte(128))
         Label2.ForeColor = SystemColors.MenuHighlight
-        Label2.Location = New Point(360, 10)
+        Label2.Location = New Point(411, 13)
         Label2.Name = "Label2"
-        Label2.Size = New Size(38, 19)
+        Label2.Size = New Size(46, 23)
         Label2.TabIndex = 27
         Label2.Text = "&Date"
         ' 
@@ -202,19 +199,18 @@ Partial Class frmMain
         Label1.AutoSize = True
         Label1.Font = New Font("Yu Gothic UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, CByte(128))
         Label1.ForeColor = SystemColors.MenuHighlight
-        Label1.Location = New Point(207, 10)
+        Label1.Location = New Point(237, 13)
         Label1.Name = "Label1"
-        Label1.Size = New Size(56, 19)
+        Label1.Size = New Size(69, 23)
         Label1.TabIndex = 25
         Label1.Text = "&Callsign"
         ' 
         ' btnExit
         ' 
-        btnExit.Location = New Point(630, 65)
-        btnExit.Margin = New Padding(3, 2, 3, 2)
+        btnExit.Location = New Point(720, 87)
         btnExit.Name = "btnExit"
-        btnExit.Padding = New Padding(3, 2, 3, 2)
-        btnExit.Size = New Size(100, 32)
+        btnExit.Padding = New Padding(3)
+        btnExit.Size = New Size(114, 43)
         btnExit.TabIndex = 39
         btnExit.TabStop = False
         btnExit.Text = "&Exit"
@@ -222,10 +218,9 @@ Partial Class frmMain
         ' 
         ' Button1
         ' 
-        Button1.Location = New Point(846, 38)
-        Button1.Margin = New Padding(3, 2, 3, 2)
+        Button1.Location = New Point(967, 51)
         Button1.Name = "Button1"
-        Button1.Size = New Size(108, 23)
+        Button1.Size = New Size(123, 31)
         Button1.TabIndex = 42
         Button1.TabStop = False
         Button1.Text = "Open Form2"
@@ -237,20 +232,18 @@ Partial Class frmMain
         cmbCallsign.Font = New Font("メイリオ", 10.2F, FontStyle.Regular, GraphicsUnit.Point, CByte(128))
         cmbCallsign.FormattingEnabled = True
         cmbCallsign.ImeMode = ImeMode.Disable
-        cmbCallsign.Location = New Point(207, 30)
-        cmbCallsign.Margin = New Padding(3, 2, 3, 2)
+        cmbCallsign.Location = New Point(237, 40)
         cmbCallsign.Name = "cmbCallsign"
-        cmbCallsign.Size = New Size(133, 29)
+        cmbCallsign.Size = New Size(151, 33)
         cmbCallsign.Sorted = True
         cmbCallsign.TabIndex = 26
         ' 
         ' btnTest
         ' 
         btnTest.Font = New Font("Yu Gothic UI", 10.2F)
-        btnTest.Location = New Point(802, 65)
-        btnTest.Margin = New Padding(3, 2, 3, 2)
+        btnTest.Location = New Point(917, 87)
         btnTest.Name = "btnTest"
-        btnTest.Size = New Size(108, 32)
+        btnTest.Size = New Size(123, 43)
         btnTest.TabIndex = 41
         btnTest.TabStop = False
         btnTest.Text = "Test"
@@ -259,10 +252,9 @@ Partial Class frmMain
         ' 
         ' btnDeskew
         ' 
-        btnDeskew.Location = New Point(846, 4)
-        btnDeskew.Margin = New Padding(3, 2, 3, 2)
+        btnDeskew.Location = New Point(967, 5)
         btnDeskew.Name = "btnDeskew"
-        btnDeskew.Size = New Size(108, 32)
+        btnDeskew.Size = New Size(123, 43)
         btnDeskew.TabIndex = 40
         btnDeskew.TabStop = False
         btnDeskew.Text = "Deskew"
@@ -272,10 +264,9 @@ Partial Class frmMain
         ' btnOnlineOcr
         ' 
         btnOnlineOcr.Enabled = False
-        btnOnlineOcr.Location = New Point(417, 65)
-        btnOnlineOcr.Margin = New Padding(3, 2, 3, 2)
+        btnOnlineOcr.Location = New Point(477, 87)
         btnOnlineOcr.Name = "btnOnlineOcr"
-        btnOnlineOcr.Size = New Size(100, 32)
+        btnOnlineOcr.Size = New Size(114, 43)
         btnOnlineOcr.TabIndex = 37
         btnOnlineOcr.TabStop = False
         btnOnlineOcr.Text = "Online OCR(&N)"
@@ -284,10 +275,9 @@ Partial Class frmMain
         ' btnOfflineOcr
         ' 
         btnOfflineOcr.Font = New Font("Yu Gothic UI", 9F, FontStyle.Regular, GraphicsUnit.Point, CByte(128))
-        btnOfflineOcr.Location = New Point(312, 65)
-        btnOfflineOcr.Margin = New Padding(3, 2, 3, 2)
+        btnOfflineOcr.Location = New Point(357, 87)
         btnOfflineOcr.Name = "btnOfflineOcr"
-        btnOfflineOcr.Size = New Size(100, 32)
+        btnOfflineOcr.Size = New Size(114, 43)
         btnOfflineOcr.TabIndex = 36
         btnOfflineOcr.TabStop = False
         btnOfflineOcr.Text = "Offline OCR(&F)"
@@ -299,10 +289,9 @@ Partial Class frmMain
         txtBand.CharacterCasing = CharacterCasing.Upper
         txtBand.Font = New Font("メイリオ", 10.2F, FontStyle.Regular, GraphicsUnit.Point, CByte(128))
         txtBand.ImeMode = ImeMode.Disable
-        txtBand.Location = New Point(620, 30)
-        txtBand.Margin = New Padding(3, 2, 3, 2)
+        txtBand.Location = New Point(709, 40)
         txtBand.Name = "txtBand"
-        txtBand.Size = New Size(110, 28)
+        txtBand.Size = New Size(125, 33)
         txtBand.TabIndex = 32
         ' 
         ' txtTime
@@ -311,18 +300,16 @@ Partial Class frmMain
         txtTime.CharacterCasing = CharacterCasing.Upper
         txtTime.Font = New Font("メイリオ", 10.2F, FontStyle.Regular, GraphicsUnit.Point, CByte(128))
         txtTime.ImeMode = ImeMode.Disable
-        txtTime.Location = New Point(485, 30)
-        txtTime.Margin = New Padding(3, 2, 3, 2)
+        txtTime.Location = New Point(554, 40)
         txtTime.Name = "txtTime"
-        txtTime.Size = New Size(110, 28)
+        txtTime.Size = New Size(125, 33)
         txtTime.TabIndex = 30
         ' 
         ' btnSave
         ' 
-        btnSave.Location = New Point(522, 65)
-        btnSave.Margin = New Padding(3, 2, 3, 2)
+        btnSave.Location = New Point(597, 87)
         btnSave.Name = "btnSave"
-        btnSave.Size = New Size(100, 32)
+        btnSave.Size = New Size(114, 43)
         btnSave.TabIndex = 38
         btnSave.TabStop = False
         btnSave.Text = "&Save"
@@ -331,10 +318,9 @@ Partial Class frmMain
         ' btnOpenImage
         ' 
         btnOpenImage.Font = New Font("Yu Gothic UI", 9F, FontStyle.Regular, GraphicsUnit.Point, CByte(128))
-        btnOpenImage.Location = New Point(207, 65)
-        btnOpenImage.Margin = New Padding(3, 2, 3, 2)
+        btnOpenImage.Location = New Point(237, 87)
         btnOpenImage.Name = "btnOpenImage"
-        btnOpenImage.Size = New Size(100, 32)
+        btnOpenImage.Size = New Size(114, 43)
         btnOpenImage.TabIndex = 35
         btnOpenImage.TabStop = False
         btnOpenImage.Text = "&Open QSL"
@@ -346,10 +332,9 @@ Partial Class frmMain
         txtMode.CharacterCasing = CharacterCasing.Upper
         txtMode.Font = New Font("メイリオ", 10.2F, FontStyle.Regular, GraphicsUnit.Point, CByte(128))
         txtMode.ImeMode = ImeMode.Disable
-        txtMode.Location = New Point(748, 30)
-        txtMode.Margin = New Padding(3, 2, 3, 2)
+        txtMode.Location = New Point(855, 40)
         txtMode.Name = "txtMode"
-        txtMode.Size = New Size(95, 28)
+        txtMode.Size = New Size(108, 33)
         txtMode.TabIndex = 34
         ' 
         ' txtDate
@@ -359,10 +344,9 @@ Partial Class frmMain
         txtDate.CharacterCasing = CharacterCasing.Upper
         txtDate.Font = New Font("メイリオ", 10.2F, FontStyle.Regular, GraphicsUnit.Point, CByte(128))
         txtDate.ImeMode = ImeMode.Disable
-        txtDate.Location = New Point(360, 30)
-        txtDate.Margin = New Padding(3, 2, 3, 2)
+        txtDate.Location = New Point(411, 40)
         txtDate.Name = "txtDate"
-        txtDate.Size = New Size(110, 28)
+        txtDate.Size = New Size(125, 33)
         txtDate.TabIndex = 28
         ' 
         ' PnlPic
@@ -371,11 +355,11 @@ Partial Class frmMain
         PnlPic.BorderStyle = BorderStyle.FixedSingle
         PnlPic.Controls.Add(PicQsl)
         PnlPic.Dock = DockStyle.Fill
-        PnlPic.Location = New Point(0, 24)
+        PnlPic.Location = New Point(0, 30)
         PnlPic.Margin = New Padding(3, 0, 3, 0)
         PnlPic.Name = "PnlPic"
         PnlPic.Padding = New Padding(3, 0, 3, 0)
-        PnlPic.Size = New Size(678, 423)
+        PnlPic.Size = New Size(775, 566)
         PnlPic.TabIndex = 26
         ' 
         ' PicQsl
@@ -383,10 +367,10 @@ Partial Class frmMain
         PicQsl.Anchor = AnchorStyles.None
         PicQsl.BackColor = SystemColors.HotTrack
         PicQsl.BackgroundImageLayout = ImageLayout.None
-        PicQsl.Location = New Point(52, 12)
+        PicQsl.Location = New Point(59, 18)
         PicQsl.Margin = New Padding(0)
         PicQsl.Name = "PicQsl"
-        PicQsl.Size = New Size(477, 241)
+        PicQsl.Size = New Size(545, 321)
         PicQsl.SizeMode = PictureBoxSizeMode.Zoom
         PicQsl.TabIndex = 1
         PicQsl.TabStop = False
@@ -395,11 +379,11 @@ Partial Class frmMain
         ' 
         PnlList.Controls.Add(LstOcrResult)
         PnlList.Dock = DockStyle.Right
-        PnlList.Location = New Point(678, 24)
+        PnlList.Location = New Point(775, 30)
         PnlList.Margin = New Padding(3, 0, 3, 0)
         PnlList.Name = "PnlList"
         PnlList.Padding = New Padding(3, 0, 3, 0)
-        PnlList.Size = New Size(209, 423)
+        PnlList.Size = New Size(239, 566)
         PnlList.TabIndex = 27
         ' 
         ' LstOcrResult
@@ -409,20 +393,20 @@ Partial Class frmMain
         LstOcrResult.Font = New Font("メイリオ", 9F, FontStyle.Regular, GraphicsUnit.Point, CByte(128))
         LstOcrResult.FormattingEnabled = True
         LstOcrResult.HorizontalScrollbar = True
-        LstOcrResult.Location = New Point(3, 52)
+        LstOcrResult.Location = New Point(3, 69)
         LstOcrResult.Margin = New Padding(3, 0, 3, 0)
         LstOcrResult.Name = "LstOcrResult"
         LstOcrResult.ScrollAlwaysVisible = True
         LstOcrResult.SelectionMode = SelectionMode.None
-        LstOcrResult.Size = New Size(204, 362)
+        LstOcrResult.Size = New Size(233, 462)
         LstOcrResult.TabIndex = 16
         LstOcrResult.TabStop = False
         ' 
         ' frmMain
         ' 
-        AutoScaleDimensions = New SizeF(7F, 15F)
+        AutoScaleDimensions = New SizeF(8F, 20F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(887, 554)
+        ClientSize = New Size(1014, 739)
         Controls.Add(PnlPic)
         Controls.Add(PnlList)
         Controls.Add(pnlBtn)
@@ -431,7 +415,6 @@ Partial Class frmMain
         Icon = CType(resources.GetObject("$this.Icon"), Icon)
         KeyPreview = True
         MainMenuStrip = MenuStrip1
-        Margin = New Padding(3, 2, 3, 2)
         MaximizeBox = False
         Name = "frmMain"
         Text = "QslOrganizer"
@@ -451,7 +434,7 @@ Partial Class frmMain
     Friend WithEvents MenuStrip1 As MenuStrip
     Friend WithEvents mnuSetting As ToolStripMenuItem
     Friend WithEvents DeskewToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents AboutToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents mnuAbout As ToolStripMenuItem
     Friend WithEvents ImAGEToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents pnlBtn As Panel
     Friend WithEvents lstFileInfo As ListBox

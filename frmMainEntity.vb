@@ -20,12 +20,17 @@ Partial Class frmMain
 
     Public Sub LoadCtyDatabase()
 
-        Dim currentStamp = File.GetLastWriteTime(CtyFilePath)
+        Dim currentStamp = File.GetLastWriteTime(CtyFilePath)       ' CtyDatファイルのタイムスタンプを取得
         '    Dim savedStamp As DateTime = DateTime.MinValue
 
+        '        Dim form As New frmSetting
+
+        ' 設定を読み込み
+        AppSettings.LoadJson(AppSettings.SettingsFile)
+        Dim JSONsavedStamp = AppSettings.GetJson("CtyDat", "TimeStamp", "")
 
         Dim savedStamp As DateTime
-        If Not DateTime.TryParse(mySettings.CtyTimeStamp, savedStamp) OrElse currentStamp <> savedStamp Then
+        If Not DateTime.TryParse(JSONsavedStamp, savedStamp) OrElse currentStamp <> savedStamp Then
             ' 新しい cty.dat を読み込む
             CtyDatabase = ParseCtyDat(CtyFilePath)
 
@@ -34,33 +39,13 @@ Partial Class frmMain
             File.WriteAllText(CtyCachePath, json)
 
             ' タイムスタンプ保存（ISO 形式で保存）
-            mySettings.CtyTimeStamp = currentStamp.ToString("o")
-            SaveSettings(mySettings)
+            AppSettings.SetJson("CtyDat", "TimeStamp", currentStamp)
+            AppSettings.SaveJson(AppSettings.SettingsFile)
         Else
             ' JSON から読み込む
             Dim json = File.ReadAllText(CtyCachePath)
             CtyDatabase = JsonConvert.DeserializeObject(Of List(Of PrefixInfo))(json)
         End If
-
-
-        'If (mySettings.CtyTimeStamp Is Nothing) OrElse (currentStamp <> mySettings.CtyTimeStamp) Then
-
-        '    ' 新しい cty.dat を読み込む
-        '    CtyDatabase = ParseCtyDat(CtyFilePath)
-
-        '    ' JSON に保存
-        '    Dim json = JsonConvert.SerializeObject(CtyDatabase, Newtonsoft.Json.Formatting.Indented)
-        '    File.WriteAllText(CtyCachePath, json)
-
-        '    ' タイムスタンプ保存
-        '    mySettings.CtyTimeStamp = currentStamp.ToString()
-        '    SaveSettings(mySettings)
-        '    'File.WriteAllText("cty.timestamp", currentStamp.ToString())
-        'Else
-        '    ' JSON から読み込む
-        '    Dim json = File.ReadAllText(CtyCachePath)
-        '    CtyDatabase = JsonConvert.DeserializeObject(Of List(Of PrefixInfo))(json)
-        'End If
 
     End Sub
 

@@ -32,9 +32,9 @@ Partial Class frmSetting
         btnInputFolder = New Button()
         btnOutputFolder = New Button()
         lblCallsign = New Label()
-        Label2 = New Label()
-        Label3 = New Label()
-        Label1 = New Label()
+        lblInputFolder = New Label()
+        lblOutputFolder = New Label()
+        lblComment = New Label()
         SuspendLayout()
         ' 
         ' txtMyCallsigns
@@ -126,36 +126,36 @@ Partial Class frmSetting
         lblCallsign.TabIndex = 0
         lblCallsign.Text = "&Callsign"
         ' 
-        ' Label2
+        ' lblInputFolder
         ' 
-        Label2.AutoSize = True
-        Label2.Font = New Font("Yu Gothic UI", 10.2F)
-        Label2.ForeColor = SystemColors.MenuHighlight
-        Label2.Location = New Point(40, 74)
-        Label2.Name = "Label2"
-        Label2.Size = New Size(102, 23)
-        Label2.TabIndex = 2
-        Label2.Text = "&Input Folder"
+        lblInputFolder.AutoSize = True
+        lblInputFolder.Font = New Font("Yu Gothic UI", 10.2F)
+        lblInputFolder.ForeColor = SystemColors.MenuHighlight
+        lblInputFolder.Location = New Point(40, 74)
+        lblInputFolder.Name = "lblInputFolder"
+        lblInputFolder.Size = New Size(102, 23)
+        lblInputFolder.TabIndex = 2
+        lblInputFolder.Text = "&Input Folder"
         ' 
-        ' Label3
+        ' lblOutputFolder
         ' 
-        Label3.AutoSize = True
-        Label3.Font = New Font("Yu Gothic UI", 10.2F)
-        Label3.ForeColor = SystemColors.MenuHighlight
-        Label3.Location = New Point(40, 139)
-        Label3.Name = "Label3"
-        Label3.Size = New Size(116, 23)
-        Label3.TabIndex = 5
-        Label3.Text = "&Output Folder"
+        lblOutputFolder.AutoSize = True
+        lblOutputFolder.Font = New Font("Yu Gothic UI", 10.2F)
+        lblOutputFolder.ForeColor = SystemColors.MenuHighlight
+        lblOutputFolder.Location = New Point(40, 139)
+        lblOutputFolder.Name = "lblOutputFolder"
+        lblOutputFolder.Size = New Size(116, 23)
+        lblOutputFolder.TabIndex = 5
+        lblOutputFolder.Text = "&Output Folder"
         ' 
-        ' Label1
+        ' lblComment
         ' 
-        Label1.AutoSize = True
-        Label1.Location = New Point(373, 46)
-        Label1.Name = "Label1"
-        Label1.Size = New Size(220, 20)
-        Label1.TabIndex = 11
-        Label1.Text = "複数Callsinは、カンマ区切りで入力"
+        lblComment.AutoSize = True
+        lblComment.Location = New Point(373, 46)
+        lblComment.Name = "lblComment"
+        lblComment.Size = New Size(220, 20)
+        lblComment.TabIndex = 11
+        lblComment.Text = "複数Callsinは、カンマ区切りで入力"
         ' 
         ' frmSetting
         ' 
@@ -164,9 +164,9 @@ Partial Class frmSetting
         AutoScaleMode = AutoScaleMode.Font
         CancelButton = btnCancel
         ClientSize = New Size(800, 268)
-        Controls.Add(Label1)
-        Controls.Add(Label3)
-        Controls.Add(Label2)
+        Controls.Add(lblComment)
+        Controls.Add(lblOutputFolder)
+        Controls.Add(lblInputFolder)
         Controls.Add(lblCallsign)
         Controls.Add(btnOutputFolder)
         Controls.Add(btnInputFolder)
@@ -180,7 +180,7 @@ Partial Class frmSetting
         Icon = CType(resources.GetObject("$this.Icon"), Icon)
         MaximizeBox = False
         MinimizeBox = False
-        Name = "Form2"
+        Name = "frmSetting"
         StartPosition = FormStartPosition.CenterParent
         Text = "Setting"
         ResumeLayout(False)
@@ -193,9 +193,9 @@ Partial Class frmSetting
     Friend WithEvents btnInputFolder As Button
     Friend WithEvents btnOutputFolder As Button
     Friend WithEvents lblCallsign As Label
-    Friend WithEvents Label2 As Label
-    Friend WithEvents Label3 As Label
-    Friend WithEvents Label1 As Label
+    Friend WithEvents lblInputFolder As Label
+    Friend WithEvents lblOutputFolder As Label
+    Friend WithEvents lblComment As Label
     Public WithEvents txtMyCallsigns As TextBox
     Public WithEvents txtInputFolder As TextBox
     Public WithEvents txtOutputFolder As TextBox

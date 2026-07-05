@@ -1,10 +1,29 @@
-﻿Public Class frmSetting
+﻿Imports QslOrganizer.frmMain
 
-    Private Sub Form2_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+Public Class frmSetting
+
+    Private Sub frmSetting_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         btnOutputFolder.Text = ""
         btnOutputFolder.Text = ""
 
-        Label1.Text = "複数のCallsinは、カンマ区切りで入力"
+        lblComment.Text = "複数のCallsinは、カンマ区切りで入力"
+
+        ' 設定を読み込み
+        AppSettings.LoadJson(AppSettings.SettingsFile)
+
+        Dim DisplayWorkRect As Rectangle
+        DisplayWorkRect = Screen.PrimaryScreen.WorkingArea
+
+
+        Dim AppWindowTop = AppSettings.GetJson("frmSetting", "Top", "-1")
+        Dim AppWindowLeft = AppSettings.GetJson("frmSetting", "Left", "-1")
+        If (AppWindowTop = -1) AndAlso (AppWindowLeft = -1) Then
+            Me.Top = (DisplayWorkRect.Height - Me.Height) / 2
+            Me.Left = (DisplayWorkRect.Width - Me.Width) / 2
+        Else
+            Me.Top = AppWindowTop
+            Me.Left = AppWindowLeft
+        End If
 
         'txtCallsign.Text = Form1.MyCallsign
         'txtInputFolder.Text = Form1.InputFolder
@@ -72,7 +91,17 @@
         End If
     End Sub
 
-    Private Sub Label1_Click(sender As Object, e As EventArgs) Handles Label1.Click
+    Private Sub frmSetting_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
+        ' 設定を保存
+        AppSettings.LoadJson(AppSettings.SettingsFile)
+
+        Dim AppWindowTop = Me.Top
+        Dim AppWindowLeft = Me.Left
+
+        AppSettings.SetJson(Me.Name, "Top", AppWindowTop.ToString())
+        AppSettings.SetJson(Me.Name, "Left", AppWindowLeft.ToString())
+
+        AppSettings.SaveJson(AppSettings.SettingsFile)
 
     End Sub
 End Class

@@ -1,0 +1,18 @@
+{
+  "General": {
+    "MyCallsigns": "JA7WLY",
+    "InputFolder": "C:\\Users\\user\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\\u30C9\u30AD\u30E5\u30E1\u30F3\u30C8\\OneDrive\\\u753B\u50CF\\eQSL\\JA7WLYH QSL\uFF76\uFF70\uFF84\uFF9E",
+    "OutputFolder": "C:\\Users\\user\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\\u30C9\u30AD\u30E5\u30E1\u30F3\u30C8\\OneDrive\\\u753B\u50CF\\eQSL\\JA7WLYH QSL\uFF76\uFF70\uFF84\uFF9E"
+  },
+  "CtyDat": {
+    "TimeStamp": "2026/05/10 10:40:01"
+  },
+  "frmMain": {
+    "Top": "156",
+    "Left": "543"
+  },
+  "frmSetting": {
+    "Top": "298",
+    "Left": "628"
+  }
+}
