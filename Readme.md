@@ -42,17 +42,47 @@ QslOrganizerは、QSＬカードのイメージファイルを効率よく整理
 
 •	キーボード操作による高速入力
 
-対応画像形式
+４．対応画像形式
 
 JPEG / JPG / PNG / BMP / GIF / TIFF
 
 （すべての形式を完全にテストしているわけではありません）
 
-使用技術
+５．使用技術
 
 •	OCR：Google Tesseract
 
 •	Callsign判定：CTY.CSV（country-files.com）
+
+
+
+＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+
+
+
+履歴
+
+・20260708
+
+ctl+DEL操作の見直し
+
+Callsign読み取り機能　画像の縮小化
+
+
+
+
+
+ToDo
+
+・Callsignの読み取り精度向上（グレースケール化 → ノイズ除去、高品質縮小 → 輪郭が整う）
+
+・OCR機能のGoogle、Azuru等のクラウドサービス利用
+
+・Tessetactへ斜線付０の学習
+
+・同じ画像の削除（callsignのみのデータ）
+
+・PDFへの対応
 
 
 

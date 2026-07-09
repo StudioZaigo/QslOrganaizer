@@ -507,6 +507,23 @@ Public Class frmMain
         Return ""
     End Function
 
+    Private Function ResizeImageHalf(src As Bitmap, size As Integer) As Bitmap
+        Dim newWidth As Integer = CInt(src.Width * size / 100)
+        Dim newHeight As Integer = CInt(src.Height * size / 100)
+
+        Dim dest As New Bitmap(newWidth, newHeight)
+
+        Using g As Graphics = Graphics.FromImage(dest)
+            g.InterpolationMode = Drawing2D.InterpolationMode.HighQualityBicubic
+            g.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
+            g.PixelOffsetMode = Drawing2D.PixelOffsetMode.HighQuality
+            g.CompositingQuality = Drawing2D.CompositingQuality.HighQuality
+
+            g.DrawImage(src, 0, 0, newWidth, newHeight)
+        End Using
+
+        Return dest
+    End Function
 
 
 
@@ -631,7 +648,36 @@ Public Class frmMain
         Return Nothing
     End Function
 
+    ' デバッグ用に呼び出す（例: SaveImageWithRules の直前など）
+    Sub DiagnosePath(folderPath As String)
+        Debug.WriteLine("Path: " & folderPath)
+        Debug.WriteLine("Directory.Exists: " & Directory.Exists(folderPath).ToString())
+        Debug.WriteLine("File.Exists: " & File.Exists(folderPath).ToString())
+        Try
+            Dim attrs = File.GetAttributes(folderPath)
+            Debug.WriteLine("Attributes: " & attrs.ToString())
+        Catch ex As Exception
+            Debug.WriteLine("GetAttributes failed: " & ex.Message)
+        End Try
+        Try
 
+            Dim di = New DirectoryInfo(folderPath)
+            Dim acl = di.GetAccessControl()
+            Debug.WriteLine("Access control OK")
+        Catch ex As Exception
+            Debug.WriteLine("GetAccessControl failed: " & ex.Message)
+        End Try
+
+        ' 書き込みテスト
+        Try
+            Dim testFile = System.IO.Path.Combine(folderPath, ".__write_test__")
+            File.WriteAllText(testFile, "test")
+            File.Delete(testFile)
+            Debug.WriteLine("Write test: OK")
+        Catch ex As Exception
+            Debug.WriteLine("Write test failed: " & ex.Message)
+        End Try
+    End Sub
 
     Private Function SaveImageWithRules(inputImagePath As String) As Boolean
 
@@ -675,6 +721,8 @@ Public Class frmMain
         End If
 
         Dim saveFolder As String = Path.Combine(baseFolder, subFolder)
+
+        DiagnosePath(saveFolder)
 
         If Not Directory.Exists(saveFolder) Then
             Directory.CreateDirectory(saveFolder)
@@ -1123,12 +1171,6 @@ Public Class frmMain
     End Function
 
 
-
-
-
-
-
-
     Private Sub SetSaveButton()
         If ((cmbCallsign.Text <> "") AndAlso (txtDate.Text <> "") AndAlso (txtTime.Text <> "") AndAlso (txtBand.Text <> "") AndAlso (txtMode.Text <> "")) _
             OrElse ((cmbCallsign.Text <> "") AndAlso (txtDate.Text = "") AndAlso (txtTime.Text = "") AndAlso (txtBand.Text = "") AndAlso (txtMode.Text = "")) Then
@@ -1210,6 +1252,9 @@ Public Class frmMain
                 btnSave.PerformClick()
                 '           MessageBox.Show("Ctrl + Enter が押されました！") 
             ElseIf e.KeyCode = Keys.Delete Then
+                ' TextBox の標準削除動作を止める
+                e.Handled = True
+                e.SuppressKeyPress = True
                 If txtDate.Text <> "" OrElse txtTime.Text <> "" OrElse txtBand.Text <> "" OrElse txtMode.Text <> "" Then
                     txtDate.Text = ""
                     txtTime.Text = ""
@@ -1233,16 +1278,18 @@ Public Class frmMain
 
 
         AppSettings.LoadJson(AppSettings.SettingsFile)
-            'Else
-            '    AppSettings.SettingsFile
-            'End If
+        'Else
+        '    AppSettings.SettingsFile
+        'End If
 
-            Dim DisplayWorkRect As Rectangle
+        Dim DisplayWorkRect As Rectangle
         DisplayWorkRect = Screen.PrimaryScreen.WorkingArea
 
         Dim AppWindowTop = AppSettings.GetJson(Me.Name, "Top", "-1")
         Dim AppWindowLeft = AppSettings.GetJson("frmMain", "Left", "-1")
-        If (AppWindowTop = -1) AndAlso (AppWindowLeft = -1) Then
+        If (AppWindowTop = -1) OrElse (AppWindowLeft = -1) _
+            OrElse (AppWindowTop < 1) OrElse (AppWindowTop + Me.Height > DisplayWorkRect.Height) _          ' 画面が小さくなった場合に、ウィンドウが画面外に出ないようにする
+            OrElse (AppWindowLeft < 1) OrElse (AppWindowLeft + Me.Width > DisplayWorkRect.Width) Then
             Me.Top = (DisplayWorkRect.Height - Me.Height) / 2
             Me.Left = (DisplayWorkRect.Width - Me.Width) / 2
         Else
@@ -1255,13 +1302,6 @@ Public Class frmMain
         InputFolder = AppSettings.GetJson("General", "InputFolder", IntFolder)
 
         OutputFolder = AppSettings.GetJson("General", "OutputFolder", IntFolder)
-
-        'If InputFolder.Trim = "" Then
-        '    InputFolder = IntFolder
-        'End If
-        'If OutputFolder.Trim = "" Then
-        '    OutputFolder = IntFolder
-        'End If
 
         LoadCtyDatabase()               ' cty.json 読み込み
 
@@ -1690,6 +1730,19 @@ Public Class frmMain
         mode = RegexExtractor.ExtractMode(text)
         freq = RegexExtractor.ExtractBand(text)
 
+        If qsoCallsign = "" Then
+            Dim ResizedImage = ResizeImageHalf(PicQsl.Image, 50)
+            text = RunOCR(ResizedImage)
+
+            lst = RegexExtractor.ExtractCallsignCandidates(text)         ' Callsign項目を抽出
+            candidates.AddRange(lst)         ' Callsign項目を抽出
+            candidates = RegexExtractor.RemoveMyCallsign(MyCallsigns, candidates)    ' 自分のコールサインを除外
+            callsign = RegexExtractor.ChooseBestCallsign(candidates, ArrayMyCallsigns(0))         ' 最も正しいものを選ぶ
+            qsoCallsign = callsign
+
+            'MessageBox.Show("コールサインが抽出できませんでした")
+        End If
+
         ' UI に反映
         cmbCallsign.Items.Clear()
 
@@ -1753,5 +1806,7 @@ Public Class frmMain
             form.ShowDialog()
         End Using
     End Sub
+
+
 
 End Class

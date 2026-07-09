@@ -87,7 +87,7 @@ Module CalendarModule                ' 月名 → 数字 の辞書
             }
 
     Public ReadOnly MisReadingMonth As New Dictionary(Of String, String)() From {
-        {"3AN", "JAN"}, {"WAR", "MAR"}, {"APE", "APR"}, {"/UL", "JUL"}, {"1UL", "JUL"},
+        {"3AN", "JAN"}, {"WAR", "MAR"}, {"APE", "APR"}, {"/UL", "JUL"}, {"1UL", "JUL"}, {"HUG", "AUG"},
         {"0CT", "OCT"}, {"N0V", "NOV"}
     }
 
@@ -136,19 +136,38 @@ Partial Class frmMain
             Dim list As New List(Of String)
             Dim pattern As String
 
+
+            ' 厳しめで検索、第１候補とする
+            pattern = "\b([A-Z]{1,2}|[1-9][A-Z]|[A-Z]\d|3DA)(\d)+([A-Z]{1,8})\b"    ' prefix:　英文字1文字または2文字　数字1文字＋英字1文字　英字1文字＋数字1文字　3DA　　　
+            '                                                                             Area:　数字1文字　　　　sffix:英字1文字＋英数字0～8文字
+            For Each m As Match In Regex.Matches(text, pattern)
+                Dim part1 = m.Groups(1).Value
+                Dim part2 = m.Groups(2).Value
+                Dim part3 = m.Groups(3).Value
+
+                Dim fixedCs = part1 & part2 & part3
+                If fixedCs <> "" Then
+                    If fixedCs Like "*[0-9]*" Then
+                        list.Add(fixedCs)
+                    End If
+                End If
+            Next
+
             pattern = "\b(J[A-S]|7[K-N])([A-Z0-9])([A-Z0-9]{2,3})\b"
             For Each m As Match In Regex.Matches(text, pattern)
                 Dim part1 = m.Groups(1).Value
                 Dim part2 = m.Groups(2).Value
                 Dim part3 = m.Groups(3).Value
 
-                part2 = ReplaceAtoN(part2)
-                part3 = ReplaceNtoA(part3)
+                part2 = ReplaceAtoN(part2)          ' Area codeの誤認識補正
+                part3 = ReplaceNtoA(part3)          ' Suffixの誤認識補正
 
                 Dim fixedCs = part1 & part2 & part3
                 If fixedCs <> "" Then
-                    If fixedCs Like "*[0-9]*" Then
-                        list.Add(fixedCs)
+                    If list.Contains(fixedCs) = False Then
+                        If fixedCs Like "*[0-9]*" Then
+                            list.Add(fixedCs)
+                        End If
                     End If
                 End If
             Next
@@ -196,7 +215,6 @@ Partial Class frmMain
                     End If
                 End If
             Next
-
 
             Return list
         End Function
@@ -300,7 +318,6 @@ Partial Class frmMain
                 Dim col As Integer = 0
                 GetRowAndColumn(cleaned, index, row, col)
 
-                'SetDateBaseDetection(m.groups(0).value, m.Index, m.Length, row, col)
                 SetBaseDetection(DateBaseTitle, m.Groups(0).Value, m.Index, m.Length, row, col)
             End If
 
@@ -795,8 +812,6 @@ Partial Class frmMain
             Return s
         End Function
 
-
-
         Private Shared Function FixYear(y As Integer) As Integer
             ' 年の補正（2桁 → 4桁）
             Dim yy = Integer.Parse(y)
@@ -822,7 +837,7 @@ Partial Class frmMain
             Dim mc As MatchCollection
 
             ClearBaseDetection(BandBaseTitle)
-            pattern = "(TIME|HHMM|JST|UTC)"
+            pattern = "(TIME|HHMM|JST|UTC|T1ME|T1NE)"       '　誤読を考慮
             m = Regex.Match(text, pattern)
             If m.Success = True Then
                 Dim index As Integer = m.Index
@@ -839,7 +854,7 @@ Partial Class frmMain
             DetectionTimes.Clear()
 
             ' 時刻パターン（例：09:00JST 9:00など）
-            pattern = "\b([01]\d|2[0-3]|[1-9])[:\./\-]+([0-5]\d)([ UJZ]*)"      ' 時と分の間は0個か1個 UTC,JSZ,Zが続く
+            pattern = "\b([01]\d|2[0-3]|[1-9])[:\./-]+([0-5]\d)([ UJZ]*)"      ' 時と分の間は0個か1個 UTC,JSZ,Zが続く
             mc = Regex.Matches(text, pattern)
             For Each m In mc
                 'm = Regex.Match(cleaned, pattern, RegexOptions.IgnoreCase)
@@ -899,6 +914,15 @@ Partial Class frmMain
                 UsedRanges.Add((BestValue(1), BestValue(2)))
                 SetBaseDetection(TimeBase, BestValue(0), BestValue(1), BestValue(2), 0, 0)
                 Return FormatTime(BestValue(0))
+            End If
+            BestValue = ChooseBestDetection(DetectionTimes, DateBaseTitle, False)
+            If BestValue(0) <> "" Then
+                UsedRanges.Add((BestValue(1), BestValue(2)))
+                SetBaseDetection(TimeBase, BestValue(0), BestValue(1), BestValue(2), 0, 0)
+                Return FormatTime(BestValue(0))
+            End If
+            If DetectionTimes.Count > 0 Then
+                Return FormatTime(DetectionTimes(0).Value)
             End If
 
             Return ""
@@ -998,8 +1022,8 @@ Partial Class frmMain
                 Dim mdx = Regex.Matches(cleaned, pattern)
                 For Each m In mdx
                     If m.Success = True Then
-                        If IsUsed(m.Index, m.Length) Then Continue For
-                        DetectionModes.Add(New Detection With {.Value = m.Groups(0).Value, .Index = m.Index, .Length = m.Length, .Row = 0, .Column = 0})
+                        If IsUsed(m.Groups(1).Index, m.Groups(1).Length) Then Continue For
+                        DetectionModes.Add(New Detection With {.Value = m.Groups(1).Value, .Index = m.Groups(1).Index, .Length = m.Groups(1).Length, .Row = 0, .Column = 0})
                     End If
                 Next
             Next
@@ -1013,7 +1037,7 @@ Partial Class frmMain
                         If IsUsed(m.Index, m.Length) Then Continue For
                         Dim Index As Integer = m.Groups(1).Index            ' 前後の空白分を除外して登録
                         Dim Length As Integer = m.Groups(1).Length
-                        DetectionModes.Add(New Detection With {.Value = keys.Value, .Index = m.Index, .Length = m.Length, .Row = 0, .Column = 0})
+                        DetectionModes.Add(New Detection With {.Value = keys.Value, .Index = m.Groups(1).Index, .Length = m.Groups(1).Length, .Row = 0, .Column = 0})
                     End If
                 Next
             Next
@@ -1030,7 +1054,7 @@ Partial Class frmMain
                     Dim row = text.LastIndexOf(ControlChars.Lf, index)
                     Dim column = index - text.LastIndexOf(ControlChars.Lf, index)
 
-                    DetectionModes.Add(New Detection With {.Value = keys.Value, .Index = m.Index, .Length = m.Length, .Row = 0, .Column = 0})
+                    DetectionModes.Add(New Detection With {.Value = keys.Value, .Index = m.Groups(1).Index, .Length = m.Groups(1).Length, .Row = 0, .Column = 0})
                     'Return keys.Value
                 End If
             Next
@@ -1051,13 +1075,9 @@ Partial Class frmMain
                             'UsedRanges.Add((Index, length))
                             Dim row = text.LastIndexOf(ControlChars.Lf, Index)
                             Dim column = Index - text.LastIndexOf(ControlChars.Lf, Index)
-                            DetectionModes.Add(New Detection With {.Value = key, .Index = m.Index, .Length = m.Length, .Row = 0, .Column = 0})
+                            DetectionModes.Add(New Detection With {.Value = key, .Index = m.Groups(1).Index, .Length = m.Groups(1).Length, .Row = 0, .Column = 0})
 
 
-                            'AddModeBase(key, Index, length, row, column)
-                            'SetBaseDetection(ModeBase, m.Groups(1).Value, m.Groups(1).Index, m.Groups(1).Length, 0, 0)      ' Band選択のため
-
-                            'Return key
                         End If
                     End If
                 Next
@@ -1075,28 +1095,27 @@ Partial Class frmMain
                     Dim Length = m.Groups(2).Length
                     Dim row = text.LastIndexOf(ControlChars.Lf, Index)
                     Dim column = Index - text.LastIndexOf(ControlChars.Lf, Index)
-                    DetectionModes.Add(New Detection With {.Value = m.Groups(2).Value, .Index = Index, .Length = Length, .Row = row, .Column = column})
+                    DetectionModes.Add(New Detection With {.Value = m.Groups(2).Value, .Index = m.Groups(2).Index, .Length = m.Groups(2).Length, .Row = row, .Column = column})
 
 
-
-                    'AddModeBase(key, Index, Length, row, column)
-                    'SetBaseDetection(ModeBase, m.Groups(1).Value, m.Groups(1).Index, m.Groups(1).Length, 0, 0)
-                    'Return key
                 End If
             Next
 
-            If DetectionModes.Count = 0 Then
-                For Each key In Modes
-                    pattern = key                     ' Modeが検知されないとき、Keyの前後を無視してkeyで検索
-                    Dim mdx = Regex.Matches(cleaned, pattern)
-                    For Each m In mdx
-                        If m.Success = True Then
-                            If IsUsed(m.Index, m.Length) Then Continue For
-                            DetectionModes.Add(New Detection With {.Value = m.Groups(0).Value, .Index = m.Index, .Length = m.Length, .Row = 0, .Column = 0})
-                        End If
+            If DetectionModes.Count = 0 Then                                            ' Modeが検知されないとき、Keyの前後を無視してkeyで検索
+                If (DetectionDates.Count <> 0) OrElse (DetectionTimes.Count <> 0) Then  ' ただし、日付、時間が検知されているときのみ、Modeを検知する
+                    For Each key In Modes
+                        pattern = key
+                        Dim mdx = Regex.Matches(cleaned, pattern)
+                        For Each m In mdx
+                            If m.Success = True Then
+                                If IsUsed(m.Index, m.Length) Then Continue For
+                                DetectionModes.Add(New Detection With {.Value = m.Groups(0).Value, .Index = m.Groups(0).Index, .Length = m.Groups(0).Length, .Row = 0, .Column = 0})
+                            End If
+                        Next
                     Next
-                Next
+                End If
             End If
+
 
             ' 7, 誤読辞書に含まれているかチェック　前後の文字を無視
             If DetectionModes.Count = 0 Then
@@ -1105,43 +1124,46 @@ Partial Class frmMain
                     m = Regex.Match(cleaned, pattern)
                     If m.Success = True Then
                         If IsUsed(m.Index, m.Length) Then Continue For
-                        If ModeBase.Index <> 0 AndAlso ((m.Index < ModeBase.Index) OrElse (m.Index > ModeBase.Index + 40)) Then Continue For
+                        If ModeBaseTitle.Index <> 0 AndAlso ((m.Index < ModeBaseTitle.Index) OrElse (m.Index > ModeBaseTitle.Index + 100)) Then Continue For
 
                         Dim Index = m.Groups(1).Index
                         Dim Length = m.Groups(1).Length
 
-                        'UsedRanges.Add((m.Index, m.Length))
                         Dim row = text.LastIndexOf(ControlChars.Lf, m.Index)
                         Dim column = m.Index - text.LastIndexOf(ControlChars.Lf, m.Index)
-                        DetectionModes.Add(New Detection With {.Value = keys.Value, .Index = Index, .Length = Length, .Row = row, .Column = column})
-
-
-                        'AddBandBase(keys.Value, m.Index, m.Length, row, column)
-                        'SetBaseDetection(ModeBase, m.Groups(1).Value, m.Groups(1).Index, m.Groups(1).Length, row, column)
+                        DetectionModes.Add(New Detection With {.Value = keys.Value, .Index = m.Groups(1).Index, .Length = m.Groups(1).Length, .Row = row, .Column = column})
                     End If
                 Next
             End If
 
-            For Each f In DetectionModes        ' Modes,AliasModesの検出結果をもとに、最も近いModeBaseを探す
-                With ModeBaseTitle
-                    Dim s As Integer = Math.Abs(.Index - f.Index)
-
-                    Debug.Print("ModeBase: " & .Value & " at (" & .Index & "," & .Length & ") - Candidate: " & f.Value & " at (" & f.Index & "," & f.Length & ")")
-                    If s < shortestDistance Then
-                        bestMode = f.Value
-                        IndexOfBestMode = f.Index
-                        lengthOfBestMode = f.Length
-                        shortestDistance = s
-                        '                      SetBandBaseByMode(f.Value, f.Index, f.Length, f.Row, f.Column)        ' Band選択のため
-                    End If
-                End With
-            Next
-            If bestMode <> "" Then
-                UsedRanges.Add((IndexOfBestMode, lengthOfBestMode))
-                SetBaseDetection(ModeBase, bestMode, IndexOfBestMode, lengthOfBestMode, 0, 0)
-                Return bestMode
+            If TimeBase.Value <> "" Then
+                Dim bestAwnser As String() = ChooseBestDetection(DetectionModes, TimeBase, False)
+                If bestAwnser(0) <> "" Then
+                    UsedRanges.Add((bestAwnser(1), bestAwnser(2)))
+                    Return bestAwnser(0)
+                End If
             End If
-
+            If DateBase.Value <> "" Then
+                Dim bestAwnser As String() = ChooseBestDetection(DetectionModes, DateBase, False)
+                If bestAwnser(0) <> "" Then
+                    UsedRanges.Add((bestAwnser(1), bestAwnser(2)))
+                    Return bestAwnser(0)
+                End If
+            End If
+            If ModeBaseTitle.Value <> "" Then
+                Dim bestAwnser As String() = ChooseBestDetection(DetectionModes, ModeBaseTitle, False)
+                If bestAwnser(0) <> "" Then
+                    UsedRanges.Add((bestAwnser(1), bestAwnser(2)))
+                    Return bestAwnser(0)
+                End If
+            End If
+            If TimeBaseTitle.Value <> "" Then
+                Dim bestAwnser As String() = ChooseBestDetection(DetectionModes, TimeBaseTitle, False)
+                If bestAwnser(0) <> "" Then
+                    UsedRanges.Add((bestAwnser(1), bestAwnser(2)))
+                    Return bestAwnser(0)
+                End If
+            End If
 
             ' 5. signalレポートからMode:を推測する
             '            pattern = "SIGS?[ :;]*([+\-\d]{1,3})\b"  '[+\-\d]
@@ -1271,50 +1293,19 @@ Partial Class frmMain
             ' 1. まず Band 表記があるか探す           ' 40M, 2M 等の波長表示
             If Bandformat <> BandFormats.MHz Then       ' MHz表記の時は波長表記の処理を飛ばす
                 band = ExtractBandDirect(text)
-                If band <> "" Then Return band
+                'If band <> "" Then Return band
             End If
 
             ' 2. 周波数を求め、Bandにする        ' 周波数抽出（例：7.074）
             band = ExtractFrequency(text)
-            If band <> "" Then Return band
+            'If band <> "" Then Return band
 
             ' 3. 周波数の誤読補正をし、周波数を求め,Bandにする        ' 周波数抽出（例：7.074）
             band = ExtractMisreadFrequency(text)
-            If band <> "" Then Return band
-
-            band = ExtractMisreadBand(text)         ' 3.5を35と誤認識することがあるので、周波数抽出の前に、誤認識のBand表記を先に抽出する
-            If band <> "" Then Return band
-
-            'band = ExtractBandByBand(text)
             'If band <> "" Then Return band
 
-            'If freq > 0 Then
-            '    Return ConvertFreqToBand(freq)
-            'End If
-
-            Return ""
-        End Function
-
-        ' Band 表記を直接抽出
-        Private Shared Function ExtractBandDirect(text As String) As String
-            Dim upper = CleanTextBand(text)
-
-            For Each b In BandList.Bands        ' 40M, 2M 等の波長表示
-                If upper.Contains(b) Then
-                    Dim pattern = "[\(\s^:;](" & b & ")[\)\s\b$]"
-                    Dim Regex As New Regex(pattern)
-                    For Each m As Match In Regex.Matches(upper)
-                        If IsUsed(m.Index, m.Length) Then
-                            Continue For
-                        End If
-
-                        DetectionBands.Add(New Detection With {.Value = b, .Index = m.Index, .Length = m.Length, .Row = 0, .Column = 0})
-
-                        'UsedRanges.Add((m.Index, m.Length))
-                        'Return m.Groups(1).Value
-                    Next
-                End If
-            Next
+            band = ExtractMisreadBand(text)         ' 3.5を35と誤認識することがあるので、周波数抽出の前に、誤認識のBand表記を先に抽出する
+            'If band <> "" Then Return band
 
             If ModeBase.Value <> "" Then
                 Dim bestAwnser As String() = ChooseBestDetection(DetectionBands, ModeBase, True)
@@ -1361,6 +1352,31 @@ Partial Class frmMain
                 UsedRanges.Add((IndexOfBestFreq, lengthOfBestFreq))
                 Return bestBand
             End If
+
+
+            Return ""
+        End Function
+
+        ' Band 表記を直接抽出
+        Private Shared Function ExtractBandDirect(text As String) As String
+            Dim upper = CleanTextBand(text)
+
+            For Each b In BandList.Bands        ' 40M, 2M 等の波長表示
+                If upper.Contains(b) Then
+                    Dim pattern = "[\(\s^:;](" & b & ")[\)\s\b$]"
+                    Dim Regex As New Regex(pattern)
+                    For Each m As Match In Regex.Matches(upper)
+                        If IsUsed(m.Index, m.Length) Then
+                            Continue For
+                        End If
+
+                        DetectionBands.Add(New Detection With {.Value = b, .Index = m.Index, .Length = m.Length, .Row = 0, .Column = 0})
+
+                        'UsedRanges.Add((m.Index, m.Length))
+                        'Return m.Groups(1).Value
+                    Next
+                End If
+            Next
 
             Return ""
         End Function
@@ -1464,52 +1480,6 @@ Partial Class frmMain
                 GetRowAndColumn(text, m.Index, row, col)
                 DetectionBands.Add(New Detection With {.Value = bn, .Index = m.Index, .Length = m.Length, .Row = row, .Column = col})
             Next
-
-            bestBand = ""
-            shortestDistance = Integer.MaxValue
-
-            If ModeBase.Value <> "" Then
-                Dim bestAwnser As String() = ChooseBestDetection(DetectionBands, ModeBase, True)
-                If bestAwnser(0) <> "" Then
-                    UsedRanges.Add((bestAwnser(1), bestAwnser(2)))
-                    Return bestAwnser(0)
-                End If
-            End If
-
-            If TimeBase.Value <> "" Then
-                Dim bestAwnser As String() = ChooseBestDetection(DetectionBands, TimeBase, False)
-                If bestAwnser(0) <> "" Then
-                    UsedRanges.Add((bestAwnser(1), bestAwnser(2)))
-                    Return bestAwnser(0)
-                End If
-            End If
-
-            If DateBase.Value <> "" Then
-                Dim bestAwnser As String() = ChooseBestDetection(DetectionBands, DateBase, False)
-                If bestAwnser(0) <> "" Then
-                    UsedRanges.Add((bestAwnser(1), bestAwnser(2)))
-                    Return bestAwnser(0)
-                End If
-            End If
-
-            If BandBase.Value <> "" Then
-                Dim bestAwnser As String() = ChooseBestDetection(DetectionBands, BandBase, False)
-                If bestAwnser(0) <> "" Then
-                    UsedRanges.Add((bestAwnser(1), bestAwnser(2)))
-                    Return bestAwnser(0)
-                End If
-            End If
-
-            If DetectionBands.Count = 1 Then
-                bestBand = DetectionBands(0).Value
-                IndexOfBestFreq = DetectionBands(0).Index
-                lengthOfBestFreq = DetectionBands(0).Length
-            End If
-
-            If bestBand <> "" Then
-                UsedRanges.Add((IndexOfBestFreq, lengthOfBestFreq))
-                Return bestBand
-            End If
 
             Return ""
         End Function
