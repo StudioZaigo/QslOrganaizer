@@ -29,6 +29,8 @@ Partial Class frmSetting
         btnCancel = New Button()
         TabControl1 = New TabControl()
         TabPage1 = New TabPage()
+        lblFontSize = New Label()
+        txtFontSize = New TextBox()
         lblCallsign = New Label()
         lblInputFolder = New Label()
         lblOutputFolder = New Label()
@@ -44,6 +46,7 @@ Partial Class frmSetting
         lblNote = New Label()
         txtGoogleApiKey = New TextBox()
         txtGoogleURL = New TextBox()
+        Label1 = New Label()
         Panel1.SuspendLayout()
         TabControl1.SuspendLayout()
         TabPage1.SuspendLayout()
@@ -62,7 +65,7 @@ Partial Class frmSetting
         Panel1.Controls.Add(btnOK)
         Panel1.Controls.Add(btnCancel)
         Panel1.Dock = DockStyle.Bottom
-        Panel1.Location = New Point(0, 210)
+        Panel1.Location = New Point(0, 251)
         Panel1.Margin = New Padding(3, 2, 3, 2)
         Panel1.Name = "Panel1"
         Panel1.Size = New Size(700, 52)
@@ -99,11 +102,14 @@ Partial Class frmSetting
         TabControl1.Margin = New Padding(3, 2, 3, 2)
         TabControl1.Name = "TabControl1"
         TabControl1.SelectedIndex = 0
-        TabControl1.Size = New Size(700, 210)
+        TabControl1.Size = New Size(700, 251)
         TabControl1.TabIndex = 1
         ' 
         ' TabPage1
         ' 
+        TabPage1.Controls.Add(Label1)
+        TabPage1.Controls.Add(lblFontSize)
+        TabPage1.Controls.Add(txtFontSize)
         TabPage1.Controls.Add(lblCallsign)
         TabPage1.Controls.Add(lblInputFolder)
         TabPage1.Controls.Add(lblOutputFolder)
@@ -117,10 +123,33 @@ Partial Class frmSetting
         TabPage1.Margin = New Padding(3, 2, 3, 2)
         TabPage1.Name = "TabPage1"
         TabPage1.Padding = New Padding(3, 2, 3, 2)
-        TabPage1.Size = New Size(692, 182)
+        TabPage1.Size = New Size(692, 223)
         TabPage1.TabIndex = 0
         TabPage1.Text = "General"
         TabPage1.UseVisualStyleBackColor = True
+        ' 
+        ' lblFontSize
+        ' 
+        lblFontSize.AutoSize = True
+        lblFontSize.Font = New Font("Yu Gothic UI", 10.2F)
+        lblFontSize.ForeColor = SystemColors.MenuHighlight
+        lblFontSize.Location = New Point(23, 160)
+        lblFontSize.Name = "lblFontSize"
+        lblFontSize.Size = New Size(62, 19)
+        lblFontSize.TabIndex = 21
+        lblFontSize.Text = "Font size"
+        ' 
+        ' txtFontSize
+        ' 
+        txtFontSize.BorderStyle = BorderStyle.FixedSingle
+        txtFontSize.Font = New Font("Yu Gothic UI", 10.2F)
+        txtFontSize.ImeMode = ImeMode.Disable
+        txtFontSize.Location = New Point(34, 180)
+        txtFontSize.Margin = New Padding(3, 2, 3, 2)
+        txtFontSize.Name = "txtFontSize"
+        txtFontSize.Size = New Size(72, 26)
+        txtFontSize.TabIndex = 22
+        txtFontSize.Text = "9"
         ' 
         ' lblCallsign
         ' 
@@ -231,7 +260,7 @@ Partial Class frmSetting
         TabPage2.Margin = New Padding(3, 2, 3, 2)
         TabPage2.Name = "TabPage2"
         TabPage2.Padding = New Padding(3, 2, 3, 2)
-        TabPage2.Size = New Size(692, 182)
+        TabPage2.Size = New Size(692, 223)
         TabPage2.TabIndex = 1
         TabPage2.Text = "Google"
         TabPage2.UseVisualStyleBackColor = True
@@ -294,13 +323,24 @@ Partial Class frmSetting
         txtGoogleURL.Size = New Size(553, 26)
         txtGoogleURL.TabIndex = 19
         ' 
+        ' Label1
+        ' 
+        Label1.AutoSize = True
+        Label1.Font = New Font("Yu Gothic UI", 10.2F)
+        Label1.ForeColor = SystemColors.MenuHighlight
+        Label1.Location = New Point(108, 184)
+        Label1.Name = "Label1"
+        Label1.Size = New Size(106, 19)
+        Label1.TabIndex = 23
+        Label1.Text = "規定値は9ptです"
+        ' 
         ' frmSetting
         ' 
         AcceptButton = btnOK
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         CancelButton = btnCancel
-        ClientSize = New Size(700, 262)
+        ClientSize = New Size(700, 303)
         Controls.Add(TabControl1)
         Controls.Add(Panel1)
         ForeColor = SystemColors.ControlDarkDark
@@ -341,4 +381,7 @@ Partial Class frmSetting
     Public WithEvents txtGoogleURL As TextBox
     Friend WithEvents lblGoogleApiKey As Label
     Friend WithEvents lblGoogleUrl As Label
+    Friend WithEvents lblFontSize As Label
+    Public WithEvents txtFontSize As TextBox
+    Friend WithEvents Label1 As Label
 End Class

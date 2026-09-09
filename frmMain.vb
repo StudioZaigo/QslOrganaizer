@@ -9,7 +9,11 @@ Imports System.SystemException
 Imports System.Text
 Imports System.Text.Json
 Imports System.Text.RegularExpressions
+Imports System.Windows.Forms
 Imports System.Windows
+'Imports System.Windows.Forms.VisualStyles.VisualStyleElement
+'Imports System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel
+
 'Imports System.Windows.Forms.VisualStyles.VisualStyleElement       ' なぜが、この行が勝手に追加される　追加されるとビルドエラーになる（Optionで変更した）
 'Imports System.Windows.Forms.VisualStyles.VisualStyleElement
 Imports Microsoft.VisualBasic
@@ -20,6 +24,7 @@ Imports Newtonsoft.Json.Linq
 Imports Tesseract
 Imports Windows.Win32.UI.Input
 Imports ZXing
+Imports ZXing.Common
 Imports ZXing.Windows.Compatibility
 
 
@@ -35,22 +40,57 @@ Public Enum OcrMode
     Online    ' Google Vision
 End Enum
 
+'Public Class OcrItem
+'    Public Property Text As String
+'    Public Property BackColor As Color
+'    Public Sub New(t As String, c As Color)
+'        Text = t
+'        BackColor = c
+'    End Sub
+'    Public Overrides Function ToString() As String
+'        Return Text
+'    End Function
+'End Class
+
+
 Public Class frmMain
+    'Public Structure CandidateCallsign
+    '    Public Rank As Integer
+    '    Public Callsign As String
+    'End Structure
+
+    'Private Shared CandidateCallsigns As New List(Of CandidateCallsign)
+
+
+    Public Class OcrItem
+        Public Property Text As String
+        Public Property BackColor As Color
+        Public Sub New(t As String, c As Color)
+            Text = t
+            BackColor = c
+        End Sub
+        Public Overrides Function ToString() As String
+            Return Text
+        End Function
+    End Class
 
     Private currentImagePath As String = ""
     Public InputFileName As String
     Private FileList As List(Of String)
     Private FileIndex As Integer = 0
 
-    Private LastText As String = ""
+    Private LastTextSmall As String = ""
+    Private LastTextMiddle As String = ""
+    Private LastTextFull As String = ""
+
 
     Public InputFileFormat As System.Drawing.Imaging.ImageFormat
     Private Shared MyCallsigns As String
     Private Shared InputFolder As String
     Private Shared OutputFolder As String
+    Private Shared FontSize As Double
     Private Shared GoogleApiKey As String
     Private Shared GoogleURL As String
-
     Private Shared IntInputFolder As Boolean = True
     Private Shared IntoutputFolder As Boolean = True
 
@@ -66,6 +106,7 @@ Public Class frmMain
 
     Private CurrentOcrMode As OcrMode = OcrMode.Offline
     Private OcrProcessing As Boolean
+    Private SavedColor As Color
 
     Private Sub PicQsl_Click(sender As Object, e As EventArgs) Handles PicQsl.Click
         If (Control.ModifierKeys And Keys.Shift) = Keys.Shift OrElse (Control.ModifierKeys And Keys.Control) = Keys.Control Then
@@ -91,6 +132,7 @@ Public Class frmMain
         btnOnlineOcr.Enabled = hasImage
         'btnSave.Enabled = hasImage
     End Sub
+
 
     Private Sub SetImageFile(fileName As String)
 
@@ -156,6 +198,7 @@ Public Class frmMain
 
         ' Return img
     End Sub
+
 
     Private Sub LoadNextFile()
         If FileList Is Nothing OrElse FileList.Count = 0 Then Exit Sub
@@ -238,11 +281,13 @@ Public Class frmMain
         Private Shared Function StrCmpLogicalW(x As String, y As String) As Integer
         End Function
 
+
         Public Shared Function SortLikeExplorer(files As List(Of String)) As List(Of String)
             files.Sort(Function(a, b) StrCmpLogicalW(a, b))
             Return files
         End Function
     End Class
+
 
     Public Function ToHalfWidthAscii(s As String) As String
         Dim sb As New System.Text.StringBuilder(s.Length)
@@ -270,10 +315,10 @@ Public Class frmMain
         If Microsoft.VisualBasic.Left(upper, 4) = "IMG_" Then Return False
 
         ' "A35TR_20140822_0022_15M_CW.jpg"の型式  日付と時刻の間に"_"がある
-        pattern = "^([A-Z0-9]+)_([0-9]{8})_([0-9]{4})_([0-9]{1,4}[MGC])_([A-Z0-9]+)\.(JPG|JPEG|PNG|BMP)$"
+        pattern = "^([A-Z0-9]+)_([0-9]{8})_([0-9]{4})_([0-9]{1,4}[MGC])_([A-Z0-9]+)(_X)?\.(JPG|JPEG|PNG|BMP)$"
         Dim m = Regex.Match(upper, pattern, RegexOptions.IgnoreCase)
         If m.Success Then
-            cmbCallsign.Text = m.Groups(1).Value
+            cmbCallsign.Text = m.Groups(1).Value & m.Groups(6).Value
             cmbCallsign.Items.Add(cmbCallsign.Text)
             year = m.Groups(2).Value.Substring(0, 4)
             month = m.Groups(2).Value.Substring(4, 2)
@@ -453,12 +498,15 @@ Public Class frmMain
 
 
     Public Class OcrEngine
+
         Private ReadOnly _dataPath As String
+
 
         Public Sub New()
             ' 実行ファイルと同じフォルダに tessdata がある前提
             _dataPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "tessdata")
         End Sub
+
 
         Public Function RecognizeText(imagePath As String) As String
             Try
@@ -475,6 +523,7 @@ Public Class frmMain
                 Return ""
             End Try
         End Function
+
 
         Public Function RecognizeTextFromImage(img As Image) As String
             Try
@@ -509,6 +558,7 @@ Public Class frmMain
 
 
     Private ocr As New OcrEngine()
+
     Private Function OcrTesseract(img As Image) As String
         If chkAuto.Checked Then
             Return ocr.RecognizeTextFromImage(img)
@@ -519,12 +569,19 @@ Public Class frmMain
         Return ""
     End Function
 
+
     Private Function ImageToBase64(img As Image) As String
         Using ms As New MemoryStream()
             img.Save(ms, Imaging.ImageFormat.Jpeg)
             Return Convert.ToBase64String(ms.ToArray())
         End Using
     End Function
+
+    Private Sub ApplyScanDataScale(factor As Single)
+        ' SCAN DATA を含む Panel を拡大
+        Me.Scale(New SizeF(factor, factor))
+    End Sub
+
 
     Private Function ParseGoogleVisionResponse(json As String) As String
         Dim jo As JObject = JObject.Parse(json)
@@ -580,6 +637,7 @@ Public Class frmMain
         End Using
     End Function
 
+
     Private Async Function OcrGoogleVisionAsync(img As Image) As Task(Of String)
 
         Dim url As String = GoogleApiKey & GoogleURL
@@ -610,22 +668,41 @@ Public Class frmMain
         End Using
     End Function
 
-    Private Function RunOCR(img As Image) As String
-        Select Case CurrentOcrMode
+
+    Private Function RunOCR(img As Image, Engine As OcrMode) As String
+        Select Case Engine
             Case OcrMode.Offline
                 ReadingMode = ReadingModes.OfflineMode
+
                 LstOcrResult.BackColor = SystemColors.Control
+                'LstOcrResult.BackColor = SystemColors.MenuHighlight     ' test用
                 Return OcrTesseract(img)
             Case OcrMode.Online
                 ReadingMode = ReadingModes.OnlineMode
-                'LstOcrResult.BackColor = Color.LightYellow
                 LstOcrResult.BackColor = Color.FromArgb(255, 255, 240)      ' （レモンシフォンに近い非常に薄い黄色）
-                'Return OcrGoogleVisionAsync(img).ToString
-
                 Return OcrGoogleVision(img)
         End Select
+        SavedColor = LstOcrResult.BackColor
         Return ""
+
     End Function
+
+
+    'Private Function RunOCR(img As Image, Engine As OcrMode) As String
+    '    Dim result As String
+    '    LstOcrResult.Items.Clear()
+    '    Select Case Engine
+    '        Case OcrMode.Offline
+    '            result = OcrTesseract(img)
+    '            'LstOcrResult.Items.Add(New OcrItem(result, SystemColors.Control))
+    '            LstOcrResult.Items.Add(New OcrItem(result, SystemColors.MenuHighlight))
+    '        Case OcrMode.Online
+    '            result = OcrGoogleVision(img)
+    '            LstOcrResult.Items.Add(New OcrItem(result, Color.FromArgb(255, 255, 240)))       ' （レモンシフォンに近い非常に薄い黄色）
+    '    End Select
+
+    '    Return result
+    'End Function
 
 
 
@@ -646,6 +723,7 @@ Public Class frmMain
 
         Return dest
     End Function
+
 
     Private Function ToGrayScale(src As Bitmap) As Bitmap
         Dim gray As New Bitmap(src.Width, src.Height)
@@ -689,11 +767,13 @@ Public Class frmMain
         End If
     End Sub
 
+
     Private Sub Control_Enter(sender As Object, e As EventArgs)
         If TypeOf sender Is TextBox OrElse TypeOf sender Is ComboBox Then
             sender.BackColor = SystemColors.GradientInactiveCaption
         End If
     End Sub
+
 
     Private Sub Control_Leave(sender As Object, e As EventArgs)
         If TypeOf sender Is TextBox OrElse TypeOf sender Is ComboBox Then
@@ -708,6 +788,7 @@ Public Class frmMain
             e.KeyChar = Char.ToUpper(e.KeyChar)
         End If
     End Sub
+
 
     'Private Sub SetComboPlaceholder(cb As ComboBox, placeholder As String)
     '    cb.Tag = placeholder
@@ -793,8 +874,9 @@ Public Class frmMain
         Return Nothing
     End Function
 
-    ' デバッグ用に呼び出す（例: SaveImageWithRules の直前など）
+
     Sub DiagnosePath(folderPath As String)
+        ' デバッグ用に呼び出す（例: SaveImageWithRules の直前など）
         'Debug.WriteLine("Path: " & folderPath)
         'Debug.WriteLine("Directory.Exists: " & Directory.Exists(folderPath).ToString())
         'Debug.WriteLine("File.Exists: " & File.Exists(folderPath).ToString())
@@ -823,6 +905,7 @@ Public Class frmMain
             Debug.WriteLine("Write test failed: " & ex.Message)
         End Try
     End Sub
+
 
     Private Function SaveImageWithRules(inputImagePath As String) As Boolean
         Dim cs As String = cmbCallsign.Text.Trim().ToUpper()
@@ -921,7 +1004,21 @@ Public Class frmMain
         Dim savePath As String = Path.Combine(saveFolder, saveName)
 
         If File.Exists(savePath) Then
-            MessageBox.Show($"{savePath} ファイルは既に存在します。")
+            'MessageBox.Show($"{savePath} ファイルは既に存在します。")
+            'PicQsl.Image.Dispose()
+            'Return False
+
+            Dim result = MessageBox.Show($"{savePath}" & vbLf & "ファイルは既に存在します。 ファイルを削除してよいですか？", "ファイル重複", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+            If result = DialogResult.Yes Then
+                PicQsl.Image.Dispose()
+
+                Dim filePath = InputFileName
+                If File.Exists(filePath) Then
+                    ' ごみ箱に送る場合
+                    My.Computer.FileSystem.DeleteFile(
+                    filePath, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
+                End If
+            End If
             PicQsl.Image.Dispose()
             Return False
         End If
@@ -952,6 +1049,7 @@ Public Class frmMain
         Return True
     End Function
 
+
     Private Sub cmbCallsign_Leave(sender As Object, e As EventArgs)
 
         If Trim(cmbCallsign.Text) <> "" Then
@@ -966,12 +1064,14 @@ Public Class frmMain
 
     End Sub
 
+
     Private Function CheckCallsignFormat(cs As String) As Boolean
         Dim pattern As String = "^[1-9]?[A-Za-z]{1,5}[0-9]{1,5}[A-Za-z0-9]{1,8}$"
 
         Return System.Text.RegularExpressions.Regex.IsMatch(cs, pattern)
 
     End Function
+
 
     Private Sub txtDate_Leave(sender As Object, e As EventArgs)
         'If txtDate.Text <> "" Then
@@ -1047,6 +1147,7 @@ Public Class frmMain
         'End If
     End Sub
 
+
     Private Sub txtTime_Leave(sender As Object, e As EventArgs)
         If txtTime.Text <> "" Then
 
@@ -1087,6 +1188,7 @@ Public Class frmMain
         End If
     End Sub
 
+
     Private Sub txtBand_Leave(sender As Object, e As EventArgs)
         If txtBand.Text <> "" Then
 
@@ -1105,6 +1207,7 @@ Public Class frmMain
             txtBand.Text = input
         End If
     End Sub
+
 
     Private Sub txtMode_Leave(sender As Object, e As EventArgs)
         If txtMode.Text <> "" Then
@@ -1154,6 +1257,7 @@ Public Class frmMain
         SetButtons()
     End Sub
 
+
     Private Sub SetButtons()
         If PicQsl.Image Is Nothing Then
             btnOfflineOcr.Enabled = False
@@ -1183,11 +1287,13 @@ Public Class frmMain
         SetSaveButton()
     End Sub
 
+
     'Private Sub SetPlaceholder(tb As TextBox, placeholder As String)
     '    tb.Tag = placeholder
     '    '      tb.ForeColor = Color.Gray
     '    tb.Text = placeholder
     'End Sub
+
 
     Private Sub TextBox_Enter(sender As Object, e As EventArgs)
         Dim tb As TextBox = CType(sender, TextBox)
@@ -1198,6 +1304,7 @@ Public Class frmMain
         '   End If
     End Sub
 
+
     Private Sub TextBox_Leave(sender As Object, e As EventArgs)
         Dim tb As TextBox = CType(sender, TextBox)
 
@@ -1206,6 +1313,7 @@ Public Class frmMain
         '    tb.Text = tb.Tag.ToString()
         'End If
     End Sub
+
 
     Private Sub frmSettingOpen()
         Using form As New frmSetting()
@@ -1219,12 +1327,14 @@ Public Class frmMain
         End Using
     End Sub
 
+
     Private Sub loadSetting(FileName As String)
         AppSettings.LoadJson(FileName)
 
         MyCallsigns = AppSettings.GetJson("General", "MyCallsigns", "")
         InputFolder = AppSettings.GetJson("General", "InputFolder", "")
         OutputFolder = AppSettings.GetJson("General", "OutputFolder", "")
+        FontSize = AppSettings.GetJson("General", "FontSize", "9")
         GoogleApiKey = AppSettings.GetJson("Google", "ApiKey", "")
         GoogleURL = AppSettings.GetJson("Google", "URL", "")
     End Sub
@@ -1236,11 +1346,13 @@ Public Class frmMain
         End Using
     End Sub
 
+
     Public Class AppSettings
 
         Public Shared basePath As String = AppDomain.CurrentDomain.BaseDirectory
         Public Shared SettingsFile As String = Path.Combine(basePath, My.Application.Info.Title & ".json")
         Public Shared JsonSettings As Dictionary(Of String, Object)
+
 
         Public Shared Sub LoadJson(FileName As String)
 
@@ -1262,12 +1374,14 @@ Public Class frmMain
             Next
         End Sub
 
+
         Public Shared Sub SaveJson(FileName As String)
             Dim jsonString As String = JsonSerializer.Serialize(JsonSettings,
         New JsonSerializerOptions With {.WriteIndented = True}
     )
             File.WriteAllText(FileName, jsonString)
         End Sub
+
 
         Public Shared Function GetJson(section As String, key As String, Initial As String) As String
             If Not JsonSettings.ContainsKey(section) Then Return Initial
@@ -1278,6 +1392,7 @@ Public Class frmMain
 
             Return sec(key).ToString()
         End Function
+
 
         Public Shared Function SetJson(section As String, key As String, value As String) As Boolean
             ' セクションがなければ作る
@@ -1319,6 +1434,7 @@ Public Class frmMain
         Return dp(a.Length, b.Length)
     End Function
 
+
     Shared Function Similarity(a As String, b As String) As Double
         Dim d = Levenshtein(a, b)
         Dim maxLen = Math.Max(a.Length, b.Length)
@@ -1345,6 +1461,7 @@ Public Class frmMain
             btnSave.Enabled = False
         End If
     End Sub
+
 
     Private Sub frmMain_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown, LstOcrResult.SelectedIndexChanged
         PicQsl.Top = 0
@@ -1502,6 +1619,7 @@ Public Class frmMain
 
     End Sub
 
+
     Private Sub frmMain_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
         ' 設定を読み込み
         AppSettings.LoadJson(AppSettings.SettingsFile)
@@ -1515,14 +1633,14 @@ Public Class frmMain
         AppSettings.SaveJson(AppSettings.SettingsFile)                          ' 設定を書き込み
     End Sub
 
+
     Private Sub frmMain_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
-        Debug.Print("frmMain_KeyDown " & e.KeyCode)
+        'Debug.Print("frmMain_KeyDown " & e.KeyCode)
 
         If e.Control Then
+            ' 警告音（ピピッという音）を鳴らさないようにする
             e.SuppressKeyPress = True   ' ← これが重要
             If e.KeyCode = Keys.Enter Then
-                ' 警告音（ピピッという音）を鳴らさないようにする
-                'e.SuppressKeyPress = True
 
                 ' ここに実行したい処理を書く
                 btnSave.PerformClick()
@@ -1596,6 +1714,7 @@ Public Class frmMain
     'Private Shared Function GetKeyState(vKey As Integer) As Short
     'End Function
 
+
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
         Height = 600
@@ -1626,6 +1745,7 @@ Public Class frmMain
         MyCallsigns = AppSettings.GetJson("General", "MyCallsigns", "")
         InputFolder = AppSettings.GetJson("General", "InputFolder", IntFolder)
         OutputFolder = AppSettings.GetJson("General", "OutputFolder", IntFolder)
+        FontSize = AppSettings.GetJson("General", "FontSize", "9")
         GoogleApiKey = AppSettings.GetJson("Google", "ApiKey", "")
         GoogleURL = AppSettings.GetJson("Google", "URL", "")
 
@@ -1676,15 +1796,27 @@ Public Class frmMain
 
         chkAuto.Checked = False
 
+        'form　サイズを変更した場合の処理
+        Dim baseFont As Single = 9.0F           ' [F]hは浮動小数円の意味
+        Dim userFont As Single = Single.Parse(FontSize)
+        Dim factor As Single = userFont / baseFont
+        ApplyScanDataScale(factor)
+
     End Sub
 
+
     Private Sub LstOcrResult_SelectedIndexChanged(sender As Object, e As EventArgs) Handles LstOcrResult.Click
+        'Dim ColorSaved As Color
+
+        'ColorSaved = LstOcrResult.BackColor
         ' "コピーするテキスト" をクリップボードに保存
         If LstOcrResult.Items.Count > 0 Then
             Clipboard.SetText(String.Join(Environment.NewLine, LstOcrResult.Items.Cast(Of String)))
         End If
+        'LstOcrResult.BackColor = SavedColor
 
     End Sub
+
 
     Private Sub cmbCallsign_TextChanged(sender As Object, e As EventArgs) Handles cmbCallsign.TextChanged
         cmbCallsign.Text = cmbCallsign.Text.Trim
@@ -1699,6 +1831,7 @@ Public Class frmMain
         SetSaveButton()
     End Sub
 
+
     Private Sub ComboBox_Leave(sender As Object, e As EventArgs) Handles cmbCallsign.Leave
         Dim cb As ComboBox = CType(sender, ComboBox)
 
@@ -1707,10 +1840,12 @@ Public Class frmMain
         End If
     End Sub
 
+
     Private Sub txtDate_TextChanged(sender As Object, e As EventArgs) Handles txtDate.TextChanged
         txtDate.Text = txtDate.Text.Trim
         SetSaveButton()
     End Sub
+
 
     Private Sub txtDate_Validating(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles txtDate.Validating
 
@@ -1817,10 +1952,12 @@ Public Class frmMain
         txtDate.Text = dt.ToString("yyyy/MM/dd")
     End Sub
 
+
     Private Sub txtTime_TextChanged(sender As Object, e As EventArgs) Handles txtTime.TextChanged
         txtTime.Text = txtTime.Text.Trim
         SetSaveButton()
     End Sub
+
 
     Private Sub txtTime_Validating(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles txtTime.Validating
         txtTime.Text = txtTime.Text.Trim.ToUpper
@@ -1853,10 +1990,12 @@ Public Class frmMain
 
     End Sub
 
+
     Private Sub txtBand_TextChanged(sender As Object, e As EventArgs) Handles txtBand.TextChanged
         txtBand.Text = txtBand.Text.Trim
         SetSaveButton()
     End Sub
+
 
     Private Sub txtBand_Validating(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles txtBand.Validating
         txtBand.Text = txtBand.Text.Trim.ToUpper
@@ -1883,10 +2022,12 @@ Public Class frmMain
         e.Cancel = True
     End Sub
 
+
     Private Sub txtMode_TextChanged(sender As Object, e As EventArgs) Handles txtMode.TextChanged
         txtMode.Text = txtMode.Text.Trim
         SetSaveButton()
     End Sub
+
 
     Private Sub txtMode_Validating(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles txtMode.Validating
         txtMode.Text = txtMode.Text.Trim.ToUpper
@@ -1902,12 +2043,17 @@ Public Class frmMain
             Exit Sub
         End If
 
-        Dim ErrMess1 = "Modeの値が誤りです"
+        Dim ErrMess1 = $"Modeの値ModeListsにありません。 ""{txtMode.Text}""" & vbLf & "継続しますか？"
         Dim ErrMess2 = "エラー"
-        MessageBox.Show(ErrMess1, ErrMess2, MessageBoxButtons.OK, MessageBoxIcon.Error)
-        e.Cancel = True
-
+        Dim Result = MessageBox.Show(ErrMess1, ErrMess2, MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1)
+        If Result = DialogResult.Yes Then
+        Else
+            e.Cancel = True
+            txtMode.SelectAll()
+            txtMode.Focus()
+        End If
     End Sub
+
 
     Private Sub btnOpenImage_Click(sender As Object, e As EventArgs) Handles btnOpenImage.Click
 
@@ -1987,7 +2133,8 @@ Public Class frmMain
             FileList = ExplorerSort.SortLikeExplorer(files)
 
             ' 現在のファイルの位置をセット
-            FileIndex = FileList.IndexOf(dlg.FileName) + 1
+            '            FileIndex = FileList.IndexOf(dlg.FileName) + 1
+            FileIndex = FileList.IndexOf(dlg.FileName)
 
             If chkAuto.Checked Then
                 LoadNextFile()
@@ -1999,6 +2146,7 @@ Public Class frmMain
         SetButtons()
     End Sub
 
+
     Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) Handles cmbCallsign.KeyDown, txtDate.KeyDown,
                 txtTime.KeyDown, txtBand.KeyDown, txtMode.KeyDown
 
@@ -2007,6 +2155,7 @@ Public Class frmMain
             Dim current = CType(sender, Control)
             Dim nextCtrl As Control
 
+            e.SuppressKeyPress = True
             If e.Shift Then
                 ' Shift + Enter → 前へ
                 nextCtrl = GetPrevInputControl(current)
@@ -2021,15 +2170,15 @@ Public Class frmMain
         End If
 
         'If e.Control Then
-        '    If TypeOf sender Is ComboBox Then
-        '        If e.KeyCode = Keys.Down Then
-        '            ' すでにドロップダウン中でなければ開く
-        '            If Not cmbCallsign.DroppedDown Then
-        '                cmbCallsign.DroppedDown = True      ' これでListを表示するはずだが、開かない。 [Alt] + [下矢印(↓)] キー、または [F4] キーを使います　でも開かない
-        '                e.Handled = True ' 標準のキー動作を抑制
-        '            End If
-        '        End If
-        '    End If
+        If TypeOf sender Is ComboBox Then
+                If e.KeyCode = Keys.Down Then
+                    ' すでにドロップダウン中でなければ開く
+                    If Not cmbCallsign.DroppedDown Then
+                        cmbCallsign.DroppedDown = True      ' これでListを表示するはずだが、開かない。 [Alt] + [下矢印(↓)] キー、または [F4] キーを使います　でも開かない
+                        e.Handled = True ' 標準のキー動作を抑制
+                    End If
+                End If
+            End If
         'End If
     End Sub
 
@@ -2077,140 +2226,180 @@ Public Class frmMain
         ProcessWithOCR()
     End Sub
 
+
     Private Sub ProcessWithOCR()
         Dim text As String = ""
-
-        If PicQsl.Image Is Nothing Then
-            'If currentImagePath = "" Then
-            MessageBox.Show("先に画像を開いてください")
-            Exit Sub
-        End If
-
-        ' img が Image型 の変数だとします
-        Dim bmp As New Bitmap(PicQsl.Image)         ' Qrコードを読み取るためにBitmapに変換
-
-        If OcrProcessing Then                       ' Shift+BottunClickの時はOCR処理をしない テスト用
-
-            Dim reader As New BarcodeReader()
-            Dim result As Result = reader.Decode(bmp)
-
-            If (result IsNot Nothing) Then
-                ReadingMode = ReadingModes.QrCodeMode
-                text = result.Text
-                If (text.Contains("http")) OrElse (text.Length <= 50) Then           ' QRコードがURLの場合はOCRを実行しない または　QRコード以外をQRコードと誤読した場合
-                    text = ""
-                Else
-                    LstOcrResult.BackColor = Color.FromArgb(255, 250, 240)      ' （FloralWhite　薄いオレンジ色）
-                End If
-            End If
-
-            If text = "" Then
-                'MessageBox.Show("QRコードが見つかりませんでした。")
-                If OcrProcessing Then               ' QRコードが見つからなかった場合はOCRを実行する
-                    text = RunOCR(PicQsl.Image)     ' Offline or Online OCR depending on CurrentOcrMode
-                End If
-            End If
-        Else
-            text = LastText
-        End If
-
-        If text = "" Then
-            MessageBox.Show("OCR結果が空です")
-            Exit Sub
-        End If
-
-        LastText = text
-
-        ' とりあえずメッセージで全文を確認5
-        Dim preview = If(text.Length > 500, text.Substring(0, 500) & " ...", text)
-        Dim s = preview.Split(vbCr)
-
-        LstOcrResult.Items.Clear()
-        LstOcrResult.Items.AddRange(text.Split(New String() {vbLf}, StringSplitOptions.RemoveEmptyEntries))
-
-        ' 全体としての正規化
-        text = Trim(text.Trim.ToUpper)
-        text = text.Replace("　", " ")               ' 全角スペースを半角スペースに置き換え 
-        text = text.Replace("|", " ")               ' 縦罫線を半角スペースに置き換え
-        text = text.Replace("[", " ")
-        text = text.Replace("]", " ")
-        text = text.Replace("{", " ")
-        text = text.Replace("}", " ")
-
-        text = text.Replace("€", "0")               ' €はCの誤読にも
-        text = text.Replace("§", "8")
-        text = text.Replace(ChrW(&H2014), "-"c)     '  EM DASHを半角"-"に置き換える
-        'Dim dashChars = {ChrW(&H2014), ChrW(&H2013), ChrW(&H2212), ChrW(&H2010), ChrW(&H2015)}     ' 今後のため残す
-
-        text = Regex.Replace(text, " +", " ")       ' 連続する複数のスペースをひとつにする
-
-        UsedRanges.Clear()      ' OCR → Extract の処理へ    ' 既出の文字列リストをクリアする
-
+        Dim preview As String = ""
         Dim callsign As String = ""
         Dim candidates As New List(Of String)
         Dim lst As New List(Of String)
 
-        If ReadingMode = ReadingModes.QrCodeMode Then
-            Dim results As New List(Of String)
-            results = RegexExtractor.ExtractFromQrCode(text)
-
-            ' QRコードの場合は、日付・時刻・モード・周波数を抽出する
-            If results.Count >= 5 OrElse results.Count <> 0 Then
-                qsoDate = results(1)
-                qsoTime = results(2)
-                freq = results(3)
-                mode = results(4)
-                candidates.Add(results(0))
-                callsign = results(0)
-                qsoCallsign = results(0)
-
-                qsoDate = results(1)
-                qsoTime = results(2)
-                freq = results(3)
-                mode = results(4)
-            End If
-        Else
-            If cmbCallsign.Text <> "" Then candidates.Add(cmbCallsign.Text)
-            lst = RegexExtractor.ExtractCallsignCandidates(text)         ' Callsign項目を抽出
-            candidates.AddRange(lst)         ' Callsign項目を抽出
-            candidates = RegexExtractor.RemoveMyCallsign(MyCallsigns, candidates)    ' 自分のコールサインを除外
-            callsign = RegexExtractor.ChooseBestCallsign(candidates, ArrayMyCallsigns(0))         ' 最も正しいものを選ぶ
-            qsoCallsign = callsign
-
-            qsoDate = RegexExtractor.ExtractDate(text)
-            qsoTime = RegexExtractor.ExtractTime(text)
-            mode = RegexExtractor.ExtractMode(text)
-            freq = RegexExtractor.ExtractBand(text)
+        If PicQsl.Image Is Nothing Then
+            MessageBox.Show("先に画像を開いてください")
+            Exit Sub
         End If
 
-        If qsoCallsign = "" Then
+        candidates.Clear()
 
-            Dim g = ToGrayScale(PicQsl.Image)
-            'Dim g = (PicQsl.Image)
+        If OcrProcessing Then                       ' Shift+BottunClickの時はOCR処理をしない テスト用
 
-            Dim ResizedImage = ResizeImageHalf(g, 40)
-            'PicQsl.Image = ResizedImage            'テスト用として縮小したIMGを表示する
+            ' img が Image型 の変数だとします
+            Dim bmp As New Bitmap(PicQsl.Image)         ' Qrコードを読み取るためにBitmapに変換
 
-            text = RunOCR(ResizedImage)
+            Dim reader As New BarcodeReader With {.Options = New DecodingOptions With {.TryHarder = True}}       ' QRコード読み取り
+            Dim Qrresults As Result() = reader.DecodeMultiple(bmp)
 
-            lst = RegexExtractor.ExtractCallsignCandidates(text)         ' Callsign項目を抽出
-            candidates.AddRange(lst)         ' Callsign項目を抽出
+            text = ""
+            If (Qrresults IsNot Nothing) AndAlso Qrresults.Length > 0 Then
+                For Each result In Qrresults
+                    ' フォーマットがQRコードかどうかを判定
+                    If (result.BarcodeFormat() <> BarcodeFormat.QR_CODE) Then
+                        Continue For
+                    End If
+
+                    text = result.Text
+                    If (text.Contains("http")) OrElse (text.Length <= 30) Then           ' QRコードがURLの場合はOCRを実行しない または　QRコード以外をQRコードと誤読した場合
+                        Continue For
+                    Else
+                        ReadingMode = ReadingModes.QrCodeMode
+                        LstOcrResult.BackColor = Color.FromArgb(255, 250, 240)      ' （FloralWhite　薄いオレンジ色）
+                        Exit For
+                    End If
+                Next
+
+                ' Qrコードは検出できた最初のもので処理
+                If text <> "" Then
+                    Dim results As New List(Of String)
+                    results = RegexExtractor.ExtractFromQrCode(text)
+
+                    ' QRコードの場合は、日付・時刻・モード・周波数を抽出する
+                    If results.Count >= 5 OrElse results.Count <> 0 Then
+                        qsoDate = results(1)
+                        qsoTime = results(2)
+                        freq = results(3)
+                        mode = results(4)
+                        candidates.Add(results(0))
+                        callsign = results(0)
+                        qsoCallsign = results(0)
+
+                        qsoDate = results(1)
+                        qsoTime = results(2)
+                        freq = results(3)
+                        mode = results(4)
+                    End If
+                End If
+
+                'If ReadingMode = ReadingModes.QrCodeMode Then
+            End If
+            'End If
+
+
+            ' QRコードを検出できないとき、OCR処理をする
+            If text = "" Then
+                ' OCR結果からコールサインを抽出する
+                RegexExtractor.ClearCallsignCandidates()
+
+                If cmbCallsign.Text <> "" Then candidates.Add(cmbCallsign.Text)
+
+                ' 最初に縮小した画像からCallsignを抽出する。縮小した画像の方がOCR精度が高い場合がある
+                ' 縮小画面はOnlineを使用しない　Onlineのアクセスカウントを増やさないため
+                If OcrProcessing Then
+                    text = GetTextFromImage(PicQsl.Image, OcrMode.Offline, 20)           ' 20%縮小したIMGを表示する
+                    text = NormalizeText(text)
+                    LastTextSmall = text
+                Else
+                    text = LastTextSmall
+                End If
+
+                If text <> "" Then
+                    RegexExtractor.ExtractCallsignCandidates(text)
+                    'For Each cc In frmMain.CandidateCallsigns  
+                    '    Debug.Print(cc.Callsign)
+                    '    candidates.Add(cc.Callsign)
+                    'Next
+                End If
+
+                If candidates.Count = 0 Then
+                    If OcrProcessing Then
+                        text = GetTextFromImage(PicQsl.Image, OcrMode.Offline, 50)       ' 50%縮小したIMGを表示する
+                        'preview = text                      ' OCR結果のプレビュー用
+                        text = NormalizeText(text)
+                        LastTextMiddle = text
+                    Else
+                        text = LastTextMiddle
+                    End If
+                    If text <> "" Then
+                        RegexExtractor.ExtractCallsignCandidates(text)
+                        'For Each cc In frmMain.CandidateCallsigns
+                        '    Debug.Print(cc.Callsign)
+                        '    candidates.Add(cc.Callsign)
+                        'Next
+                    End If
+                End If
+
+                If OcrProcessing Then
+                    text = RunOCR(PicQsl.Image, CurrentOcrMode)          ' 元のサイズのImageからOCR
+                    preview = text
+                    text = NormalizeText(text)
+                    LastTextFull = text
+                Else
+                    text = LastTextFull
+                End If
+                RegexExtractor.ExtractCallsignCandidates(text)
+                For Each cc In frmMain.CandidateCallsigns
+                    Debug.Print(cc.Callsign)
+
+                    ''If Not candidates.Contains(cc.Callsign) Then
+                    ''    candidates.Add(cc.Callsign)
+                    ''End If
+                Next
+
+            End If
+
+            If text = "" Then
+                'MessageBox.Show("OCR結果が空です")       ' うるさいのでMessageをださない
+                Exit Sub
+            End If
+
+            '       RegexExtractor.ExtractCallsignCandidates(text)
+            ' とりあえずメッセージで全文を確認5
+            preview = If(preview.Length > 500, preview.Substring(0, 500) & " ...", preview)
+            Dim s = preview.Split(vbCr)
+
+            LstOcrResult.Items.Clear()
+            LstOcrResult.Items.AddRange(preview.Split(New String() {vbLf}, StringSplitOptions.RemoveEmptyEntries))
+
+            candidates.Clear()
+            For Each cc In frmMain.CandidateCallsigns
+                Debug.Print(cc.Callsign)
+
+                If Not candidates.Contains(cc.Callsign) Then
+                    candidates.Add(cc.Callsign)
+                End If
+            Next
             candidates = RegexExtractor.RemoveMyCallsign(MyCallsigns, candidates)    ' 自分のコールサインを除外
-            callsign = RegexExtractor.ChooseBestCallsign(candidates, ArrayMyCallsigns(0))         ' 最も正しいものを選ぶ
+
+            If CandidateCallsigns.Count = 0 Then
+                callsign = ""
+                qsoCallsign = ""
+            Else
+                callsign = RegexExtractor.ChooseBestCallsign(candidates(0))         ' 最も正しい
+            End If
             qsoCallsign = callsign
 
-            If qsoCallsign = "" Then
-                ResizedImage = ResizeImageHalf(g, 20)
-                text = RunOCR(ResizedImage)
-
-                lst = RegexExtractor.ExtractCallsignCandidates(text)         ' Callsign項目を抽出
-                candidates.AddRange(lst)         ' Callsign項目を抽出
-                candidates = RegexExtractor.RemoveMyCallsign(MyCallsigns, candidates)    ' 自分のコールサインを除外
-                callsign = RegexExtractor.ChooseBestCallsign(candidates, ArrayMyCallsigns(0))         ' 最も正しいものを選ぶ
-                qsoCallsign = callsign
-                'MessageBox.Show("コールサインが抽出できませんでした")
-            End If
         End If
+
+        'LastText = text
+
+        UsedRanges.Clear()      ' OCR → Extract の処理へ    ' 既出の文字列リストをクリアする
+        qsoCallsign = callsign
+        qsoDate = RegexExtractor.ExtractDate(text)
+        qsoTime = RegexExtractor.ExtractTime(text)
+        mode = RegexExtractor.ExtractMode(text)
+        RegexExtractor.ExtractReport(text)
+        freq = RegexExtractor.ExtractBand(text)
+
+
 
         ' UI に反映
         cmbCallsign.Items.Clear()
@@ -2222,6 +2411,11 @@ Public Class frmMain
             cmbCallsign.Text = callsign
         End If
         cmbCallsign.Text = callsign
+        'If txtDate.Text = "" Then txtDate.Text = qsoDate
+        'If txtTime.Text = "" Then txtTime.Text = qsoTime
+        'If txtMode.Text = "" Then txtMode.Text = mode
+        'If txtBand.Text = "" Then txtBand.Text = freq
+
         txtDate.Text = qsoDate
         txtTime.Text = qsoTime
         txtMode.Text = mode
@@ -2230,7 +2424,37 @@ Public Class frmMain
         SetButtons()
 
         cmbCallsign.Select()
+        cmbCallsign.SelectAll()
     End Sub
+
+    Private Function GetTextFromImage(img As Image, engine As OcrMode, ReductionRate As Integer) As String
+        Dim g = ToGrayScale(img)
+        Dim ResizedImage = ResizeImageHalf(g, ReductionRate)       'テスト用として縮小したIMGを表示する
+
+        Dim Text = RunOCR(ResizedImage, engine)
+        Return Text
+    End Function
+    Private Function NormalizeText(text As String) As String
+        ' 全体としての正規化
+        text = Trim(text.Trim.ToUpper)
+
+        text = text.Replace("　", " ")               ' 全角スペースを半角スペースに置き換え 
+        text = text.Replace("|", " ")               ' 縦罫線を半角スペースに置き換え
+        text = text.Replace("[", " ")
+        text = text.Replace("]", " ")
+        text = text.Replace("{", " ")
+        text = text.Replace("}", " ")
+        text = text.Replace("€", "0")               ' €はCの誤読にも
+        text = text.Replace("®", "0")
+        text = text.Replace("Ø", "0")
+        text = text.Replace("§", "8")
+        'text = ChrW(&H2014)     '  EM DASHを半角"-"に置き換える
+
+        'Dim dashChars = {ChrW(&H2014), ChrW(&H2013), ChrW(&H2212), ChrW(&H2010), ChrW(&H2015)}     ' 今後のため残す
+        text = text.Replace(vbLf, " ")
+        text = Regex.Replace(text, " +", " ")       ' 連続する複数のスペースをひとつにする
+        Return text
+    End Function
 
     Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
         SaveImageWithRules(InputFileName)
@@ -2245,23 +2469,33 @@ Public Class frmMain
         End If
     End Sub
 
+
     Private Sub btnExit_Click(sender As Object, e As EventArgs) Handles btnExit.Click
         Application.Exit()
     End Sub
 
+
     Private Sub btnTest_Click(sender As Object, e As EventArgs) Handles btnTest.Click
 
-        'Dim pattern = "(?<=\s|:|;|\b)(\d{1,7})([.,\.]{0,2})(\d{0,6})(?=[\s\]MKG]|$)"           ' 直前が空白であり、直後が数字以外であること
-        Dim text = "    ' <CALL:6>IW1QLH<QSO_DATE:8:D>20000101<TIME_ON:4>0000<BAND:3>20M<MODE:3>USB<EOR>"
-        Dim r = RegexExtractor.ExtractFromADIF("QSO_DATE", text)
-        r = RegexExtractor.ExtractFromADIF("MODE", text)
-        r = RegexExtractor.ExtractFromADIF("BAND", text)
+        Dim text = "TO RADIO JATFKF JIA ! 7 F K F CONFIRMING OUR QSO DATE TIME RS BAND MODE YEAR ‘MONTH DAY * UST UTC ‘MHZ 2WAY  JAN.  10 SSB RIG: IC-7300 OUTPUT 100 W ANT: LW+AH-3 L7MH RAKS: SRA LS BHUBRLEF. QSL#: 71297 PSE QSL"
+        Dim band = RegexExtractor.ExtractBand(text)
+        Debug.Print(band)
+
+
+
+        ''Dim pattern = "(?<=\s|:|;|\b)(\d{1,7})([.,\.]{0,2})(\d{0,6})(?=[\s\]MKG]|$)"           ' 直前が空白であり、直後が数字以外であること
+        'Dim text = "    ' <CALL:6>IW1QLH<QSO_DATE:8:D>20000101<TIME_ON:4>0000<BAND:3>20M<MODE:3>USB<EOR>"
+        'Dim r = RegexExtractor.ExtractFromADIF("QSO_DATE", text)
+        'r = RegexExtractor.ExtractFromADIF("MODE", text)
+        'r = RegexExtractor.ExtractFromADIF("BAND", text)
 
     End Sub
+
 
     Private Sub mnuSetting_Click(sender As Object, e As EventArgs) Handles mnuSetting.Click
         frmSettingOpen()
     End Sub
+
 
     Private Sub mnuAbout_Click(sender As Object, e As EventArgs) Handles mnuAbout.Click
         Using form As New AboutBox1
@@ -2269,9 +2503,42 @@ Public Class frmMain
         End Using
     End Sub
 
+
     Private Sub QslCardListToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles QslCardListToolStripMenuItem.Click
         CreateQslCardListCsv(OutputFolder)
     End Sub
 
+    Private Sub LstOcrResult_DrawItem(sender As Object, e As DrawItemEventArgs)
 
+        If e.Index < 0 Then Return
+
+        Dim obj = LstOcrResult.Items(e.Index)
+
+        Dim text As String
+        Dim bg As Color
+
+        If TypeOf obj Is OcrItem Then
+            Dim item = DirectCast(obj, OcrItem)
+            text = item.Text
+            bg = item.BackColor
+        Else
+            ' ★ 既存の String が入っていた場合の安全処理
+            text = obj.ToString
+            bg = SystemColors.Control
+        End If
+        ' 選択時の色
+        If (e.State And DrawItemState.Selected) = DrawItemState.Selected Then
+            bg = ControlPaint.Light(bg)
+        End If
+
+        Using b As New SolidBrush(bg)
+            e.Graphics.FillRectangle(b, e.Bounds)
+        End Using
+
+        ' 左寄せ ＋ 上下中央揃え のフラグを設定
+        Dim flags = TextFormatFlags.Left Or TextFormatFlags.VerticalCenter
+        TextRenderer.DrawText(e.Graphics, text, e.Font, e.Bounds, Color.Black, flags)
+    End Sub
+
+   
 End Class

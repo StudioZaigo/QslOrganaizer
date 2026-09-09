@@ -1,4 +1,5 @@
-﻿Imports QslOrganizer.frmMain
+﻿Imports System.Windows.Forms.VisualStyles.VisualStyleElement
+Imports QslOrganizer.frmMain
 
 
 Public Class frmSetting
@@ -36,6 +37,8 @@ Public Class frmSetting
         txtMyCallsigns.Text = AppSettings.GetJson("General", "MyCallsigns", "")
         txtInputFolder.Text = AppSettings.GetJson("General", "InputFolder", "")
         txtOutputFolder.Text = AppSettings.GetJson("General", "OutputFolder", "")
+        txtFontSize.Text = AppSettings.GetJson("General", "FontSize", "9")
+
         txtGoogleApiKey.Text = AppSettings.GetJson("Google", "ApiKey", "")
         txtGoogleURL.Text = AppSettings.GetJson("Google", "URL", url)
         TabControl1.TabIndex = TabIndex
@@ -72,6 +75,7 @@ Public Class frmSetting
         AppSettings.SetJson("General", "MyCallsigns", txtMyCallsigns.Text)
         AppSettings.SetJson("General", "InputFolder", txtInputFolder.Text)
         AppSettings.SetJson("General", "OutputFolder", txtOutputFolder.Text)
+        AppSettings.SetJson("General", "FontSize", txtFontSize.Text)
         AppSettings.SetJson("Google", "ApiKey", txtGoogleApiKey.Text)
         AppSettings.SetJson("Google", "URL", txtGoogleURL.Text)
 
@@ -130,4 +134,44 @@ Public Class frmSetting
         AppSettings.SaveJson(AppSettings.SettingsFile)
 
     End Sub
+
+    Private Sub txtFontSize_KeyPress(sender As Object, e As KeyPressEventArgs) Handles txtFontSize.KeyPress
+        ' 数字、コントロールキー（バックスペースなど）、小数点を許可
+        If Not Char.IsControl(e.KeyChar) AndAlso Not Char.IsDigit(e.KeyChar) AndAlso e.KeyChar <> "."c Then
+            e.Handled = True
+        End If
+
+
+        ' 2. 小数点に関する制限
+        If e.KeyChar = "."c Then
+            ' すでに小数点がある場合は、2つ目を拒否
+            If txtFontSize.Text.Contains(".") Then
+                e.Handled = True
+                Return
+            End If
+        End If
+
+        ' 3. 小数点以下の桁数制限（数字が入力された場合のみチェック）
+        If Char.IsDigit(e.KeyChar) Then
+            Dim dotIndex As Integer = txtFontSize.Text.IndexOf("."c)
+
+            ' すでに小数点が存在する場合
+            If dotIndex >= 0 Then
+                ' カーソル位置が小数点の右側にあるかチェック
+                If txtFontSize.SelectionStart > dotIndex Then
+                    ' 小数点以下の文字列を取得（選択反転して消える文字数は除外）
+                    Dim decimalPart As String = txtFontSize.Text.Substring(dotIndex + 1)
+                    Dim currentLength As Integer = decimalPart.Length - txtFontSize.SelectionLength
+
+                    ' すでに2桁ある場合は入力を拒否
+                    If currentLength >= 2 Then
+                        e.Handled = True
+                    End If
+                End If
+            End If
+        End If
+    End Sub
+
+
+
 End Class
