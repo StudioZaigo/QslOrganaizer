@@ -72,12 +72,12 @@ Partial Class frmAboutBox
         ' 
         ' TextBoxDescription
         ' 
-        'TextBoxDescription.AutoSize = True
-        'TextBoxDescription.Location = New Point(21, 191)
-        'TextBoxDescription.Name = "TextBoxDescription"
-        'TextBoxDescription.Size = New Size(419, 30)
-        'TextBoxDescription.TabIndex = 3
-        'TextBoxDescription.Text = "説明 :  (ランタイムに、ラベルのテキストはアプリケーションのアセンブリ情報に置き換えられます。"
+        TextBoxDescription.AutoSize = True
+        TextBoxDescription.Location = New Point(21, 191)
+        TextBoxDescription.Name = "TextBoxDescription"
+        TextBoxDescription.Size = New Size(419, 30)
+        TextBoxDescription.TabIndex = 3
+        TextBoxDescription.Text = "説明 :  (ランタイムに、ラベルのテキストはアプリケーションのアセンブリ情報に置き換えられます。"
         ' 
         ' frmAboutBox
         ' 

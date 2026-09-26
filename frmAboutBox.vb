@@ -20,17 +20,17 @@
         lstInformation.SelectionMode = SelectionMode.None ' クリックしても青く選択されないようにする
         'lstInformation.Font = New Font("MS UI Gothic", 10) ' 見やすいフォントに変更
 
-        ' --- タブ幅（Offset）の設定 ---
+        ' --- ListBox タブ幅（Offset）の設定 ---
         lstInformation.UseTabStops = True
         lstInformation.CustomTabOffsets.Clear()
 
-        ' ★ここを調整します（40〜60くらいが目安です。文字が重なる場合は大きくしてください）
+        '' ★ここを調整します（40〜60くらいが目安です。文字が重なる場合は大きくしてください）
         lstInformation.CustomTabOffsets.Add(150)
 
         ' --- データの追加 ---
         ' 「項目名」と「値」の間には必ず「vbTab」を挟んでください
         lstInformation.Items.Add("製品名" & vbTab & My.Application.Info.Title)
-        lstInformation.Items.Add("会社名" & vbTab & My.Application.Info.CompanyName)
+        lstInformation.Items.Add("組織名" & vbTab & My.Application.Info.CompanyName)
         lstInformation.Items.Add("著作権" & vbTab & My.Application.Info.Copyright)
         lstInformation.Items.Add("バージョン" & vbTab & String.Format("バージョン {0}", My.Application.Info.Version.ToString))
 
@@ -53,8 +53,6 @@
 
         Dim ZXingVersion = frmMain.GetZXingVersion()
         lstInformation.Items.Add("ZXing" & vbTab & ZXingVersion)
-
-
 
         'lstInformation.Padding()
 

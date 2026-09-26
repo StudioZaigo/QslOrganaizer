@@ -12,6 +12,7 @@ Imports System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox
 Imports Newtonsoft.Json.Linq
 Imports QslOrganizer.frmMain
 Imports Windows.Win32.System
+Imports System.Reflection
 
 
 Public Module callsignList
@@ -92,14 +93,14 @@ Module ModeList
         {"F7S", "FT8"}, {"F7B", "FT8"}, {"F78", "FT8"}, {"F7&", "FT8"}, {"F7T", "FT8"}, {"FT.", "FT8"},
         {"E18", "FT8"}, {"FES", "FT8"}, {"PTS", "FT8"},
         {"33B", "SSB"}, {"SSE", "SSB"}, {"SS8", "SSB"}, {"\$SB", "SSB"}, {"$$B", "SSB"}, {"S88", "SSB"},
-        {"SSA", "SSB"},
+        {"SSA", "SSB"}, {"SSP", "SSB"},
         {"F4M", "FM"}, {"F3M", "FM"}, {"F3N", "FM"},
         {"A3M", "AM"}, {"A3N", "AM"},
         {"RTTYS", "RTTY"}, {"RTTY8", "RTTY"},
         {"PSK3I", "PSK31"}, {"PSK31A", "PSK31"},
         {"JT65A", "JT65"}, {"JT65B", "JT65"}, {"JT65C", "JT65"},
         {"SSTV8", "SSTV"}, {"SSTV9", "SSTV"},
-        {"OW", "CW"}, {"CN", "CW"}, {"J165", "JT65"}
+        {"OW", "CW"}, {"CN", "CW"}, {"CU", "CW"}, {"CV", "CW"}, {"J165", "JT65"}
     }
 
 
@@ -111,14 +112,15 @@ Module CalendarModule                ' 月名 → 数字 の辞書
                 {"JANUARY", 1}, {"FEBRUARY", 2}, {"MARCH", 3}, {"APRIL", 4}, {"MAY", 5}, {"JUNE", 6}, {"JULY", 7},
                 {"AUGUST", 8}, {"SEPTEMBER", 9}, {"OCTOBER", 10}, {"NOVEMBER", 11}, {"DECEMBER", 12},
                 {"JAN", 1}, {"FEB", 2}, {"MAR", 3}, {"APR", 4}, {"JUN", 6},
-                {"JUL", 7}, {"AUG", 8}, {"SEP", 9}, {"OCT", 10}, {"NOV", 11}, {"DEC", 12}
+                {"JUL", 7}, {"AUG", 8}, {"SEP", 9}, {"SEPT", 9}, {"OCT", 10}, {"NOV", 11}, {"DEC", 12}
             }
 
     Public ReadOnly MisReadingMonth As New Dictionary(Of String, String)() From {                                   ' 置き換え前と、置き換え後は桁数を合わせる必要あり
-        {"TAN", "JAN"}, {"3AN", "JAN"}, {"WAR", "MAR"}, {"APE", "APR"}, {"VEN", "JUN"},
+        {"TAN", "JAN"}, {"3AN", "JAN"}, {"WAR", "MAR"},
+        {"APE", "APR"}, {"VEN", "JUN"}, {"DUN", "JUN"},
         {"DLY", "JUL"}, {"/UL", "JUL"}, {"1UL", "JUL"}, {"SUL", "JUL"}, {"WUL", "JUL"},
         {"HUG", "AUG"},
-        {"AUS", "AUG"}, {"SEPT", "SEP "}, {"0CT", "OCT"}, {"N0V", "NOV"}, {"APR1L", "APRIL"}
+        {"AUS", "AUG"}, {"0CT", "OCT"}, {"N0V", "NOV"}, {"APR1L", "APRIL"}, {"LUNE", "JUNE"}
     }
 
     Public ReadOnly AdifItemNames As String() = {
@@ -134,6 +136,94 @@ End Module
 
 Partial Class frmMain
 
+
+    Public Class HistoryAdifWriter
+
+        Private ReadOnly BaseFolder As String
+        Private ReadOnly TodayFile As String
+        Private Const MaxFiles As Integer = 30
+
+        Public Sub New()
+            BaseFolder = AppDomain.CurrentDomain.BaseDirectory & "History"
+
+            If Not Directory.Exists(BaseFolder) Then
+                Directory.CreateDirectory(BaseFolder)
+            End If
+
+            Dim today As String = DateTime.Now.ToString("yyyyMMdd")
+            TodayFile = Path.Combine(BaseFolder, $"Log_{today}.ADIF")
+
+            If Not File.Exists(TodayFile) Then
+                WriteHeader()
+                CleanupOldFiles()
+            End If
+        End Sub
+
+        '-----------------------------------------
+        ' ヘッダー書き込み
+        '-----------------------------------------
+        Private Sub WriteHeader()
+            Dim asm As Assembly = Assembly.GetExecutingAssembly()
+            Dim name As String = asm.GetName().Name
+            Dim ver As String = asm.GetName().Version.ToString()
+
+            Dim ts As String = DateTime.Now.ToString("yyyyMMdd HHmmss")
+
+            Using sw As New StreamWriter(TodayFile, False, System.Text.Encoding.UTF8)
+                'sw.WriteLine("ADIF Export")
+                sw.WriteLine($"<CREATED_TIMESTAMP:15>{ts}")
+                sw.WriteLine($"<PROGRAMID:{name.Length}>{name}")
+                sw.WriteLine($"<PROGRAMVERSION:{ver.Length}>{ver}")
+                sw.WriteLine("<EOH>")
+                sw.WriteLine("")
+            End Using
+        End Sub
+
+        '-----------------------------------------
+        ' 1件書き込み（毎回開いて閉じる）
+        '-----------------------------------------
+        Public Sub AppendRecord(callSign As String,
+                            qsoDate As String,
+                            timeOn As String,
+                            band As String,
+                            mode As String)
+
+            If qsoDate = "" OrElse timeOn = "" OrElse band = "" OrElse mode = "" Then
+                Using sw As New StreamWriter(TodayFile, True, System.Text.Encoding.UTF8)
+                    sw.WriteLine($"<CALL:{callSign.Length}>{callSign} "
+            )
+                End Using
+            Else
+                Using sw As New StreamWriter(TodayFile, True, System.Text.Encoding.UTF8)
+                    sw.WriteLine(
+                $"<CALL:{callSign.Length}>{callSign}" &
+                $"<QSO_DATE:8>{qsoDate}" &
+                $"<TIME_ON:{timeOn.Length}>{timeOn}" &
+                $"<BAND:{band.Length}>{band}" &
+                $"<MODE:{mode.Length}>{mode}<EOR>"
+            )
+                End Using
+            End If
+        End Sub
+
+        '-----------------------------------------
+        ' 30件を超えたら古いファイルから削除
+        '-----------------------------------------
+        Private Sub CleanupOldFiles()
+            Dim files = Directory.GetFiles(BaseFolder, "Log_*.ADIF").
+            OrderBy(Function(f) f).ToList()
+
+            If files.Count > MaxFiles Then
+                Dim deleteCount As Integer = files.Count - MaxFiles
+                For i As Integer = 0 To deleteCount - 1
+                    File.Delete(files(i))
+                Next
+            End If
+        End Sub
+
+    End Class
+
+
     Public Shared UsedRanges As New List(Of (value As String, Start As Integer, Length As Integer))
 
     Public Structure CandidateCallsign
@@ -141,7 +231,7 @@ Partial Class frmMain
         Public Callsign As String
     End Structure
 
-    Public Shared CandidateCallsigns As New List(Of CandidateCallsign)
+    'Public Shared CandidateCallsigns As New List(Of CandidateCallsign)
 
     Public Structure Detection
         Public Value As String
@@ -187,6 +277,7 @@ Partial Class frmMain
 
     Public Shared isPhone As Boolean           ' ReportからModeを類推する、Phoneの時とき　Bandが２M以上の時、FMにModeを置き換える
 
+
     '**********************************************************************************************
     '
     '   OCR結果から項目を注出する
@@ -195,12 +286,28 @@ Partial Class frmMain
 
     Public Class RegexExtractor
 
-        Public Shared Function ExtractFromQrCode(text As String) As List(Of String)
+        Public Shared CandidateCallsigns As New List(Of CandidateCallsign)
+
+        Public Shared Function ExtractFromQrCode(text As String) As QsoData
+            ' Dim Qso As QsoData
+            Dim Qso As New QsoData
+            Qso.CandidatesCallsigns = New List(Of String)()
+
             Dim results As New List(Of String)
             Dim items() As String
             Dim dt As String
 
-            If text.Length < 2 Then Return results
+            With Qso
+                .Valid = False
+                .Callsign = ""
+                .CandidatesCallsigns = New List(Of String)()
+                .QsoDate = ""
+                .QsoTime = ""
+                .Band = ""
+                .Mode = ""
+            End With
+
+            If text.Length < 2 Then Return Qso
 
             ' HAMLOGのQRコードの形式 hamlogでは交信時刻がUTCだった場合は、JSTに変換され記録します。
             ' Exsampl
@@ -208,143 +315,204 @@ Partial Class frmMain
             ' !!JG1MOU_230205_1532_10.136_FT8_JI1ILB 
             If text.Substring(0, 2) = "!!" Then
                 items = text.Substring(2).Split("_")
-                results.Add(items(0))                                                   ' Callsign
-                dt = items(1)
-                dt = ConverTo4degitsYear(dt.Substring(0, 2)) & "/" & dt.Substring(2, 2) & "/" & dt.Substring(4, 2)
-                results.Add(dt)                                                         ' date
-                results.Add(items(2).Substring(0, 2) & ":" & items(2).Substring(2, 2))  ' time
-                results.Add(RegexExtractor.ConvertFreqToBand(items(3)))                 ' Band 周波数なので波長に変換
-                results.Add(items(4))                                                   ' Mode
-                results.Add(items(5))                                                   ' To Callsign
-                Return results
+
+                With Qso
+                    .Callsign = items(0)
+                    .CandidatesCallsigns.Add(.Callsign)
+                    dt = items(1)
+                    dt = ConverTo4degitsYear(dt.Substring(0, 2)) & "/" & dt.Substring(2, 2) & "/" & dt.Substring(4, 2)
+                    .QsoDate = dt                                                             ' date
+                    .QsoTime = items(2).Substring(0, 2) & ":" & items(2).Substring(2, 2)      ' time
+                    .Band = RegexExtractor.ConvertFreqToBand(items(3))                        ' Band 周波数なので波長に変換
+                    .Mode = items(4)
+                    .Valid = True
+                End With
+
+                Return Qso
             End If
 
             ' DARCのQRコードの形式
             ' example
             ' From:DL6UCK To: JA7FKF
             ' Date: 23.12.24 Time: 08:38 Band: 17m Mode: FT8 RST:  -04 QSL: PSE
-
             Dim pattern As String
-            Dim i As String
+            Dim s As String
 
             results.Clear()
-            For Each a In AdifItemNames
-                pattern = "\b" & a & "[:;] ([A-Z0-9.:]+)\b"         ' :があり、そのあと空白、そのあとデータ
+            Dim item() = {False, False, False, False, False}
+            Dim cnt = 0
+            For Each adif In AdifItemNames
+                pattern = "\b" & adif & "[:;] ([A-Z0-9.:]+)\b"         ' :があり、そのあと空白、そのあとデータ
                 Dim m As Match = Regex.Match(text, pattern, RegexOptions.IgnoreCase)
                 If m.Success Then
-                    If a = "DATE" Then
-                        i = m.Groups(1).Value.Replace(".", "/")
-                        If i.Length = 8 Then
-                            i = ConverTo4degitsYear(i.Substring(6, 2)) & i.Substring(2, 4) & i.Substring(0, 2)      ' BritishuFormat から IsoFprmt変換
-                        ElseIf i.Length = 10 Then
-                            i = i.Substring(6, 4) & i.Substring(2, 4) & i.Substring(0, 2)      ' BritishuFormat から IsoFprmt変換
+                    If adif = "FROM" Then
+                        Qso.Callsign = m.Groups(1).Value
+                        item(0) = True
+                    ElseIf adif = "DATE" Then
+                        s = m.Groups(1).Value.Replace(".", "/")
+                        If s.Length = 8 Then
+                            s = ConverTo4degitsYear(s.Substring(6, 2)) & s.Substring(2, 4) & s.Substring(0, 2)      ' BritishuFormat から IsoFprmt変換
+                        ElseIf s.Length = 10 Then
+                            s = s.Substring(6, 4) & s.Substring(2, 4) & s.Substring(0, 2)      ' BritishuFormat から IsoFprmt変換
                         End If
-                    Else
-                        i = m.Groups(1).Value
+                        Qso.QsoDate = s
+                        item(1) = True
+                    ElseIf adif = "TIME" Then
+                        Qso.QsoTime = m.Groups(1).Value
+                        item(2) = True
+                    ElseIf adif = "BAND" Then
+                        Qso.Band = m.Groups(1).Value
+                        item(3) = True
+                    ElseIf adif = "MODE" Then
+                        Qso.Mode = m.Groups(1).Value
+                        item(4) = True
                     End If
-                    results.Add(i)
                 End If
             Next
-            If results.Count = 5 Then
-                Return results
+            For Each i In item              ' 全項目が満たされているかチェック
+                If i Then
+                    cnt += 1
+                End If
+            Next
+            If cnt = 5 Then                 ' 全項目が満たされていれば
+                Qso.Valid = True
+                Qso.CandidatesCallsigns.Add(Qso.Callsign)
+                Return Qso
             End If
 
             ' ADIFのQRコードの形式
             ' <CALL:6>IW1QLH<QSO_DATE:8:D>20000101<TIME_ON:4>0000<BAND:3>20M<MODE:3>USB<EOR>" 73 de Claudio - IW1QLH
+            item = {False, False, False, False, False}
+            cnt = 0
             results.Clear()
             Dim r = (RegexExtractor.ExtractFromADIF("CALL", text))    ' Callsign
             If r <> "" Then
-                results.Add(r)
-
-                r = RegexExtractor.ExtractFromADIF("QSO_DATE", text)     ' Date
-                If r.Length = 8 OrElse r.Length = 6 Then
-                    dt = ConverTo4degitsYear(r.Substring(0, 2)) & "/" & r.Substring(2, 2) & "/" & r.Substring(4, 2)
-                    If r <> "" Then results.Add(dt)
-                End If
-
-                If r.Length = 4 Then
-                    r = RegexExtractor.ExtractFromADIF("TIME_ON", text)      ' Time
-                    Dim tm = r.Substring(0, 2) & ":" & r.Substring(2, 2)
-                    If r <> "" Then results.Add(tm)
-                End If
-
-                r = RegexExtractor.ExtractFromADIF("BAND", text)         ' Band
-                If r <> "" Then results.Add(r)
-
-                r = RegexExtractor.ExtractFromADIF("MODE", text)         ' Mode
-                If Not Modes.Contains(r) Then
-                    If AliasModes.ContainsKey(r) Then r = AliasModes(r)
-                End If
-                If r <> "" Then results.Add(r)
-
-                If results.Count = 5 Then
-                    Return results
-                End If
+                Qso.Callsign = r
+                item(0) = True
             End If
-
+            r = RegexExtractor.ExtractFromADIF("QSO_DATE", text)     ' Date
+            If r.Length = 8 OrElse r.Length = 6 Then
+                dt = ConverTo4degitsYear(r.Substring(0, 2)) & "/" & r.Substring(2, 2) & "/" & r.Substring(4, 2)
+                Qso.QsoDate = r
+                item(1) = True
+            End If
+            r = RegexExtractor.ExtractFromADIF("TIME_ON", text)      ' Time
+            If r.Length = 4 Then
+                Dim tm = r.Substring(0, 2) & ":" & r.Substring(2, 2)
+                Qso.QsoTime = tm
+                item(2) = True
+            End If
+            r = RegexExtractor.ExtractFromADIF("BAND", text)         ' Band
+            If r <> "" Then
+                Qso.Band = r
+                item(3) = True
+            End If
+            r = RegexExtractor.ExtractFromADIF("MODE", text)         ' Mode
+            If AliasModes.ContainsKey(r) Then r = AliasModes(r)
+            If Not Modes.Contains(r) Then
+                Qso.Band = r
+                item(4) = True
+            End If
+            For Each i In item              ' 全項目が満たされているかチェック
+                If i Then
+                    cnt += 1
+                End If
+            Next
+            If cnt = 5 Then                 ' 全項目が満たされていれば
+                Qso.Valid = True
+                Qso.CandidatesCallsigns.Add(Qso.Callsign)
+                Return Qso
+            End If
 
             ' example
             ' Operator;QSO_DATE;TIME_ON;BAND;MODE;RST_SENT;QSL_RCVD;
             ' DL2RMM;10.06.18;06:01;17M;FT8;-10;PSE;
-
-            results.Clear()
             items = text.Replace(vbLf, "").Split(";")
             Dim c = (items.Count \ 2)
-            For j = 0 To c - 1
-                If j > QrCodePattern.Count - 1 Then Exit For
-                If items(j) = QrCodePattern(j) Then
-                    Dim a = QrCodePattern(j)
-                    i = items(j + c)
-                    If a = "QSO_DATE" Then
-                        i = i.Replace(".", "/")
-                        If i.Length = 8 Then
-                            i = ConverTo4degitsYear(i.Substring(6, 2)) & i.Substring(2, 4) & i.Substring(0, 2)      ' BritishuFormat から IsoFprmt変換
-                        ElseIf i.Length = 10 Then
-                            i = i.Substring(6, 4) & i.Substring(2, 4) & i.Substring(0, 2)      ' BritishuFormat から IsoFprmt変換
+            If c >= 5 Then
+                For j = 0 To c - 1
+                    If items(j) = "OPERATOR" Then
+                        Qso.Callsign = items(j + c)
+                        item(0) = True
+                    ElseIf items(j) = "QSO_DATE" Then
+                        r = items(j + c)
+                        If r.Length = 8 Then
+                            Qso.QsoDate = ConverTo4degitsYear(r.Substring(6, 2)) & "/" & r.Substring(3, 2) & "/" & r.Substring(0, 2)
+                        ElseIf r.Length = 10 Then
+                            Qso.QsoDate = ConverTo4degitsYear(r.Substring(6, 4)) & "/" & r.Substring(3, 2) & "/" & r.Substring(0, 2)
+                        End If
+                        item(1) = True
+                    ElseIf items(j) = "TIME_ON" Then
+                        r = RegexExtractor.ExtractFromADIF("TIME_ON", text)      ' Time
+                        If r.Length = 5 Then
+                            Qso.QsoTime = r.Substring(0, 2) & ":" & r.Substring(3, 2)
+                        ElseIf r.Length = 4 Then
+                            Qso.QsoTime = r.Substring(0, 2) & ":" & r.Substring(2, 2)
+                        End If
+                        item(2) = True
+                    ElseIf items(j) = "BAND" Then         ' Band
+                        If r <> "" Then
+                            Qso.Band = items(j + c)
+                            item(3) = True
+                        End If
+                    ElseIf items(j) = "MODE" Then         ' Mode
+                        r = items(j + c)
+                        If AliasModes.ContainsKey(r) Then r = AliasModes(r)
+                        If Modes.Contains(r) Then
+                            Qso.Mode = r
+                            item(4) = True
                         End If
                     End If
-                    results.Add(i)
+                Next
+                For Each i In item              ' 全項目が満たされているかチェック
+                    If i Then
+                        cnt += 1
+                    End If
+                Next
+                If cnt = 5 Then                 ' 全項目が満たされていれば
+                    Qso.Valid = True
+                    Qso.CandidatesCallsigns.Add(Qso.Callsign)
+                    Return Qso
                 End If
-            Next
-            If results.Count = 5 Then
-                Return results
             End If
+
 
             ' HRD Labelの型式  仕様が不明、HRDのラベル印刷のQRコードの形式は、HRDのバージョンによって変わる可能性がある
             ' Example
             ' 00000:60JA7FKF000000000:8:D02025021900000000 : 40075100000:3012000000:30FT800000000000000000:50DK6AH0EOR0
-
             items = text.Split(":")
             If items(0) = "00000" Then
 
                 Dim lng = items(7).Substring(0, 1)          ' Calllsign
                 Dim val = items(7).Substring(2, lng)
-                results.Add(val)
+                Qso.Callsign = val
 
                 lng = items(2).Substring(0, 1)              ' DATE
                 val = items(3).Substring(2, lng)
                 val = val.Substring(0, 4) & "/" & val.Substring(4, 2) & "/" & val.Substring(6, 2)
-                results.Add(val)
+                Qso.QsoDate = val
 
                 lng = items(4).Substring(0, 1)              ' TIME
                 val = items(4).Substring(2, lng)
                 val = val.Substring(0, 2) & ":" & val.Substring(2, 2)
-                results.Add(val)
+                Qso.QsoTime = val
 
                 lng = items(5).Substring(0, 1)              ' BAND
                 val = items(5).Substring(2, lng - 1) & "M"
-                results.Add(val)
+                Qso.Band = val
 
                 lng = items(6).Substring(0, 1)              ' MODE
                 val = items(6).Substring(2, lng)
-                results.Add(val)
+                Qso.Mode = val
 
-                If results.Count = 5 Then
-                    Return results
-                End If
+                Qso.CandidatesCallsigns.Add(Qso.Callsign)
+                Qso.Valid = True
+                Return Qso
             End If
 
-            Return results
+            Qso.Valid = False
+
+            Return Qso
         End Function
 
 
@@ -375,7 +543,6 @@ Partial Class frmMain
         Public Shared Sub ExtractCallsignCandidates(text As String)
             ' callsignの候補を抽出しCandidateCallsignsに加えるする処理
 
-
             Dim pattern As String
 
             pattern = StandardCallsignPattern           ' 厳しめで検索、第１候補とする
@@ -397,6 +564,23 @@ Partial Class frmMain
                 Dim part1 = m.Groups(1).Value
                 Dim part2 = m.Groups(2).Value           ' Area番号
                 Dim part3 = m.Groups(3).Value           ' Suffix
+
+                part2 = ReplaceAtoN(part2)          ' AreaCodeの誤認識補正
+                part3 = ReplaceNtoA(part3)          ' Suffixの誤認識補正
+
+                Dim fixedCs = part1 & part2 & part3
+                If NegrectCallsign(text, fixedCs, m.Index, m.Length) Then Continue For
+                fixedCs = isCandidateCallsign(fixedCs)
+                If fixedCs <> "" Then
+                    CandidateCallsigns.Add(New CandidateCallsign With {.Rank = 1, .Callsign = fixedCs})
+                End If
+            Next
+
+            pattern = "\b(J|7) ([A-S]) ([0-9]) ([A-Z]) ([A-Z]) ([A-Z]?)\b"        ' 国内のCallsignのみ 文字間に空白 例：J A 7 F K F
+            For Each m As Match In Regex.Matches(text, pattern)
+                Dim part1 = m.Groups(1).Value & m.Groups(2).Value
+                Dim part2 = m.Groups(3).Value           ' Area番号
+                Dim part3 = m.Groups(4).Value & m.Groups(5).Value & m.Groups(6).Value          ' Suffix
 
                 part2 = ReplaceAtoN(part2)          ' AreaCodeの誤認識補正
                 part3 = ReplaceNtoA(part3)          ' Suffixの誤認識補正
@@ -497,10 +681,12 @@ Partial Class frmMain
 
 
         Public Shared Function ChooseBestCallsign(myCall As String) As String
-            '            pattern = "\b([A-Z]{1,2}|[1-9][A-Z]|[A-Z]\d|3DA)(\d+)([A-Z][A-Z0-9]{0,5}[A-Z])\b"
-            Dim pattern = StandardCallsignPattern
 
-            Dim callPattern As String = "^([A-Z]{1,2}|[1-9][A-Z]|[A-Z]\d|3DA)\d[A-Z]{1,8}$"
+            Dim pattern = StandardCallsignPattern
+            Dim callPattern1 As String = "^([A-Z]{2,2}|[1-9][A-Z]|[A-Z]\d|3DA)\d[A-Z]{1,3}$"
+            Dim callPattern2 As String = "^([A-Z]{1,2}|[1-9][A-Z]|[A-Z]\d|3DA)\d[A-Z]{1,3}$"
+            Dim JaPattern As String = "^([J78][A-S])\d[A-Z]{2,3}$"
+
             Dim SwlPattern As String = "^(JA[0-9]-?[0-9]{3,6})$"
             Dim bestCall As String = ""
             Dim bestDistance As Integer = 9999
@@ -511,9 +697,18 @@ Partial Class frmMain
 
             For Each cc In CandidateCallsigns
                 cs = cc.Callsign
-
                 ' 典型的なコールサインパターンに合致するものだけ採用
-                If Not Regex.IsMatch(cs, callPattern) Then
+                If Not Regex.IsMatch(cs, JaPattern) Then
+                    Continue For
+                End If
+                bestCall = cs
+                Return bestCall
+            Next
+
+            For Each cc In CandidateCallsigns
+                cs = cc.Callsign
+                ' 典型的なコールサインパターンに合致するものだけ採用
+                If Not Regex.IsMatch(cs, callPattern1) Then
                     Continue For
                 End If
                 bestCall = cs
@@ -581,24 +776,21 @@ Partial Class frmMain
         End Function
 
 
-        Public Shared Function RemoveMyCallsign(MyCallsigns As String, candidates As List(Of String)) As List(Of String)
+        Public Shared Function RemoveMyCallsign(MyCallsigns As String, CandidateCallsigns As List(Of CandidateCallsign)) As List(Of CandidateCallsign)
             ' Callsignの候補から自局のコールサインを除外する処理
-            Dim result As New List(Of String)
+            Dim result As New List(Of CandidateCallsign)
 
             Dim Callsigns As String() = MyCallsigns.Split(","c)
-            For Each cs In candidates
-                'If candidates.Contains(cs) = False Then
-                '    result.Add(cs)
-                'End If
+            For Each cs In CandidateCallsigns
                 Dim r As Boolean = False
                 For Each mcs In Callsigns
-                    If cs = mcs Then
+                    If cs.Callsign = mcs Then
                         r = True
                         Exit For
                     End If
                 Next
                 If Not r Then
-                    result.Add(cs)
+                    result.Add(New CandidateCallsign With {.Rank = cs.Rank, .Callsign = cs.Callsign})
                 End If
             Next
 
@@ -647,11 +839,13 @@ Partial Class frmMain
             s = s.Replace("D", "0")   ' D → 0
             s = s.Replace("I", "1")   ' I → 1
             s = s.Replace("L", "1")   ' L → 1
+            s = s.Replace("A", "4")   ' 
+            s = s.Replace("S", "5")   ' 
+            s = s.Replace("E", "6")   ' E → 6
             s = s.Replace("Z", "7")   ' Z → 7
             s = s.Replace("T", "7")   ' T → 7
             s = s.Replace("B", "8")   ' B → 8
             s = s.Replace("G", "0")   ' B → 8
-            s = s.Replace("S", "0")   ' B → 8
 
             Return s
         End Function
@@ -664,7 +858,10 @@ Partial Class frmMain
             s = s.Replace("2", "Z")   ' I → 1
             s = s.Replace("3", "B")   ' L → 1
             s = s.Replace("5", "S")   ' S → 5
-            s = s.Replace("7", "T")   ' L → 1
+            s = s.Replace("4", "A")   ' L → 1
+            s = s.Replace("6", "E")
+            s = s.Replace("7", "T")
+            s = s.Replace("8", "B")
 
             Return s
         End Function
@@ -752,19 +949,25 @@ Partial Class frmMain
             If dateFromMonth <> "" Then Return dateFromMonth
 
             '2. 誤読した英月名で探す
-            'dateFromMonth = ExtractMisReadDate(cleaned)
+            dateFromMonth = ExtractMisReadDate(cleaned)
             If dateFromMonth <> "" Then Return dateFromMonth
 
             ' 3. 数字だけの形式を探す
             Dim dateFromNumbers = ExtractDateNumeric(cleaned)
             If dateFromNumbers <> "" Then Return dateFromNumbers
 
-            dateFromNumbers = ExtractDateNumeric(text)
+            ' 3. 数字だけのあやふや形式を探す
+            dateFromNumbers = ExtractVagueDateNumeric(cleaned)
             If dateFromNumbers <> "" Then Return dateFromNumbers
 
             ' 3.1 hamlog形式の数字だけの形式を探す
             dateFromNumbers = ExtractDateHamlog(cleaned)
             If dateFromNumbers <> "" Then Return dateFromNumbers
+
+            ' 5. 日本語の年、月、日がある場合　　2022年6月24日
+            dateFromMonth = ExtractJapaneseDate(cleaned)
+            If dateFromMonth <> "" Then Return dateFromMonth
+
 
             '  4. 日本語の年、月、日を誤読したとして
             dateFromMonth = ExtractNenTsukiHiDate(cleaned)
@@ -774,10 +977,6 @@ Partial Class frmMain
             If dateFromMonth <> "" Then Return dateFromMonth
 
             dateFromMonth = ExtractDateWithMonthName2Line(cleaned)
-            If dateFromMonth <> "" Then Return dateFromMonth
-
-            ' 5. 日本語の年、月、日を誤読したとして
-            dateFromMonth = ExtractJapaneseDate(cleaned)
             If dateFromMonth <> "" Then Return dateFromMonth
 
             dateFromMonth = ExtractYYMMDDDDate(cleaned)
@@ -799,7 +998,7 @@ Partial Class frmMain
         Private Shared Function ExtractDateWithMonthName(text As String) As String
             ' 月名の順に整合しているので、複数行の年月日がある場合、1番目の行が選択されると限らない
 
-            text = CleanTextMisreadingDate(text)        ' 月名をミスリードしたものを補正する
+
             Dim pattern As String
             Dim m As Match
             Dim ms As MatchCollection
@@ -808,11 +1007,13 @@ Partial Class frmMain
             Dim year As String
             Dim sm As String
 
+            text = CleanTextMisreadingDate(text)        ' 月名をミスリードしたものを補正する
+
             For Each key In MonthNames.Keys
                 If text.Contains(key) = False Then Continue For
 
                 If DateFormat = DateFormats.BritishFormat Then
-                    pattern = "(\b|\n|\s|\D)([0-2]\d|3[01]|[1-9])[- :;/\.']{0,3}" & key & "[- :;/\.']{0,3}(['’\""']?) {0,2}((19|20)?\d{1,2})(\b|\n|\s|\D)"       'BritishFormat 日、月、年の並び順 縦罫線がJと読まれることがあるので、Jも許容する
+                    pattern = "(\b|\n|\s|\D)([0-2]\d|3[01]|[1-9])[- :;/\.']{0,3}" & key & "[- :;/\.']{0,5}(['’\""']?) {0,4}((19|20)?\d{1,2})(\b|\n|\s|\D)"       'BritishFormat 日、月、年の並び順 縦罫線がJと読まれることがあるので、Jも許容する
                     ms = Regex.Matches(text, pattern)
                     For Each m In ms
                         m = Regex.Match(text, pattern)
@@ -913,12 +1114,12 @@ Partial Class frmMain
                     ' 年、月、日または日、月、年の並び順で試す　頭文字は他の項目との重なりを考慮し、空白1文字にした
                     ' 2桁年の前の「'」が、なぜか月の前に検出された?
                     ' ['’‘""O])?の"O"は誤読対策
-                    pattern = "\b(['’‘""O])?(\d{1,4})[- ':;/\.]{0,4}" & key & "[- :;/\.O]{0,4}(['’‘""])?(\d{1,4})\b"
+                    pattern = "\b(['’‘""O])?(\d{1,4})[- ':;/\.]{0,4}" & key & "[- :;/\.O]{0,4}(['’‘""])? {0,2}(\d{1,4})\b"
                     ms = Regex.Matches(text, pattern)
                     For Each m In ms
                         If m.Success Then
-                            Dim v1 = Math.Abs(m.Groups(2).Value - Now.Year.ToString.Substring(2, 2))
-                            Dim v2 = Math.Abs(m.Groups(4).Value - Now.Year.ToString.Substring(2, 2))
+                            Dim v1 = m.Groups(2).Value - Now.Year.ToString.Substring(2, 2)
+                            Dim v2 = m.Groups(4).Value - Now.Year.ToString.Substring(2, 2)
 
                             Dim after As String
                             Dim i = m.Groups(4).Index + m.Groups(4).Length
@@ -931,7 +1132,8 @@ Partial Class frmMain
 
                             If (m.Groups(2).Value.Length >= 3 AndAlso m.Groups(4).Value.Length <= 2) OrElse         ' 長さで年を判断
                                (m.Groups(1).Value = "'") OrElse                                                     ' 年を省略の’を付けた
-                                (m.Groups(2).Value > 31) Then                                                        ' 日の最終日31より大きい  
+                               (m.Groups(2).Value > 31) OrElse                                                     '  最終日31より大きい 
+                               (m.Groups(4).Value > Now.Year.ToString.Substring(2, 2)) Then                        '  現在年より大きい 
                                 Dim y = m.Groups(2).Value
                                 month = MonthNames(key)
                                 day = Integer.Parse(m.Groups(4).Value)          ' 年、月、日
@@ -953,10 +1155,10 @@ Partial Class frmMain
                                     SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, 0, 0)
                                     Return sm
                                 End If
-                            ElseIf (m.Groups(2).Value.Length <= 2 AndAlso m.Groups(4).Value.Length >= 3) OrElse         '　日、月、年
-                                (m.Groups(3).Value = "'") OrElse
-                                (m.Groups(4).Value > 31) Then    ' britishFormat nobaai 
-                                '(m.Groups(2).Value > Now.Year.ToString().Substring(2, 2)) Then
+                            ElseIf (m.Groups(2).Value.Length <= 2 AndAlso m.Groups(4).Value.Length >= 3) OrElse     ' 長さで年を判断'　日、月、年
+                                (m.Groups(3).Value = "'") OrElse                                                    ' 年を省略の’を付けた
+                                (m.Groups(4).Value > 31) OrElse    ' britishFormat nobaai                           '  最終日31より大きい 
+                                (m.Groups(2).Value > Now.Year.ToString.Substring(2, 2)) Then                        '  現在年より大きい 
                                 month = MonthNames(key)
                                 day = Integer.Parse(m.Groups(2).Value)
                                 Dim y = m.Groups(4).Value
@@ -1041,17 +1243,23 @@ Partial Class frmMain
                     Next
 
                     ' BrishFormat , IsoFormat で見つからなかった場合、AmericanFormatで探す
-                    pattern = "\b" & key & "[- .,/:;]{0,4}(\d{1,2})[- .,/:;]{1,4}(\d{2,4})\b"              '月、日、年の並び順     American Format の場合
+                    ' 誤読対策として、あえて空白を多く設けた
+                    pattern = "\b(\d{2,4})? {0,2}" & key & "([- .,/:;']{0,2})(\d{1,2})([- .,/:;']{1,3})(\d{2,4})\b"              '月、日、年の並び順     American Format の場合
                     ms = Regex.Matches(text, pattern)
                     For Each m In ms
                         If m.Success Then
+                            If m.Groups(1).Value <> "" Then Continue For                  ' 月名の前に数字があれば月、日、年でない
+                            'If m.Groups(2).Value.Trim <> m.Groups(4).Value.Trim Then Continue For   ' 区切り文字が違うならら年月日でない　時間を食っている可能性がある
+                            If m.Groups(4).Value.Trim = ":" Then Continue For   ' 区切り文字が違うならら年月日でない　時間を食っている可能性がある
+
+
                             month = MonthNames(key)
-                            day = Integer.Parse(m.Groups(1).Value)
-                            year = FixYear(m.Groups(2).Value)
+                            day = Integer.Parse(m.Groups(3).Value)
+                            year = FixYear(m.Groups(5).Value)
 
                             Dim after As String
-                            If m.Groups(2).Index + m.Groups(2).Length < text.Length Then                      ' 分の後ろの空白もMATCHに含むので、Groups(3)で処理
-                                after = text.Substring(m.Groups(2).Index + m.Groups(2).Length, 1).Trim        ' 時間後の空白もm.valueに含むため
+                            If m.Groups(5).Index + m.Groups(5).Length < text.Length Then                      ' 分の後ろの空白もMATCHに含むので、Groups(3)で処理
+                                after = text.Substring(m.Groups(5).Index + m.Groups(5).Length, 1).Trim        ' 時間後の空白もm.valueに含むため
                             Else
                                 after = ""
                             End If
@@ -1060,20 +1268,16 @@ Partial Class frmMain
 
                             If isValidDate(year, month, day) Then
                                 Dim s As String = FormatDate(year, month, day)
-                                UsedRanges.Add((s, m.Index, m.Length))
-                                SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, 0, 0)
+                                Dim idx = m.Groups(3).Index
+                                Dim len = m.Groups(5).Index - m.Groups(3).Index + m.Groups(5).Length
+                                UsedRanges.Add((s, idx, len))
+                                SetBaseDetection(DateBase, s, idx, len, 0, 0)
                                 Return s
                             End If
                         End If
                     Next
                 End If
             Next
-
-
-
-            'End If
-
-
 
             Return ""
         End Function
@@ -1109,224 +1313,229 @@ Partial Class frmMain
 
 
         Private Shared Function ExtractDateNumeric(text As String) As String
-            Dim ymd = ExtractDateNumericSub(text, 1)
-            If ymd <> "" Then Return ymd
 
-            ymd = ExtractDateNumericSub(text, 2)
-            If ymd <> "" Then Return ymd
-
-            ymd = ExtractDateNumericSub(text, 3)
-            If ymd <> "" Then Return ymd
-
-            Return ""
-        End Function
-
-
-        Private Shared Function ExtractDateNumericSub(text As String, Pat As Integer) As String
             ' 数字だけの日付
+            ' 年が真ん中に来るはずない 年は4桁または省略符号つきで区切り符号がある
 
-            text = CleanTextDateNumeric(text)
-
-            ' 年が真ん中に来るはずない
             Dim year As String = ""
             Dim month As String = ""
             Dim day As String = ""
             Dim ymd As String = ""
             Dim pattern As String = ""
-            If (DateFormat = DateFormats.BritishFormat) Then     '  British Format の場合
-                If Pat = 1 Then
-                    ' 区切り符号がある
-                    pattern = "\b([012]\d|3[01]|[1-9]) {0,2}[-/. ]{1,3} {0,2}(0\d|1[0-2]|[1-9]) {0,2}[-/. ']{1,3} {0,2}(')? ?((?:19|20)?\d{2})\b"
-                ElseIf Pat = 2 Then
-                    ' 区切り符号がなくてもよい
-                    pattern = "\b([012]\d|3[01]|[1-9]) {0,2}[-/. ]{0,1} {0,2}(0\d|1[0-2]|[1-9]) {0,2}[-/. ']{0,1} {0,2}(')? ?((?:19|20)?\d{2})\b"
-                End If
+            Dim m As Match
+            Dim ms As MatchCollection
 
-                Dim ms = Regex.Matches(text, pattern)
-                Dim m As Match = Nothing
+            text = CleanTextDateNumeric(text)
+
+            If (DateFormat = DateFormats.BritishFormat) Then     '  British Format の場合
+                pattern = "\b([012]\d|3[01]|[1-9])([-/. ]{1,3})(0[1-9]|1[0-2]|[1-9])([-/. ]{1,3})((?:('|19|20))?\d{2})\b"
+                ms = Regex.Matches(text, pattern)
                 For Each m In ms
                     If (m.Index < DateBase.Index) AndAlso (DateBase.Index = 0) Then Continue For
+                    If m.Groups(2).Value.Trim <> m.Groups(4).Value.Trim Then Continue For     ' 区切り符号が違うなら
 
-                    year = m.Groups(4).Value
-                    month = m.Groups(2).Value
+                    year = m.Groups(5).Value
+                    month = m.Groups(3).Value
                     day = m.Groups(1).Value
-                    If Not isValidDate(year, month, day) Then Continue For
                     ymd = FormatDate(year, month, day)
 
                     If Not IsUsed(m.Index, m.Length) Then
-                        DetectionDates.Add(New Detection With {.Value = ymd, .Index = m.Groups(0).Index, .Length = m.Groups(0).Length, .Row = 0, .Column = 0})
+                        If Not isValidDate(year, month, day) Then Continue For
+                        UsedRanges.Add((m.Groups(0).Value, m.Index, m.Length))
+                        SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, 0, 0)
+                        Return ymd
                     End If
                 Next
             ElseIf (DateFormat = DateFormats.AmericanFormat) Then
-                If Pat = 1 Then
-                    ' 区切り符号がある
-                    pattern = "\b(0\d|1[0-2]|[1-9]) {0,2}[-/. ]{1,3} {0,2}([012]\d|3[01]|[1-9]) {0,2}[-/. ']{1,3} {0,2}(')? ?((?:19|20)?\d{2})\b"
-                Else
-                    ' 区切り符号がなくてもよい
-                    pattern = "\b(0\d|1[0-2]|[1-9]) {0,2}[-/. ]{0,3} {0,2}([012]\d|3[01]|[1-9]) {0,2}[-/. ']{0,3} {0,2}(')? ?((?:19|20)?\d{2})\b"
-                End If
-
-                Dim ms = Regex.Matches(text, pattern)
-                Dim m As Match = Nothing
+                'pattern = "[\b|A-Z](0[1-9|1[0-2]|[1-9]) {0,2}([-/. ]{1,3}) {0,2}([012]\d|3[01]|[1-9])( {0,2}[-/. ]{1,3}) {0,2}((?:'|19|20)?\d{2})\b"
+                pattern = "\b(0[1-9|1[0-2]|[1-9])([-/. ]{0,3})([012]\d|3[01]|[1-9])([-/. ]{0,3})((?:'|19|20)?\d{2})\b"
+                ms = Regex.Matches(text, pattern)
                 For Each m In ms
                     If (m.Index < DateBase.Index) AndAlso (DateBase.Index = 0) Then Continue For
+                    If m.Groups(2).Value.Trim <> m.Groups(4).Value Then Continue For
 
-                    year = m.Groups(4).Value
+                    year = m.Groups(5).Value
                     month = m.Groups(1).Value
-                    day = m.Groups(2).Value
-                    If Not isValidDate(year, month, day) Then Continue For
+                    day = m.Groups(3).Value
                     ymd = FormatDate(year, month, day)
 
                     If Not IsUsed(m.Index, m.Length) Then
-                        DetectionDates.Add(New Detection With {.Value = ymd, .Index = m.Groups(0).Index, .Length = m.Groups(0).Length, .Row = 0, .Column = 0})
+                        If Not isValidDate(year, month, day) Then Continue For
+                        UsedRanges.Add((m.Groups(0).Value, m.Index, m.Length))
+                        SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, 0, 0)
+                        Return ymd
                     End If
                 Next
             ElseIf (DateFormat = DateFormats.IsoFormat) Then                                                      ' コロンがない場合 年，月、日の順とみなす  ISO Format
-                'If Pat = 1 Then
-                '    pattern = "\b(')? {0,2}([19|20]?\d{2}) {1,2}[-/. ]{1,2} {0,2}(0\d|1[0-2]|[1-9]) {0,2}[-/. ']{1,2} {1,2}([012]\d|3[01]|[1-9])\b"
-                'Else
-
-                pattern = "\b(')? {0,2}((?:19|20)?\d{2})[-/. ]{1,2}(0\d|1[0-2]|[1-9])[-/. ']{1,2}([012]\d|3[01]|[1-9])\b"
-
-                'End If
-
-                Dim ms = Regex.Matches(text, pattern)
-                Dim m As Match = Nothing
+                pattern = "\b(('|19|20)?\d{2}) {0,2}[-/. ]{1,2} {0,2}(0\d|1[0-2]|[1-9]) {0,2}[-/. ']{1,2} {0,2}([012]\d|3[01]|[1-9])\b"
+                ms = Regex.Matches(text, pattern)
                 For Each m In ms
                     If (m.Index < DateBase.Index) AndAlso (DateBase.Index = 0) Then Continue For
+                    'If m.Groups(2).Value.Trim > m.Groups(4).Value.Trim Then Continue For
 
-                    year = m.Groups(2).Value
+                    year = m.Groups(1).Value
                     month = m.Groups(3).Value
                     day = m.Groups(4).Value
-                    If Not isValidDate(year, month, day) Then Continue For
                     ymd = FormatDate(year, month, day)
-
                     If Not IsUsed(m.Index, m.Length) Then
-                        DetectionDates.Add(New Detection With {.Value = ymd, .Index = m.Groups(0).Index, .Length = m.Groups(0).Length, .Row = 0, .Column = 0})
+                        If Not isValidDate(year, month, day) Then Continue For
+                        UsedRanges.Add((m.Groups(0).Value, m.Index, m.Length))
+                        SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, 0, 0)
+                        Return ymd
                     End If
                 Next
             Else                ' DateFormat = DateFormats.invalidの場合 
-                Dim p1 As String = ""
-                If Pat = 1 Then
-                    p1 = "'?(\d{2,4})"
-                Else
-                    p1 = "'?(\d{1,4})"
-                End If
-                '            Dim p2 As String = " {0,2}[-/., ]{1,2} {0,2}"
-                Dim p2 As String = "([-/., ]{1,3})"
-                pattern = p1 & p2 & p1 & p2 & p1 & p2 & "?" & p1 & "?"
-
-                Dim ms = Regex.Matches(text, pattern)
-                Dim m As Match = Nothing
-
+                pattern = "\b(('|19|20)\d{2}) {0,2}([-/. ]{1,2}) {0,2}(0\d|1[0-2]|[1-9]) {0,2}([-/. ']{1,2}) {0,2}([012]\d|3[01]|[1-9])\b"   ' Iso format 年、月、日の順
+                ms = Regex.Matches(text, pattern)
                 For Each m In ms
+                    If (m.Index < DateBase.Index) AndAlso (DateBase.Index = 0) Then Continue For
+                    If m.Groups(3).Value.Trim <> m.Groups(5).Value.Trim Then Continue For
 
-                    Debug.Print("----------------------------------")
-                    For i As Integer = 0 To m.Groups.Count Step 1
-                        Debug.Print($"{i} ""{m.Groups(i).Value}""  {m.Groups(i).Index}")
-                    Next
-                    Debug.Print("----------------------------------")
-
-                    If m.Groups(3).Value.Trim <> m.Groups(6).Value.Trim Then Continue For      ' 年月日のセパレータが違っている
-                    If (m.Groups(1).Value = "'") OrElse (m.Groups(2).Length > 2) OrElse (m.Groups(2).Value > 31) Then   'm.Groups(2)が年なら、年、月、日の並び 
-                        year = m.Groups(2).Value
-                        month = m.Groups(5).Value
-                        day = m.Groups(8).Value
-                    ElseIf (m.Groups(7).Value = "'") OrElse (m.Groups(8).Length > 2) OrElse (m.Groups(8).Value > 31) Then       ' m.Groups(6)が年の場合
-                        year = m.Groups(8).Value
-                        If m.Groups(2).Value > 12 Then          ' 12より大きければ月でない
-                            month = m.Groups(5).Value
-                            day = m.Groups(2).Value
-                        ElseIf m.Groups(5).Value > 12 Then
-                            month = m.Groups(2).Value
-                            day = m.Groups(5).Value
-                        Else                                    ' どちらも12以下であれば、BritishFormatとみなす
-                            month = m.Groups(5).Value
-                            day = m.Groups(2).Value
-                        End If
-                    Else
-                        If (m.Groups(5).Value > 12) Then        ' 2番目が12以上だと、それは日か年だが2番目が年になることはない
-                            year = m.Groups(8).Value
-                            month = m.Groups(5).Value
-                            day = m.Groups(2).Value
-                        Else
-                            year = m.Groups(2).Value            ' 判断できないので年、月、日とする
-                            month = m.Groups(5).Value
-                            day = m.Groups(8).Value
-                        End If
+                    year = m.Groups(1).Value
+                    month = m.Groups(4).Value
+                    day = m.Groups(6).Value
+                    ymd = FormatDate(year, month, day)
+                    If Not IsUsed(m.Index, m.Length) Then
+                        If Not isValidDate(year, month, day) Then Continue For
+                        UsedRanges.Add((m.Groups(0).Value, m.Index, m.Length))
+                        SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, 0, 0)
+                        Return ymd
                     End If
+                Next
 
-                    If isValidDate(year, month, day) Then
+                pattern = "\b([012]\d|3[01]|[1-9]) {0,2}[-/. ]{1,2} {0,2}([012]\d|3[01]|[1-9]) {0,2}[-/. ']{1,2} {0,2}(('|19|20)?\d{2})\b"     ' British,Amerikan共通 format 日、月、年の順
+                ms = Regex.Matches(text, pattern)
+                For Each m In ms
+                    If (m.Index < DateBase.Index) AndAlso (DateBase.Index = 0) Then Continue For      ' TEST OK
+                    'If m.Groups(2).Value.Trim > m.Groups(4).Value.Trim Then Continue For
+
+                    year = m.Groups(3).Value
+                    year = year.Replace("'", "")                '  2桁年の前の省略符号を削除
+                    If m.Groups(1).Value <= 31 AndAlso m.Groups(2).Value <= 12 Then     '　DO　TEST
+                        month = m.Groups(2).Value
+                        day = m.Groups(1).Value
                         ymd = FormatDate(year, month, day)
-                        If ymd = "" Then Continue For
-                        Dim len = m.Groups(8).Index - m.Groups(2).Index + m.Groups(8).Length
-                        If Not IsUsed(m.Groups(2).Index, len) Then
-                            DetectionDates.Add(New Detection With {.Value = ymd, .Index = m.Groups(2).Index, .Length = len, .Row = 0, .Column = 0})
-                            Continue For
-                        End If
-                    End If
-
-                    If m.Groups(8).Value <> "" Then
-                        If (m.Groups(4).Value = "'") OrElse (m.Groups(5).Length > 2) Then           ' 項目を1個づらしでcheck 
-                            year = m.Groups(5).Value
-                            month = m.Groups(8).Value
-                            day = m.Groups(11).Value
-                        ElseIf (m.Groups(10).Value = "'") OrElse (m.Groups(11).Length > 2) Then
-                            year = m.Groups(11).Value
-                            If m.Groups(5).Value > 12 Then
-                                month = m.Groups(8).Value
-                                day = m.Groups(5).Value
-                            Else
-                                month = m.Groups(5).Value
-                                day = m.Groups(8).Value
-                            End If
-                        End If
                         If isValidDate(year, month, day) Then
-                            ymd = FormatDate(year, month, day)
-                            Dim len = m.Groups(11).Index - m.Groups(5).Index + m.Groups(11).Length
-                            If Not IsUsed(m.Groups(4).Index, len) Then
-                                DetectionDates.Add(New Detection With {.Value = ymd, .Index = m.Groups(4).Index, .Length = len, .Row = 0, .Column = 0})
-                                Continue For
+                            If Not IsUsed(m.Index, m.Length) Then
+                                UsedRanges.Add((m.Groups(0).Value, m.Index, m.Length))
+                                SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, 0, 0)
+                                Return ymd
                             End If
                         End If
-
+                    ElseIf m.Groups(2).Value <= 31 AndAlso m.Groups(1).Value <= 12 Then
+                        month = m.Groups(1).Value
+                        day = m.Groups(2).Value
+                        ymd = FormatDate(year, month, day)
+                        If isValidDate(year, month, day) Then
+                            If Not IsUsed(m.Index, m.Length) Then
+                                UsedRanges.Add((m.Groups(0).Value, m.Index, m.Length))
+                                SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, 0, 0)
+                                Return ymd
+                            End If
+                        End If
                     End If
                 Next
             End If
 
-            'If DetectionDates.Count = 1 Then               ’ 距離を判断する必要があるので、これを廃止
-            '    AddUsed(DetectionDates(0).Value, DetectionDates(0).Index, DetectionDates(0).Length)
-            '    SetBaseDetection(DateBase, DetectionDates(0).Value, DetectionDates(0).Index, DetectionDates(0).Length, 0, 0)
-            '    Return DetectionDates(0).Value
-            'End If
+            Return ""
 
-            If DateBaseTitle.Value <> "" Then
-                Dim bestAwnser As String() = ChooseBestDetection(DetectionDates, DateBaseTitle, False)
-                If bestAwnser(0) <> "" Then
-                    AddUsed(bestAwnser(0), bestAwnser(1), bestAwnser(2))
-                    SetBaseDetection(DateBase, bestAwnser(0), bestAwnser(1), bestAwnser(2), 0, 0)
-                    Return bestAwnser(0)
+        End Function
+
+
+        Private Shared Function ExtractVagueDateNumeric(text As String) As String
+
+            ' 数字だけの日付
+            ' Formatが不明。年、月、日も2桁の場合、どれが年か月か日か判断できない。
+
+            Dim year As String = ""
+            Dim month As String = ""
+            Dim day As String = ""
+            Dim ymd As String = ""
+            Dim pattern As String = ""
+            Dim m As Match
+            Dim ms As MatchCollection
+            Dim idx As Integer
+            Dim Len As Integer
+
+            text = CleanTextDateNumeric(text)
+            pattern = "\b('?)(\d{1,2})([-/., ']{1,3})(\d{1,2})([-/., ']{1,3})(\d{1,2})([-/., ']{1,3})(\d{1,2})\b"
+            ms = Regex.Matches(text, pattern)
+            For Each m In ms
+
+                Debug.Print("----------------------------------")
+                For i As Integer = 0 To m.Groups.Count Step 1
+                    Debug.Print($"{i} ""{m.Groups(i).Value}""  {m.Groups(i).Index}")
+                Next
+                Debug.Print("----------------------------------")
+
+                year = m.Groups(2).Value
+                month = m.Groups(4).Value
+                day = m.Groups(6).Value
+                If isValidDate(year, month, day) OrElse m.Groups(1).Value = "'" Then
+                    If Not IsUsed(m.Index, m.Length) Then           ' IsoFormat 年、月、日の順とみなす
+                        idx = m.Groups(1).Index
+                        Len = m.Groups(6).Index - m.Groups(1).Index + m.Groups(6).Length
+                        DetectionDates.Add(New Detection With {.Value = ymd, .Index = idx, .Length = Len, .Row = 0, .Column = 0})
+                    End If
+                Else
+                    year = m.Groups(6).Value                    ' BritishFormat 日、月、年の順
+                    month = m.Groups(4).Value
+                    day = m.Groups(2).Value
+                    If isValidDate(year, month, day) OrElse m.Groups(5).Value.Contains("'") Then
+                        If Not IsUsed(m.Index, m.Length) Then
+                            idx = m.Groups(1).Index
+                            Len = m.Groups(6).Index - m.Groups(1).Index + m.Groups(6).Length
+                            DetectionDates.Add(New Detection With {.Value = ymd, .Index = idx, .Length = Len, .Row = 0, .Column = 0})
+                        End If
+                    Else
+                        year = m.Groups(6).Value                    ' AmericanFormat 日、月、年の順
+                        month = m.Groups(2).Value
+                        day = m.Groups(4).Value
+                        If isValidDate(year, month, day) OrElse m.Groups(5).Value.Contains("'") Then
+                            If Not IsUsed(m.Index, m.Length) Then
+                                idx = m.Groups(1).Index
+                                Len = m.Groups(6).Index - m.Groups(1).Index + m.Groups(6).Length
+                                DetectionDates.Add(New Detection With {.Value = ymd, .Index = idx, .Length = Len, .Row = 0, .Column = 0})
+                            End If
+                        End If
+                    End If
                 End If
-            End If
 
-            'If DetectionDates.Count > 1 Then
-            '    AddUsed(DetectionDates(0).Value, DetectionDates(0).Index, DetectionDates(0).Length)
-            '    SetBaseDetection(DateBase, DetectionDates(0).Value, DetectionDates(0).Index, DetectionDates(0).Length, 0, 0)
-            '    Return DetectionDates(0).Value
-            'End If
+                year = m.Groups(4).Value
+                month = m.Groups(6).Value
+                day = m.Groups(8).Value
+                If isValidDate(year, month, day) OrElse m.Groups(1).Value = "'" Then
+                    If Not IsUsed(m.Index, m.Length) Then           ' IsoFormat 年、月、日の順とみなす
+                        idx = m.Groups(3).Index
+                        Len = m.Groups(8).Index - m.Groups(3).Index + m.Groups(8).Length
+                        DetectionDates.Add(New Detection With {.Value = ymd, .Index = idx, .Length = Len, .Row = 0, .Column = 0})
+                    End If
+                Else
+                    year = m.Groups(8).Value                    ' BritishFormat 日、月、年の順
+                    month = m.Groups(6).Value
+                    day = m.Groups(4).Value
+                    If isValidDate(year, month, day) OrElse m.Groups(5).Value.Contains("'") Then
+                        If Not IsUsed(m.Index, m.Length) Then
+                            idx = m.Groups(3).Index
+                            Len = m.Groups(8).Index - m.Groups(3).Index + m.Groups(8).Length
+                            DetectionDates.Add(New Detection With {.Value = ymd, .Index = idx, .Length = Len, .Row = 0, .Column = 0})
+                        End If
+                    Else
+                        year = m.Groups(8).Value                    ' AmericanFormat 日、月、年の順
+                        month = m.Groups(4).Value
+                        day = m.Groups(6).Value
+                        If isValidDate(year, month, day) OrElse m.Groups(5).Value.Contains("'") Then
+                            If Not IsUsed(m.Index, m.Length) Then
+                                idx = m.Groups(3).Index
+                                Len = m.Groups(8).Index - m.Groups(3).Index + m.Groups(8).Length
+                                DetectionDates.Add(New Detection With {.Value = ymd, .Index = idx, .Length = Len, .Row = 0, .Column = 0})
+                            End If
+                        End If
+                    End If
+                End If
 
-            ' 日付のTitleがない場合、Titleより後で100文字以内の位置にある日付を採用する
-            'If m IsNot Nothing Then
-            '    If (DateBaseTitle.Index <= 0) OrElse ((m.Index > DateBaseTitle.Index) AndAlso (m.Index < DateBaseTitle.Index + 100)) Then
-            '        AddUsed(m.Groups(0).Value, m.Index, m.Length)     ' yyyy/mm/dd
-            '        SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, 0, 0)
-            '        a = m.Groups(1).Value
-            '        b = m.Groups(2).Value
-            '        c = m.Groups(3).Value
-            '        Dim d = FormatDate(a, b, c)
-            '        Return d            ' Return $"{a:0000}/{b:00}/{c:00}"
-            '    End If
-            'End If
+
+            Next
 
             Return ""
         End Function
@@ -1335,9 +1544,10 @@ Partial Class frmMain
         Private Shared Function ExtractDateHamlog(text As String) As String
 
             Dim pattern = "(\d{2})([0][0-9]|[1][0-2])([0-2][0-9]|3[0-1])"
+            Dim ms = Regex.Matches(text, pattern)
 
-            Dim m = Regex.Match(text, pattern)
-            If m.Success Then
+            For Each m As Match In ms
+                m = Regex.Match(text, pattern)
                 Dim year = m.Groups(1).Value
                 Dim month = m.Groups(2).Value
                 Dim day = m.Groups(3).Value
@@ -1345,13 +1555,16 @@ Partial Class frmMain
                     year = year.Substring(1, 2)
                 End If
 
+                Dim before = text.Substring(m.Groups(1).Index - 1, 1).Trim
+                If before = "#" Then Continue For                           ' 直前が”＃”の時はJCGの可能性大
+
                 year = FixYear(year)           ' 年が2桁なら2000年代とみなす
                 If isValidDate(year, month, day) Then
                     If NegrectDate(text, m.Value, m.Index, m.Length) Then Return ""
 
-                    Return FormatDate(year, month, day)           ' Return $"{a:0000}/{b:00}/{c:00}"
+                    Return FormatDate(year, month, day)
                 End If
-            End If
+            Next
 
             Return ""
         End Function
@@ -1426,6 +1639,8 @@ Partial Class frmMain
 
 
         Private Shared Function ExtractDateWithMonthName2Line(text As String) As String
+            Console.WriteLine("JugementDateFormatFromEntity CALLED")
+
             'text = CleanTextDate(text)
             Dim pattern As String
             Dim m As Match
@@ -1433,67 +1648,97 @@ Partial Class frmMain
             Dim day As String
             Dim year As String = ""
             Dim sm As String
+
             Dim yearValue As String = ""
             Dim yearIndex As Integer
             Dim yearLength As Integer = 0
+            Dim yeardef As Integer = Integer.MaxValue
+
+            Dim yVal As String
+            Dim yIdx As Integer
+            Dim yLen As Integer
+            Dim ydef As Integer = Integer.MaxValue
+
+            text = CleanTextMisreadingDate(text)        ' 月名をミスリードしたものを補正する
 
             Dim DateFormat = JugementDateFormatFromEntity(qsoCallsign)      ' Enthityから日付のファーマっとを設
 
-            Dim y As String
-            Dim yDef As Integer = Integer.MaxValue
-            pattern = "\b(DATE)?.?(?:(19|20)?(\d{2}))\b"              '19xx,20xxのみ
+            'Dim y As String
+            'Dim yDef As Integer = Integer.MaxValue
+            pattern = "\b(DATE)?.?((?:(19|20|')?(\d{2})))\b"              '19xx,20xxのみ
             Dim ms = Regex.Matches(text, pattern)
             For Each m In ms
+
+                For Each h In m.Groups
+                    Debug.Print(h.ToString)
+                Next
+
+                Debug.Print("--" & m.Groups(3).Value)
+
+
                 If m.Success Then
                     If m.Groups(2).Value <> "" Then
-                        y = m.Groups(2).Value & m.Groups(3).Value
+                        If m.Groups(3).Value = "'" Then
+                            yVal = m.Groups(2).Value.Substring(1, m.Groups(2).Length - 1)
+                            yIdx = m.Groups(2).Index
+                            yLen = m.Groups(2).Length
+                        Else
+                            yVal = m.Groups(2).Value
+                            yIdx = m.Groups(2).Index
+                            yLen = m.Groups(2).Length
+                        End If
+                        ydef = Math.Abs(CDbl(yVal) - Now.Year)
                     Else
-                        y = m.Groups(3).Value
+                        yVal = FixYear(m.Groups(4).Value)       ' 年が2桁なら2000年代とみなす
+                        yIdx = m.Groups(4).Index
+                        yLen = m.Groups(4).Length
+                        ydef = Math.Abs(CDbl(yVal) - Now.Year)
                     End If
 
                     Dim after1, after2 As String
-                    If m.Groups(0).Index + m.Groups(0).Length + 1 >= text.Length Then
+                    If yIdx + yLen + 1 >= text.Length Then
                         after1 = ""
                         after2 = ""
                     Else
-                        after1 = text.Substring(m.Groups(0).Index + m.Groups(0).Length, 1).Trim
-                        after2 = text.Substring(m.Groups(0).Index + m.Groups(0).Length + 1, 1).Trim
+                        after1 = text.Substring(yIdx + yLen, 1).Trim
+                        after2 = text.Substring(yIdx + yLen + 1, 1).Trim
                     End If
                     If after1 >= "0" AndAlso after1 <= "9" Then Continue For
                     If after1 = "." AndAlso after2 >= "0" AndAlso after2 <= "9" Then Continue For
 
-
-                    If yearValue.Length > 2 Then　　　　　　　　　　　　　　　' 4桁年があったら、2桁年を採用しない
-                        If y.Length < 3 Then Continue For
-
+                    If m.Groups(3).Value <> "" Then
+                        year = yVal
+                        yearIndex = yIdx
+                        yearLength = yLen
+                        Exit For
                     End If
-                    y = FixYear(y)           ' 年が2桁なら2000年代とみなす
 
-                    If Math.Abs(y - Now.Year) > yDef Then Continue For     ' 現在年に近いほうを採用
-                    yearValue = m.Groups(0).Value
-                    yearIndex = m.Index
-                    yearLength = m.Length
-                    year = y
-                    yDef = Math.Abs(y - Now.Year)
-                End If
+                    If Math.Abs(yVal - Now.Year) > yeardef Then Continue For     ' 現在年に近いほうを採用
+                        year = yVal
+                        yearIndex = yIdx
+                        yearLength = yLen
+                        yeardef = Math.Abs(yVal - Now.Year)
+                    End If
             Next
             If yDef = Integer.MaxValue Then Return ""
+
 
             For Each key In MonthNames.Keys
                 If Not text.Contains(key) Then Continue For
                 '         pattern = "\b?(\d{1,2})?[\s/-]*" & key & "[\.\s/-']*(\d{1,2})?\b"              '月、日または日、月の並び順
-                pattern = "\b([0-2]\d|[3][0-1]|[1-9])[ /\-]{0,3}" & key & "\b"
+                pattern = "\b([0-2]\d|[3][0-1]|[1-9])[ /\-\.]{0,3}" & key & "\b"
                 m = Regex.Match(text, pattern)
                 If m.Success Then
                     If m.Groups(1).Value <> "" Then         ' (yy)yy-mm-dd  Japanese Format の場合
                         month = MonthNames(key)
                         day = Integer.Parse(m.Groups(1).Value)
                         If isValidDate(year, month, day) Then
+                            Dim s = FormatDate(year, month, day)
                             sm = FormatDate(year, month, day)
                             AddUsed(sm, m.Index, m.Length)
                             AddUsed(year, yearIndex, yearLength)
-                            SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, yearIndex, yearLength)
-                            Return sm
+                            SetBaseDetection(DateBase, s, m.Index, m.Length, yearIndex, yearLength)
+                            Return s
                         End If
                     End If
                 End If
@@ -1505,11 +1750,12 @@ Partial Class frmMain
                         month = MonthNames(key)
                         day = Integer.Parse(m.Groups(1).Value)
                         If isValidDate(year, month, day) Then
+                            Dim s = FormatDate(year, month, day)
                             sm = FormatDate(year, month, day)
                             AddUsed(sm, m.Index, m.Length)
                             AddUsed(year, yearIndex, yearLength)
-                            SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, yearIndex, yearLength)
-                            Return sm
+                            SetBaseDetection(DateBase, s, m.Index, m.Length, yearIndex, yearLength)
+                            Return s
                         End If
                     End If
                 End If
@@ -1528,60 +1774,75 @@ Partial Class frmMain
 
                 If yearIndex < m.Index Then
                     If isValidDate(year, month, day) Then
+                        Dim s = FormatDate(year, month, day)
                         sm = FormatDate(year, month, day)
                         AddUsed(sm, m.Index, m.Length)
                         AddUsed(year, yearIndex, yearLength)
-                        SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, yearIndex, yearLength)
+                        SetBaseDetection(DateBase, sm, m.Index, m.Length, yearIndex, yearLength)
                         Return sm
                     End If
                 End If
             End If
 
-            pattern = "\b([0-2]\d|[3][0-1]|[1-9])[ /\-]{0,3}(0[1-9]|1[0-2]|[1-9])\b"            ' 数字の日、月の順
-            m = Regex.Match(text, pattern)
-            If m.Success Then
+            pattern = "\b(0[1-9]|1[0-2]|[1-9])([ /\-]{0,3})([0-2]\d|[3][0-1]|[1-9])\b"               ' 数字の月、日の順
+            ms = Regex.Matches(text, pattern)
+            For Each m In ms
                 If m.Groups(1).Value <> "" Then         ' (yy)yy-mm-dd  Japanese Format の場合
-                    month = Integer.Parse(m.Groups(2).Value)
-                    day = Integer.Parse(m.Groups(1).Value)
+                    month = m.Groups(1).Value
+                    day = m.Groups(3).Value
 
-                    If yearIndex < m.Index Then
+                    If m.Groups(2).Value = "" Then
+                        If month.Length <> 2 OrElse day.Length <> 2 Then Continue For   ' 区切り符号がないときは月、日とも2桁なければならな
+                    End If
+
+                    If yearIndex < m.Index Then                 ' 年の位置より後方のみ
                         If isValidDate(year, month, day) Then
+                            '                            sm = m.Groups(1).Value & m.Groups(2).Value & m.Groups(3).Value
+                            Dim s = FormatDate(year, month, day)
                             sm = FormatDate(year, month, day)
-                            AddUsed(sm, m.Index, m.Length)
+                            AddUsed(sm, m.Groups(1).Value, m.Groups(1).Length + m.Groups(2).Length + m.Groups(3).Length)
                             AddUsed(year, yearIndex, yearLength)
-                            SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, yearIndex, yearLength)
+                            SetBaseDetection(DateBase, sm, m.Index, m.Length, yearIndex, yearLength)
                             Return sm
                         End If
                     End If
                 End If
-            End If
 
-            pattern = "\b(0[1-9]|1[0-2]|[1-9])[ /\-]{0,3}([0-2]\d|[3][0-1]|[1-9])\b"               ' 数字の月、日の順
-            m = Regex.Match(text, pattern)
-            If m.Success Then
-                If m.Groups(1).Value <> "" Then         ' (yy)yy-mm-dd  Japanese Format の場合
-                    month = Integer.Parse(m.Groups(1).Value)
-                    day = Integer.Parse(m.Groups(2).Value)
+            Next
 
-                    If yearIndex < m.Index Then
-                        If isValidDate(year, month, day) Then
-                            sm = FormatDate(year, month, day)
-                            AddUsed(sm, m.Index, m.Length)
-                            AddUsed(year, yearIndex, yearLength)
-                            SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, yearIndex, yearLength)
-                            Return sm
+            pattern = "\b([0-2]\d|[3][0-1]|[1-9])([ /\-]{0,3})(0[1-9]|1[0-2]|[1-9])\b"            ' 数字の日、月の順
+            ms = Regex.Matches(text, pattern)
+            For Each m In ms
+                If m.Success Then
+                    If m.Groups(1).Value <> "" Then         ' (yy)yy-mm-dd  Japanese Format の場合
+                        month = Integer.Parse(m.Groups(3).Value)
+                        day = Integer.Parse(m.Groups(1).Value)
+
+                        If m.Groups(2).Value = "" Then
+                            If month.Length <> 2 OrElse day.Length <> 2 Then Continue For   ' 区切り符号がないときは月、日とも2桁なければならな
+                        End If
+
+                        If yearIndex < m.Groups(0).Index Then
+                            If isValidDate(year, month, day) Then
+                                Dim s = FormatDate(year, month, day)
+                                sm = FormatDate(year, month, day)
+                                AddUsed(sm, m.Index, m.Length)
+                                AddUsed(year, yearIndex, yearLength)
+                                SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, yearIndex, yearLength)
+                                Return sm
+                            End If
                         End If
                     End If
                 End If
-            End If
+            Next
 
             Return ""
         End Function
 
 
         Private Shared Function ExtractJapaneseDate(text As String) As String
-            ' 日本語で年、月、日が書かれている場合の抽出
-            Dim yearPattern As String = "(?<Year>\d{4}|\d{2})(?=年)"
+            ' 日本語で年、月、日が書かれている場合の抽出     この場合、年、月、日の順は考慮していない
+            Dim yearPattern As String = "(?<Year>\d{4}|\d{2})(?=年)"         ' 年の値が項目<Year>に設定される
             Dim monthPattern As String = "(?<Month>\d{1,2})(?=月)"
             Dim dayPattern As String = "(?<Day>\d{1,2})(?=日)"
 
@@ -1603,6 +1864,7 @@ Partial Class frmMain
                     Return formattedDate
                 End If
             End If
+
             Return ""
         End Function
 
@@ -1659,10 +1921,13 @@ Partial Class frmMain
         Private Shared Function NegrectDate(text As String, ymd As String, index As Integer, length As Integer) As Boolean
             ' 日付の前後15文字以内に”PRINT”などの文字を含んでいるか
             Dim sz = 15
-            Dim len = length + sz
-            If index + len > text.Length Then len = text.Length - (index + length) + sz
+            Dim idx = index - sz
+            If idx < 0 Then idx = 0
 
-            Dim s As String = text.Substring(index - sz, len)
+            Dim len = length + 2 * sz
+            If index + len > text.Length Then len = text.Length - idx
+
+            Dim s As String = text.Substring(idx, len)
 
             If s.Contains("PRINT") Then
                 Return True
@@ -1787,6 +2052,22 @@ Partial Class frmMain
             Return ""
         End Function
 
+        Private Shared Function FormatMonthDay(month As String, day As String) As String
+            ' スラッシュ(/)で連結　　大の月、小の月は別途
+            If month = "0" OrElse "0" Then Return ""
+
+            If CInt(month) > 12 Then Return ""
+            month = "0" & month
+            month = month.Substring(month.Length - 2, 2)
+            If CInt(day) > 31 Then Return ""
+            day = "0" & day
+            day = day.Substring(day.Length - 2, 2)
+
+            Dim dateString As String = $"{month:MM}/{day:00}"
+            Return dateString
+
+        End Function
+
 
         Private Shared Function CleanTextMisreadingDate(text As String) As String
             Dim s = text
@@ -1806,16 +2087,19 @@ Partial Class frmMain
             's = s.Replace(vbLf, " ")
             ' s = s.Replace("'", " ")           ' 年の基準にするため,置き換えない
 
-            s = s.Replace("|", " ")
+            s = s.Replace("—", "-")
             s = s.Replace("I", "1")     ' 月名にIはないので、1に変換
+            s = s.Replace(";", "/")
+            s = s.Replace("\", "/")
+
+            s = s.Replace("|", " ")
             s = s.Replace(",", " ")     ' 年月日なので、スラッシュに変換
             's = s.Replace(".", " ")
             s = s.Replace("[", " ")
             s = s.Replace("]", " ")
             s = s.Replace("=", " ")
+            s = s.Replace("!", " ")
 
-            s = s.Replace(";", "/")
-            s = s.Replace("\", "/")
             s = s.Replace("(", " ")
             s = s.Replace(")", " ")
             s = s.Replace("{", " ")
@@ -1897,7 +2181,7 @@ Partial Class frmMain
 
             DetectionTimes.Clear()
             ClearBaseDetection(TimeBaseTitle)
-            pattern = "(TIME|HHMM|JST|J0T|AST|UTC|T1ME|T1NE|UST|時刻)"       '　誤読を考慮
+            pattern = "(TIME|HHMM|JST|J0T|AST|UTC|GMT|T1ME|T1NE|UST|時刻)"       '　誤読を考慮
             m = Regex.Match(cleaned, pattern)
             If m.Success = True Then
                 Dim index As Integer = m.Index
@@ -1912,9 +2196,12 @@ Partial Class frmMain
 
             DetectionTimes.Clear()
 
+            Dim timefromText = ExtractJapaneseTime(cleaned)
+            If timefromText <> "" Then Return timefromText
+
             ' 時刻パターン（例：09:00JST 9:00など）　厳密パターン1
             ' 文字区切りがあり、時と分の間は区切符号が1個 UTC,JSZ,Zの１文字がある
-            pattern = "(\b)([01]\d|2[0-3]|[1-9]) {0,3}([-:\.]) {0,3}([0-5]\d)(\s){0,2}?(JS|UT|Z|TI|AS)"       ' TIはTIMEの一部,ASは誤読対策
+            pattern = "\b([01]\d|2[0-3]|[1-9]) {0,3}([-:/\.]) {0,3}([0-5]\d)(\s){0,2}?(JS|UT|GM|Z|TI|AS)"       ' TIはTIMEの一部,ASはJSの誤読対策
             mc = Regex.Matches(cleaned, pattern)
             For Each m In mc
                 If m.Success Then
@@ -1931,7 +2218,7 @@ Partial Class frmMain
                     If Char.IsDigit(before1) AndAlso (Not Char.IsLetterOrDigit(before2)) Then
                         Continue For            '直前が記号で、その前が数字なら、マッチした値は何かの一部
                     End If
-                    If m.Groups(0).Index + m.Groups(0).Length >= cleaned.Length Then
+                    If m.Groups(0).Index + m.Groups(0).Length + 1 >= cleaned.Length Then
                         after1 = ""
                         after2 = ""
                     Else
@@ -1943,7 +2230,7 @@ Partial Class frmMain
                     End If
 
 
-                    Dim s = m.Groups(2).Value & ":" & m.Groups(4).Value
+                    Dim s = m.Groups(1).Value & ":" & m.Groups(3).Value
                     ' 時刻の妥当性チェック
                     If IsValidTime(m.Groups(2).Value, m.Groups(4).Value) Then
                         DetectionTimes.Add(New Detection With {.Value = s, .Index = m.Groups(0).Index, .Length = s.Length, .Row = 0, .Column = 0})
@@ -1957,9 +2244,9 @@ Partial Class frmMain
                 Return FormatTime(DetectionTimes(0).Value)
             End If
 
-            ' 時刻パターン（例：09:00JST 9:00など）　厳密パターン2
-            ' 文字区切りがあり、時と分の間は区切符号が1個 UTC,JSZ,Zの１文字がある
-            pattern = "\b([01]\d|2[0-3]|[0-9]) {0,3}([:]) {0,3}([0-5]\d)\s?[JUZTA]?\b"
+            ' 時刻パターン（例：09:00JST 9:00など）　パターン2
+            ' 文字区切りがあり、時と分の間は区切符号が1個 UTC,JSZ,Zの１文字があってもなくてもよい
+            pattern = "\b([01]\d|2[0-3]|[1-9]) {0,3}([:/]) {0,3}([0-5]\d)\s?[JUZTA]?\b"
             mc = Regex.Matches(cleaned, pattern)
             For Each m In mc
                 'Debug.Print($"({m.Value}, {m.Index}, {m.Length})")
@@ -1986,7 +2273,20 @@ Partial Class frmMain
                         DetectionTimes.Add(New Detection With {.Value = s, .Index = m.Groups(0).Index, .Length = s.Length, .Row = 0, .Column = 0})
                     End If
                 End If
+                'If DetectionTimes.Count = 1 Then        ' 厳密チェックで１つしか見つからない場合、それをそのまま答えとする
+                '    AddUsed(DetectionTimes(0).Value, DetectionTimes(0).Index, DetectionTimes(0).Length)
+                '    SetBaseDetection(TimeBase, DetectionTimes(0).Value, DetectionTimes(0).Index, DetectionTimes(0).Length, 0, 0)
+                '    Return FormatTime(DetectionTimes(0).Value)
+                'End If
             Next
+            If TimeBaseTitle.Value <> "" Then
+                Dim bestAwnser As String() = ChooseBestDetection(DetectionTimes, TimeBaseTitle, False)
+                If bestAwnser(0) <> "" Then
+                    AddUsed(bestAwnser(0), bestAwnser(1), bestAwnser(2))
+                    SetBaseDetection(TimeBase, bestAwnser(0), bestAwnser(1), bestAwnser(2), 0, 0)
+                    Return FormatTime(bestAwnser(0))
+                End If
+            End If
 
             ' 日本語時刻パターン（例：09時 00分など）
             ' 文字区切りがあり、
@@ -2020,33 +2320,40 @@ Partial Class frmMain
                 End If
             Next
 
-            ' 厳密パターンで抽出しているので、ここまでで対象があればその値とする
-            If DateBase.Value <> "" Then
-                Dim bestAwnser As String() = ChooseBestDetection(DetectionTimes, DateBase, False)
-                If bestAwnser(0) <> "" Then
-                    AddUsed(bestAwnser(0), bestAwnser(1), bestAwnser(2))
-                    SetBaseDetection(TimeBase, bestAwnser(0), bestAwnser(1), bestAwnser(2), 0, 0)
-                    Return FormatTime(bestAwnser(0))
-                End If
-            End If
+            '番地の"1-11“” のような表記がある場合、誤認識することがあるので、除外する
 
-            If TimeBaseTitle.Value <> "" Then
-                Dim bestAwnser As String() = ChooseBestDetection(DetectionTimes, TimeBaseTitle, False)
-                If bestAwnser(0) <> "" Then
-                    AddUsed(bestAwnser(0), bestAwnser(1), bestAwnser(2))
-                    SetBaseDetection(TimeBase, bestAwnser(0), bestAwnser(1), bestAwnser(2), 0, 0)
-                    Return FormatTime(bestAwnser(0))
-                End If
-            End If
+            ' 厳密パターンで抽出しているので、ここまでで対象があればその値とする
+            'If DateBase.Value <> "" Then
+            '    Dim bestAwnser As String() = ChooseBestDetection(DetectionTimes, DateBase, False)
+            '    If bestAwnser(0) <> "" Then
+            '        AddUsed(bestAwnser(0), bestAwnser(1), bestAwnser(2))
+            '        SetBaseDetection(TimeBase, bestAwnser(0), bestAwnser(1), bestAwnser(2), 0, 0)
+            '        Return FormatTime(bestAwnser(0))
+            '    End If
+            'End If
+
+            'If TimeBaseTitle.Value <> "" Then
+            '    Dim bestAwnser As String() = ChooseBestDetection(DetectionTimes, TimeBaseTitle, False)
+            '    If bestAwnser(0) <> "" Then
+            '        AddUsed(bestAwnser(0), bestAwnser(1), bestAwnser(2))
+            '        SetBaseDetection(TimeBase, bestAwnser(0), bestAwnser(1), bestAwnser(2), 0, 0)
+            '        Return FormatTime(bestAwnser(0))
+            '    End If
+            'End If
 
             ' 文字区切りがなくてもよい、JSTなどで終わらなくてもよい
-            '          pattern = "\b(AT|TIME)?([-:\. ])? {0,3}([01]\d|2[0-3]|[1-9]) {0,3}([-:\.])? {0,3}([0-5]\d)(\s{0,2})?(JS|UT|Z|TI|AS)?"       ' TIはTIMEの一部,ASは誤読対策
-            pattern = "\b(AT|TIME)?([-:\. ]){0,3}([01]\d|2[0-3]|[1-9])([-:\. ]){0,3}([0-5]\d)\s{0,2}(JS|UT|Z|TI|AS)?"       ' TIはTIMEの一部,ASは誤読対策
+            '          pattern = "\b([01]\d|2[0-3]|[1-9]) {0,3}([-:\.])? {0,3}([0-5]\d)(\s{0,2})\b?"       ' TIはTIMEの一部,ASは誤読対策
+            pattern = "\b([01]\d|2[0-3]|[1-9])([-:\. ]){0,3}([0-5]\d)\s{0,2}\b?"       ' TIはTIMEの一部,ASは誤読対策
             mc = Regex.Matches(cleaned, pattern)
             For Each m In mc
                 If m.Success Then
 
-                    If Not CheckCharsAroundTime(cleaned, m.Groups(3).Index, m.Groups(3).Length + m.Groups(4).Length + m.Groups(5).Length) Then Continue For
+                    'For Each z In m.Groups
+                    '    Debug.Print($"v={z.value} I={z.i}")
+
+                    'Next
+
+                    If Not CheckCharsAroundTime(cleaned, m.Groups(1).Index, m.Groups(1).Length + m.Groups(2).Length + m.Groups(3).Length) Then Continue For
 
 
 
@@ -2072,11 +2379,11 @@ Partial Class frmMain
 
                     If IsUsed(m.Index, m.Length) Then Continue For
 
-                    If (m.Groups(3).Value <> "") AndAlso (m.Groups(5).Value <> "") Then
+                    If (m.Groups(1).Value <> "") AndAlso (m.Groups(3).Value <> "") Then
                         'Dim s = $"{"0" & m.Groups(3).Value}:{"0" & m.Groups(5).Value}"
-                        Dim s = FormatTime(m.Groups(3).Value, m.Groups(5).Value)
+                        Dim s = FormatTime(m.Groups(1).Value, m.Groups(3).Value)
                         ' 時刻の妥当性チェック
-                        If IsValidTime(m.Groups(3).Value, m.Groups(5).Value) Then
+                        If IsValidTime(m.Groups(1).Value, m.Groups(3).Value) Then
                             DetectionTimes.Add(New Detection With {.Value = s, .Index = m.Groups(0).Index, .Length = s.Length, .Row = 0, .Column = 0})
                         End If
                     End If
@@ -2232,6 +2539,32 @@ Partial Class frmMain
             Return ""
         End Function
 
+
+        Private Shared Function ExtractJapaneseTime(text As String) As String
+            ' 日本語で年、月、日が書かれている場合の抽出     この場合、年、月、日の順は考慮していない
+            Dim TimesHorePattern As String = "(?<Times>[01]\d|2[0-3]|[0-9])(?=時)"         ' 時年の値が項目<hour>に設定される
+            Dim MinutesParttern As String = "(?<Minutes>[0-5]\d|[1-9])(?=分)"
+
+            Dim TimesMatch = Regex.Match(text, TimesHorePattern)
+            Dim MinutesMatch = Regex.Match(text, MinutesParttern)
+
+            Dim Times As String = If(TimesMatch.Success, TimesMatch.Groups("Times").Value, "")
+            Dim Minutes As String = If(MinutesMatch.Success, MinutesMatch.Groups("Minutes").Value, "")
+
+            If Times <> "" AndAlso Minutes <> "" Then
+                If IsValidTime(Times, Minutes) Then
+                    Dim formattedTime = FormatTime(Times, Minutes)
+                    AddUsed(formattedTime, TimesMatch.Index, TimesMatch.Length)
+                    AddUsed(formattedTime, MinutesMatch.Index, MinutesMatch.Length)
+                    SetBaseDetection(DateBase, formattedTime, TimesMatch.Index, TimesMatch.Length, 0, 0)
+                    Return formattedTime
+                End If
+            End If
+
+            Return ""
+        End Function
+
+
         Private Shared Function CheckCharsAroundTime(text As String, index As Integer, length As Integer) As Boolean
             Dim before, after As String
             If index = 0 Then
@@ -2324,14 +2657,20 @@ Partial Class frmMain
 
 
         Private Shared Function IsValidTime(HH As String, DD As String) As Boolean
-            Dim hour = Integer.Parse("0" & HH)
-            Dim minute = Integer.Parse("0" & DD)
+            'If HH.Trim = "" Then Return False
+            'If DD.Trim = "" Then Return False
 
-            ' 時刻の妥当性チェック
-            If hour < 0 Or hour > 23 Then Return False
-            If minute < 0 Or minute > 59 Then Return False
-            Return True
-
+            Dim HHMM = HH & ":" & DD & ":00"
+            Dim parsedHHMM As DateTime
+            If DateTime.TryParse(HHMM, parsedHHMM) Then
+                ' 変換成功
+                Return True
+                'Console.WriteLine(parsedHHMM.ToLongTimeString())
+            Else
+                ' 変換失敗
+                Return False
+                'Console.WriteLine("無効な時刻文字列です")
+            End If
         End Function
 
 
@@ -2385,6 +2724,11 @@ Partial Class frmMain
                     End If
                 Next
             Next
+            If DetectionModes.Count = 1 Then
+                AddUsed(DetectionModes(0).Value, DetectionModes(0).Index, DetectionModes(0).Length)
+                SetBaseDetection(ModeBase, m.Groups(1).Value, m.Groups(1).Index, m.Groups(1).Length, 0, 0)  ' 
+                Return DetectionModes(0).Value
+            End If
 
             ' 2, エイリアスモードが含まれているかチェック
             For Each keys In AliasModes
@@ -2399,6 +2743,11 @@ Partial Class frmMain
                     End If
                 Next
             Next
+            If DetectionModes.Count = 1 Then
+                AddUsed(DetectionModes(0).Value, DetectionModes(0).Index, DetectionModes(0).Length)
+                SetBaseDetection(ModeBase, m.Groups(1).Value, m.Groups(1).Index, m.Groups(1).Length, 0, 0)  ' 
+                Return DetectionModes(0).Value
+            End If
 
             ' 3, 誤読辞書に含まれているかチェック
             For Each keys In MisReadingModes
@@ -2453,8 +2802,6 @@ Partial Class frmMain
                     Dim row = text.LastIndexOf(ControlChars.Lf, Index)
                     Dim column = Index - text.LastIndexOf(ControlChars.Lf, Index)
                     DetectionModes.Add(New Detection With {.Value = m.Groups(2).Value, .Index = m.Groups(2).Index, .Length = m.Groups(2).Length, .Row = row, .Column = column})
-
-
                 End If
             Next
 
@@ -2706,10 +3053,9 @@ Partial Class frmMain
             Dim Bandformat As BandFormats
 
             text = text.Replace(vbLf, " ")
-            text = text.Replace(",", ".")
-            Dim cleaned = CleanTextBandCommon(text)
+            Dim cleaned = text.Replace(",", ".")
+            cleaned = CleanTextBandCommon(cleaned)
             cleaned = CleanTextBand(cleaned)
-
 
             Bandformat = BandFormats.Unknown
 
@@ -2774,8 +3120,6 @@ Partial Class frmMain
             If band <> "" Then
                 Return band
             End If
-
-
 
             If DetectionBands.Count = 0 Then
                 'If band = "" Then
@@ -2874,14 +3218,14 @@ Partial Class frmMain
             Dim m As Match
             Dim unit As String = ""
 
-            pattern = "\bBAND( {0,2})(\d+(\.\d+)?)( ?)([M:CM])\b"                   ' eQSlにある ”Band: 160M”　のパターン Bandのあとの：はCleanTextFreqで空白に置き換えてある
+            pattern = "\b(BAND|YOUR|Y0UR)? {0,2}(\d+(\.\d+)?) ?(M|CM)\b"                   ' eQSlにある ”Band: 160M”　のパターン Bandのあとの：はCleanTextFreqで空白に置き換えてある
             For Each m In Regex.Matches(text, pattern)
                 If IsUsed(m.Index, m.Length) Then Continue For
 
                 Dim f As Double
                 If Not Double.TryParse(m.Groups(2).Value, f) Then Continue For
 
-                Dim s As String = f.ToString() & m.Groups(5).Value
+                Dim s As String = f.ToString() & m.Groups(4).Value
                 If Array.IndexOf(Bands, s) < 0 Then Continue For     ' Bandのリストにない
                 If NegrectBand(text, s, m.Index, m.Length) Then Continue For
                 ' 行とカラムを計算するメソッドを呼び出す
@@ -2986,40 +3330,6 @@ Partial Class frmMain
 
             Next
 
-
-
-            'For Each b In BandList.Bands        ' 40M, 2M 等の波長表示
-            '    If b = "SAT" Then Continue For
-            '    If upper.Contains(b) Then
-            '        Dim pattern = "\b" & b & "\b"
-            '        Dim ms = Regex.Matches(upper, pattern)
-            '        For Each m As Match In ms
-            '            If IsUsed(m.Index, m.Length) Then
-            '                Continue For
-            '            End If
-
-            '            Dim before, after As String
-            '            If m.Groups(0).Index = 0 Then
-            '                before = ""
-            '            Else
-            '                before = upper.Substring(m.Groups(0).Index - 1, 1).Trim
-            '            End If
-
-            '            If m.Groups(0).Index + m.Groups(0).Length >= upper.Length Then
-            '                after = ""
-            '            Else
-            '                after = upper.Substring(m.Groups(0).Index + m.Groups(0).Length, 1).Trim
-            '            End If
-
-            '            If Not (before < "0" OrElse before > "9") Then Continue For
-            '            If Not (after < "0" OrElse after > "9") Then Continue For
-            '            If after = "M" Then Continue For   ' 15MHなどを除く
-
-            '            DetectionBands.Add(New Detection With {.Value = b, .Index = m.Index, .Length = m.Length, .Row = 0, .Column = 0})
-            '        Next
-            '    End If
-            'Next
-
             Return ""
         End Function
 
@@ -3109,6 +3419,7 @@ Partial Class frmMain
                 If after >= "0" AndAlso after <= "9" Then Continue For      ' 後ろが数字なら対象外
                 If after = "M" AndAlso after2 = "H" Then Continue For       ' MHを除く
                 If after = "-M" AndAlso after2 = "W" Then Continue For      ' -Wayを除く
+                If after.Trim = "" AndAlso after2 = "W" Then Continue For      ' -Wayを除く
 
                 Dim v3 = after.Trim
                 If v3 = "W" Then Continue For                               ' 2Way,50Wの表記などを除く
@@ -3388,6 +3699,7 @@ Partial Class frmMain
 
             s = s.Replace("FREA", "FREQ")
             s = s.Replace("HHZ", "MHZ")
+            s = s.Replace("BAMD", "BAND")
             Return s
         End Function
 
@@ -3424,7 +3736,7 @@ Partial Class frmMain
             s = s.Replace("O", "0")
             s = s.Replace("I", "1")
             s = s.Replace("L", "1")
-            s = s.Replace("N", "M")
+            's = s.Replace("N", "M")
             s = s.Replace(",", ".")
             Return s
         End Function

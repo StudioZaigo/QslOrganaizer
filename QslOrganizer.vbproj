@@ -17,6 +17,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="AboutBox1.Designer.vb" />
+    <Compile Remove="AboutBox1.vb" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="AboutBox1.resx" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="QslOrganizer.ico" />
   </ItemGroup>
 

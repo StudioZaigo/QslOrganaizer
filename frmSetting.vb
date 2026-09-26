@@ -70,6 +70,18 @@ Public Class frmSetting
             Return
         End If
 
+        txtFontSize.Text = txtFontSize.Text.Trim
+        If txtFontSize.Text = "" Then
+            MessageBox.Show("フォントサイズを入力してください。", "入力エラー",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error)
+            txtFontSize.Focus()
+            Return
+        ElseIf Not Double.TryParse(txtFontSize.Text, Nothing) Then
+            MessageBox.Show("フォントサイズは数字のみで入力してください。", "入力エラー",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error)
+            txtFontSize.Focus()
+        End If
+
         AppSettings.LoadJson(AppSettings.SettingsFile)
 
         AppSettings.SetJson("General", "MyCallsigns", txtMyCallsigns.Text)
@@ -141,7 +153,6 @@ Public Class frmSetting
             e.Handled = True
         End If
 
-
         ' 2. 小数点に関する制限
         If e.KeyChar = "."c Then
             ' すでに小数点がある場合は、2つ目を拒否
@@ -171,7 +182,6 @@ Public Class frmSetting
             End If
         End If
     End Sub
-
 
 
 End Class

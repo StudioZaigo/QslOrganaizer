@@ -45,11 +45,11 @@ Partial Class frmMain
         btnOnlineOcr = New Button()
         btnOfflineOcr = New Button()
         txtBand = New TextBox()
-        txtTime = New TextBox()
+        txtQsoTime = New TextBox()
         btnSave = New Button()
         btnOpenImage = New Button()
         txtMode = New TextBox()
-        txtDate = New TextBox()
+        txtQsoDate = New TextBox()
         PnlPic = New Panel()
         PicQsl = New PictureBox()
         PnlList = New Panel()
@@ -125,11 +125,11 @@ Partial Class frmMain
         pnlBtn.Controls.Add(btnOnlineOcr)
         pnlBtn.Controls.Add(btnOfflineOcr)
         pnlBtn.Controls.Add(txtBand)
-        pnlBtn.Controls.Add(txtTime)
+        pnlBtn.Controls.Add(txtQsoTime)
         pnlBtn.Controls.Add(btnSave)
         pnlBtn.Controls.Add(btnOpenImage)
         pnlBtn.Controls.Add(txtMode)
-        pnlBtn.Controls.Add(txtDate)
+        pnlBtn.Controls.Add(txtQsoDate)
         pnlBtn.Dock = DockStyle.Bottom
         pnlBtn.Location = New Point(0, 417)
         pnlBtn.Margin = New Padding(3, 2, 3, 2)
@@ -314,17 +314,17 @@ Partial Class frmMain
         txtBand.Size = New Size(110, 25)
         txtBand.TabIndex = 32
         ' 
-        ' txtTime
+        ' txtQsoTime
         ' 
-        txtTime.BorderStyle = BorderStyle.FixedSingle
-        txtTime.CharacterCasing = CharacterCasing.Upper
-        txtTime.Font = New Font("Consolas", 11.25F)
-        txtTime.ImeMode = ImeMode.Disable
-        txtTime.Location = New Point(485, 28)
-        txtTime.Margin = New Padding(3, 2, 3, 2)
-        txtTime.Name = "txtTime"
-        txtTime.Size = New Size(110, 25)
-        txtTime.TabIndex = 30
+        txtQsoTime.BorderStyle = BorderStyle.FixedSingle
+        txtQsoTime.CharacterCasing = CharacterCasing.Upper
+        txtQsoTime.Font = New Font("Consolas", 11.25F)
+        txtQsoTime.ImeMode = ImeMode.Disable
+        txtQsoTime.Location = New Point(485, 28)
+        txtQsoTime.Margin = New Padding(3, 2, 3, 2)
+        txtQsoTime.Name = "txtQsoTime"
+        txtQsoTime.Size = New Size(110, 25)
+        txtQsoTime.TabIndex = 30
         ' 
         ' btnSave
         ' 
@@ -362,18 +362,19 @@ Partial Class frmMain
         txtMode.Size = New Size(95, 25)
         txtMode.TabIndex = 34
         ' 
-        ' txtDate
+        ' txtQsoDate
         ' 
-        txtDate.BackColor = SystemColors.Window
-        txtDate.BorderStyle = BorderStyle.FixedSingle
-        txtDate.CharacterCasing = CharacterCasing.Upper
-        txtDate.Font = New Font("Consolas", 11.25F)
-        txtDate.ImeMode = ImeMode.Disable
-        txtDate.Location = New Point(360, 28)
-        txtDate.Margin = New Padding(3, 2, 3, 2)
-        txtDate.Name = "txtDate"
-        txtDate.Size = New Size(110, 25)
-        txtDate.TabIndex = 28
+        txtQsoDate.AllowDrop = True
+        txtQsoDate.BackColor = SystemColors.Window
+        txtQsoDate.BorderStyle = BorderStyle.FixedSingle
+        txtQsoDate.CharacterCasing = CharacterCasing.Upper
+        txtQsoDate.Font = New Font("Consolas", 11.25F)
+        txtQsoDate.ImeMode = ImeMode.Disable
+        txtQsoDate.Location = New Point(360, 28)
+        txtQsoDate.Margin = New Padding(3, 2, 3, 2)
+        txtQsoDate.Name = "txtQsoDate"
+        txtQsoDate.Size = New Size(110, 25)
+        txtQsoDate.TabIndex = 28
         ' 
         ' PnlPic
         ' 
@@ -480,11 +481,11 @@ Partial Class frmMain
     Friend WithEvents btnOnlineOcr As Button
     Friend WithEvents btnOfflineOcr As Button
     Friend WithEvents txtBand As TextBox
-    Friend WithEvents txtTime As TextBox
+    Friend WithEvents txtQsoTime As TextBox
     Friend WithEvents btnSave As Button
     Friend WithEvents btnOpenImage As Button
     Friend WithEvents txtMode As TextBox
-    Friend WithEvents txtDate As TextBox
+    Friend WithEvents txtQsoDate As TextBox
     Friend WithEvents PnlPic As Panel
     Friend WithEvents PicQsl As PictureBox
     Friend WithEvents PnlList As Panel

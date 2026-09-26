@@ -64,7 +64,11 @@ JPEG / JPG / PNG / BMP / GIF / TIFF
 
 
 
-2026-09-09 Ver 1.1.2.5
+2026-09-21 Ver 1.1.2.5
+
+・Autoモードの時、対象ファイルが「jpg」のみになっていた。「jpeg、png、bmp」を追加した
+
+・入力ファイル名にCallsign、Date～Modeがあるとき、OCRでは上書きをしないようにした
 
 ・TextBox、ListBox項目のフォントをYu Gothic UIからConsolasに変更した。これにより英字「O」と数字「0」の
 
@@ -75,6 +79,14 @@ JPEG / JPG / PNG / BMP / GIF / TIFF
 ・今回は、Callsignの読み取り精度の向上に努めた
 
 ・さらに読み取り精度向上、誤りの訂正をした
+
+・履歴ファイルを出力するようにした。
+
+・「Auto」で処理したとき、次に呼ぼ出されたファイルは、「Offlien」処理に戻っていた。
+
+　これを「Online」、「Offline」処理が継続するようにした。
+
+・「AboutBox」を見直した。
 
 
 
