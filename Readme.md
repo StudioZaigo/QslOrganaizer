@@ -50,7 +50,7 @@ JPEG / JPG / PNG / BMP / GIF / TIFF
 
 4．使用技術
 
-•	OCR：Google Tesseract
+•	OCR：Google Azuru Tesseract
 
 •	Callsign判定：CTY.CSV（country-files.com）
 
@@ -61,6 +61,16 @@ JPEG / JPG / PNG / BMP / GIF / TIFF
 
 
 5．履歴
+
+
+
+2026-09-30 Ver 1.1.3.0
+
+・Online読み取りにMicrosoft Azure　Vision AIを利用できるようにした。
+
+・細かな誤りの修正
+
+
 
 
 
