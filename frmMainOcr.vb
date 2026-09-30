@@ -81,7 +81,8 @@ Module ModeList
 
     ' 例："DSTAR"は、正式名"D-STAR"に置き換えられる（ADIFでの"DSTAR"は誤り、JARLは放置している）
     Public ReadOnly AliasModes As New Dictionary(Of String, String)() From {
-        {"J3E", "SSB"}, {"LSB", "SSB"}, {"USB", "SSB"}, {"FT-8", "FT8"}, {"A1", "CW"}, {"A1A", "CW"}, {"F3", "FM"},
+        {"J3E", "SSB"}, {"LSB", "SSB"}, {"USB", "SSB"}, {"A3J", "SSB"}, {"FT-8", "FT8"},
+        {"A1", "CW"}, {"A1A", "CW"}, {"F3", "FM"},
         {"F3E", "FM"}, {"A3", "AM"}, {"FONE", "PHONE"}, {"JT-65", "JT65"},
         {"DSTAR", "D-STAR"}
         }
@@ -93,14 +94,15 @@ Module ModeList
         {"F7S", "FT8"}, {"F7B", "FT8"}, {"F78", "FT8"}, {"F7&", "FT8"}, {"F7T", "FT8"}, {"FT.", "FT8"},
         {"E18", "FT8"}, {"FES", "FT8"}, {"PTS", "FT8"},
         {"33B", "SSB"}, {"SSE", "SSB"}, {"SS8", "SSB"}, {"\$SB", "SSB"}, {"$$B", "SSB"}, {"S88", "SSB"},
-        {"SSA", "SSB"}, {"SSP", "SSB"},
+        {"SSA", "SSB"}, {"SSP", "SSB"}, {"55B", "SSB"},
         {"F4M", "FM"}, {"F3M", "FM"}, {"F3N", "FM"},
         {"A3M", "AM"}, {"A3N", "AM"},
         {"RTTYS", "RTTY"}, {"RTTY8", "RTTY"},
         {"PSK3I", "PSK31"}, {"PSK31A", "PSK31"},
         {"JT65A", "JT65"}, {"JT65B", "JT65"}, {"JT65C", "JT65"},
         {"SSTV8", "SSTV"}, {"SSTV9", "SSTV"},
-        {"OW", "CW"}, {"CN", "CW"}, {"CU", "CW"}, {"CV", "CW"}, {"J165", "JT65"}
+        {"OW", "CW"}, {"CN", "CW"}, {"CU", "CW"}, {"CV", "CW"}, {"AIA", "CW"},
+        {"J165", "JT65"}
     }
 
 
@@ -188,22 +190,36 @@ Partial Class frmMain
                             band As String,
                             mode As String)
 
+            Dim s As String
             If qsoDate = "" OrElse timeOn = "" OrElse band = "" OrElse mode = "" Then
-                Using sw As New StreamWriter(TodayFile, True, System.Text.Encoding.UTF8)
-                    sw.WriteLine($"<CALL:{callSign.Length}>{callSign} "
-            )
-                End Using
+                s = $"<CALL:{callSign.Length}>{callSign}"
             Else
-                Using sw As New StreamWriter(TodayFile, True, System.Text.Encoding.UTF8)
-                    sw.WriteLine(
-                $"<CALL:{callSign.Length}>{callSign}" &
-                $"<QSO_DATE:8>{qsoDate}" &
-                $"<TIME_ON:{timeOn.Length}>{timeOn}" &
-                $"<BAND:{band.Length}>{band}" &
-                $"<MODE:{mode.Length}>{mode}<EOR>"
-            )
-                End Using
+                s = $"<CALL:{callSign.Length}>{callSign}" &
+                    $"<QSO_DATE:8>{qsoDate}" &
+                    $"<TIME_ON:{timeOn.Length}>{timeOn}" &
+                    $"<BAND:{band.Length}>{band}" &
+                    $"<MODE:{mode.Length}>{mode}"
             End If
+            If System.Diagnostics.Debugger.IsAttached Then
+                '   デバッグ中の処理
+                s = s & $"<FileSize:{TextFileSize.Length}>{TextFileSize}"
+            Else
+                ' 通常実行時の処理
+            End If
+            s = s & "<EOR>"
+
+            Using sw As New StreamWriter(TodayFile, True, System.Text.Encoding.UTF8)
+                sw.WriteLine(s)
+
+                '$"<CALL:{callSign.Length}>{callSign}" &
+                '$"<QSO_DATE:8>{qsoDate}" &
+                '$"<TIME_ON:{timeOn.Length}>{timeOn}" &
+                '$"<BAND:{band.Length}>{band}" &
+                '$"<MODE:{mode.Length}>{mode}" &
+                '$"<FileSize:{TextFileSize.Length}>{TextFileSize}" & "<EOR>"
+                ')
+            End Using
+            'End If
         End Sub
 
         '-----------------------------------------
@@ -273,6 +289,8 @@ Partial Class frmMain
         kHz           ' 周波数(kHz)
         WaveLength    ' 波長
     End Enum
+
+    Public Shared TextFileSize As String
 
 
     Public Shared isPhone As Boolean           ' ReportからModeを類推する、Phoneの時とき　Bandが２M以上の時、FMにModeを置き換える
@@ -451,10 +469,10 @@ Partial Class frmMain
                         End If
                         item(2) = True
                     ElseIf items(j) = "BAND" Then         ' Band
-                        If r <> "" Then
-                            Qso.Band = items(j + c)
-                            item(3) = True
-                        End If
+                        'If r <> "" Then
+                        Qso.Band = items(j + c)
+                        item(3) = True
+                        'End If
                     ElseIf items(j) = "MODE" Then         ' Mode
                         r = items(j + c)
                         If AliasModes.ContainsKey(r) Then r = AliasModes(r)
@@ -464,6 +482,7 @@ Partial Class frmMain
                         End If
                     End If
                 Next
+                cnt = 0
                 For Each i In item              ' 全項目が満たされているかチェック
                     If i Then
                         cnt += 1
@@ -576,7 +595,7 @@ Partial Class frmMain
                 End If
             Next
 
-            pattern = "\b(J|7) ([A-S]) ([0-9]) ([A-Z]) ([A-Z]) ([A-Z]?)\b"        ' 国内のCallsignのみ 文字間に空白 例：J A 7 F K F
+            pattern = "\b(J|7) ?([A-S]) ?([0-9]) ?([A-Z]) ?([A-Z]) ?([A-Z]?)\b"        ' 国内のCallsignのみ 文字間に空白 例：J A 7 F K F
             For Each m As Match In Regex.Matches(text, pattern)
                 Dim part1 = m.Groups(1).Value & m.Groups(2).Value
                 Dim part2 = m.Groups(3).Value           ' Area番号
@@ -901,7 +920,7 @@ Partial Class frmMain
             End If
 
             DateFormat = DateFormats.InvalidFormat
-            pattern = "\b([YF][EAR]{0,3}|D[DAY]{0,2})[- /:;]{1,3}(M[MONTH]{0,4})[- /:;]{1,3}([YF][EAR]{0,3}|D[AY]{0,2})"
+            pattern = "\b([YF][EAR]{0,3}|D[DAYR]{0,2})[- /:;]{1,3}(M[MONTH]{0,4})[- /:;]{1,3}([YF][EAR]{0,3}|D[AY]{0,2})"
 
             'pattern = "\b([Y][EAR]{0,3}|D[DAY]{0,2}).+(M[MONTH]{0,4}).+([Y][EAR]{0,3}|D[AY]{0,2})"
             m = Regex.Match(cleaned, pattern)
@@ -918,17 +937,17 @@ Partial Class frmMain
                     DateFormat = DateFormats.AmericanFormat
                 End If
             Else
-                pattern = "([YF][EAR]{0,3}|YY)[- /:;]{1,3](M[0ONTH]{0,4}|MM)[- /:;]{1, 3}(D[AY]{0,2}|DD)"
+                pattern = "([YF][EAR]{0,3}|YY)[- /:;]{1,3](M[0ONTH]{0,4}|MM)[- /:;]{1, 3}(D[AYR]{0,2}|DD)"
                 m = Regex.Match(cleaned, pattern)
                 If m.Success = True Then
                     DateFormat = DateFormats.IsoFormat
                 Else
-                    pattern = "(D[AY]{0,2}|DD)[- /:;]{1,3}(M[ONTH]{0,4}|MM)[- /:;]{1,3}([YF][EAR]{0,3}|YY)"
+                    pattern = "(D[AYR]{0,2}|DD)[- /:;]{1,3}(M[ONTH]{0,4}|MM)[- /:;]{1,3}([YF][EAR]{0,3}|YY)"
                     m = Regex.Match(cleaned, pattern)
                     If m.Success = True Then
                         DateFormat = DateFormats.BritishFormat
                     Else
-                        pattern = "(M[ONTH]{0,4}|MM)[- /:;]{1,3}(D[AY]{0,2}|DD)[- /:;]{1,3}([YF][EAR]{0,3}|YY)"
+                        pattern = "(M[ONTH]{0,4}|MM)[- /:;]{1,3}(D[AYR]{0,2}|DD)[- /:;]{1,3}([YF][EAR]{0,3}|YY)"
                         m = Regex.Match(cleaned, pattern)
                         If m.Success = True Then
                             DateFormat = DateFormats.AmericanFormat
@@ -967,7 +986,6 @@ Partial Class frmMain
             ' 5. 日本語の年、月、日がある場合　　2022年6月24日
             dateFromMonth = ExtractJapaneseDate(cleaned)
             If dateFromMonth <> "" Then Return dateFromMonth
-
 
             '  4. 日本語の年、月、日を誤読したとして
             dateFromMonth = ExtractNenTsukiHiDate(cleaned)

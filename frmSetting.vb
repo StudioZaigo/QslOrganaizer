@@ -10,10 +10,18 @@ Public Class frmSetting
         btnOutputFolder.Text = ""
 
         lblComment.Text = "複数のCallsinは、カンマ区切りで入力"
-        lblNote.Text = "Google Clude Vision AI を使用する時に設定する"
+        lblGoogleNote.Text = "Google Clude Vision AI を使用する時に設定する"
+        lblAzureNote.Text = "Micrsoft Azure AI を使用する時に設定する"
 
-        ' 設定を読み込み
-        AppSettings.LoadJson(AppSettings.SettingsFile)
+        lblAzureApiKey.Location = lblGoogleApiKey.Location
+        lblAzureUrl.Location = lblGoogleUrl.Location
+        lblAzureNote.Location = lblGoogleNote.Location
+        txtAzureApiKey.Location = txtGoogleApiKey.Location
+        txtAzureUrl.Location = txtGoogleURL.Location
+        chkUseAzure.Location = chkUseGoogle.Location
+
+        '' 設定を読み込み
+        'AppSettings.LoadJson(AppSettings.SettingsFile)
 
         Dim DisplayWorkRect As Rectangle
         DisplayWorkRect = Screen.PrimaryScreen.WorkingArea
@@ -32,7 +40,8 @@ Public Class frmSetting
 
         ' 設定を読み込み
         AppSettings.LoadJson(AppSettings.SettingsFile)
-        Dim url As String = $"https://vision.googleapis.com/v1/images:annotate?key="
+        Dim GoogleUrl As String = $"https://vision.googleapis.com/v1/images:annotate?key="
+        Dim AzureUrl As String = $"https://qslorganizer.cognitiveservices.azure.com/"
 
         txtMyCallsigns.Text = AppSettings.GetJson("General", "MyCallsigns", "")
         txtInputFolder.Text = AppSettings.GetJson("General", "InputFolder", "")
@@ -40,7 +49,14 @@ Public Class frmSetting
         txtFontSize.Text = AppSettings.GetJson("General", "FontSize", "9")
 
         txtGoogleApiKey.Text = AppSettings.GetJson("Google", "ApiKey", "")
-        txtGoogleURL.Text = AppSettings.GetJson("Google", "URL", url)
+        txtGoogleURL.Text = AppSettings.GetJson("Google", "URL", GoogleUrl)
+        Dim s = AppSettings.GetJson("Google", "UseGoogle", "True")
+        chkUseGoogle.Checked = Boolean.Parse(AppSettings.GetJson("Google", "UseGoogle", "True"))
+
+        txtAzureApiKey.Text = AppSettings.GetJson("Azure", "ApiKey", "")
+        txtAzureUrl.Text = AppSettings.GetJson("Azure", "Url", AzureUrl)
+        chkUseAzure.Checked = Boolean.Parse(AppSettings.GetJson("Azure", "UseAzure", "False"))
+
         TabControl1.TabIndex = TabIndex
     End Sub
 
@@ -88,8 +104,15 @@ Public Class frmSetting
         AppSettings.SetJson("General", "InputFolder", txtInputFolder.Text)
         AppSettings.SetJson("General", "OutputFolder", txtOutputFolder.Text)
         AppSettings.SetJson("General", "FontSize", txtFontSize.Text)
+
         AppSettings.SetJson("Google", "ApiKey", txtGoogleApiKey.Text)
         AppSettings.SetJson("Google", "URL", txtGoogleURL.Text)
+        Dim s = chkUseGoogle.Checked.ToString
+        AppSettings.SetJson("Google", "UseGoogle", chkUseGoogle.Checked.ToString)
+
+        AppSettings.SetJson("Azure", "ApiKey", txtAzureApiKey.Text)
+        AppSettings.SetJson("Azure", "URL", txtAzureUrl.Text)
+        AppSettings.SetJson("Azure", "UseAzure", chkUseAzure.Checked.ToString)
 
         AppSettings.SaveJson(AppSettings.SettingsFile)
 
@@ -183,5 +206,11 @@ Public Class frmSetting
         End If
     End Sub
 
+    Private Sub chkUseGoogle_CheckedChanged(sender As Object, e As EventArgs) Handles chkUseGoogle.CheckedChanged
+        chkUseAzure.Checked = Not chkUseGoogle.Checked
+    End Sub
 
+    Private Sub chkUseAzure_CheckedChanged(sender As Object, e As EventArgs) Handles chkUseAzure.CheckedChanged
+        chkUseGoogle.Checked = Not chkUseAzure.Checked
+    End Sub
 End Class

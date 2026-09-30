@@ -29,6 +29,7 @@ Partial Class frmSetting
         btnCancel = New Button()
         TabControl1 = New TabControl()
         TabPage1 = New TabPage()
+        Label1 = New Label()
         lblFontSize = New Label()
         txtFontSize = New TextBox()
         lblCallsign = New Label()
@@ -41,16 +42,24 @@ Partial Class frmSetting
         txtOutputFolder = New TextBox()
         btnOutputFolder = New Button()
         TabPage2 = New TabPage()
+        chkUseGoogle = New CheckBox()
         lblGoogleApiKey = New Label()
         lblGoogleUrl = New Label()
-        lblNote = New Label()
+        lblGoogleNote = New Label()
         txtGoogleApiKey = New TextBox()
         txtGoogleURL = New TextBox()
-        Label1 = New Label()
+        TabPage3 = New TabPage()
+        chkUseAzure = New CheckBox()
+        lblAzureApiKey = New Label()
+        lblAzureUrl = New Label()
+        lblAzureNote = New Label()
+        txtAzureApiKey = New TextBox()
+        txtAzureUrl = New TextBox()
         Panel1.SuspendLayout()
         TabControl1.SuspendLayout()
         TabPage1.SuspendLayout()
         TabPage2.SuspendLayout()
+        TabPage3.SuspendLayout()
         SuspendLayout()
         ' 
         ' txtOutputHolder
@@ -97,6 +106,7 @@ Partial Class frmSetting
         ' 
         TabControl1.Controls.Add(TabPage1)
         TabControl1.Controls.Add(TabPage2)
+        TabControl1.Controls.Add(TabPage3)
         TabControl1.Dock = DockStyle.Fill
         TabControl1.Location = New Point(0, 0)
         TabControl1.Margin = New Padding(3, 2, 3, 2)
@@ -127,6 +137,17 @@ Partial Class frmSetting
         TabPage1.TabIndex = 0
         TabPage1.Text = "General"
         TabPage1.UseVisualStyleBackColor = True
+        ' 
+        ' Label1
+        ' 
+        Label1.AutoSize = True
+        Label1.Font = New Font("Yu Gothic UI", 10.2F)
+        Label1.ForeColor = SystemColors.MenuHighlight
+        Label1.Location = New Point(108, 184)
+        Label1.Name = "Label1"
+        Label1.Size = New Size(106, 19)
+        Label1.TabIndex = 23
+        Label1.Text = "規定値は9ptです"
         ' 
         ' lblFontSize
         ' 
@@ -251,9 +272,10 @@ Partial Class frmSetting
         ' 
         ' TabPage2
         ' 
+        TabPage2.Controls.Add(chkUseGoogle)
         TabPage2.Controls.Add(lblGoogleApiKey)
         TabPage2.Controls.Add(lblGoogleUrl)
-        TabPage2.Controls.Add(lblNote)
+        TabPage2.Controls.Add(lblGoogleNote)
         TabPage2.Controls.Add(txtGoogleApiKey)
         TabPage2.Controls.Add(txtGoogleURL)
         TabPage2.Location = New Point(4, 24)
@@ -264,6 +286,16 @@ Partial Class frmSetting
         TabPage2.TabIndex = 1
         TabPage2.Text = "Google"
         TabPage2.UseVisualStyleBackColor = True
+        ' 
+        ' chkUseGoogle
+        ' 
+        chkUseGoogle.AutoSize = True
+        chkUseGoogle.Location = New Point(38, 126)
+        chkUseGoogle.Name = "chkUseGoogle"
+        chkUseGoogle.Size = New Size(86, 19)
+        chkUseGoogle.TabIndex = 27
+        chkUseGoogle.Text = "Use Google"
+        chkUseGoogle.UseVisualStyleBackColor = True
         ' 
         ' lblGoogleApiKey
         ' 
@@ -288,17 +320,17 @@ Partial Class frmSetting
         lblGoogleUrl.TabIndex = 20
         lblGoogleUrl.Text = "URL"
         ' 
-        ' lblNote
+        ' lblGoogleNote
         ' 
-        lblNote.AutoSize = True
-        lblNote.Font = New Font("Yu Gothic UI", 10.2F)
-        lblNote.ForeColor = Color.OrangeRed
-        lblNote.Location = New Point(38, 137)
-        lblNote.Name = "lblNote"
-        lblNote.RightToLeft = RightToLeft.Yes
-        lblNote.Size = New Size(159, 19)
-        lblNote.TabIndex = 15
-        lblNote.Text = "Google Vision を使用する"
+        lblGoogleNote.AutoSize = True
+        lblGoogleNote.Font = New Font("Yu Gothic UI", 10.2F)
+        lblGoogleNote.ForeColor = Color.OrangeRed
+        lblGoogleNote.Location = New Point(38, 162)
+        lblGoogleNote.Name = "lblGoogleNote"
+        lblGoogleNote.RightToLeft = RightToLeft.Yes
+        lblGoogleNote.Size = New Size(159, 19)
+        lblGoogleNote.TabIndex = 15
+        lblGoogleNote.Text = "Google Vision を使用する"
         ' 
         ' txtGoogleApiKey
         ' 
@@ -308,6 +340,7 @@ Partial Class frmSetting
         txtGoogleApiKey.Location = New Point(38, 33)
         txtGoogleApiKey.Margin = New Padding(3, 2, 3, 2)
         txtGoogleApiKey.Name = "txtGoogleApiKey"
+        txtGoogleApiKey.ShortcutsEnabled = False
         txtGoogleApiKey.Size = New Size(553, 26)
         txtGoogleApiKey.TabIndex = 17
         ' 
@@ -323,16 +356,89 @@ Partial Class frmSetting
         txtGoogleURL.Size = New Size(553, 26)
         txtGoogleURL.TabIndex = 19
         ' 
-        ' Label1
+        ' TabPage3
         ' 
-        Label1.AutoSize = True
-        Label1.Font = New Font("Yu Gothic UI", 10.2F)
-        Label1.ForeColor = SystemColors.MenuHighlight
-        Label1.Location = New Point(108, 184)
-        Label1.Name = "Label1"
-        Label1.Size = New Size(106, 19)
-        Label1.TabIndex = 23
-        Label1.Text = "規定値は9ptです"
+        TabPage3.Controls.Add(chkUseAzure)
+        TabPage3.Controls.Add(lblAzureApiKey)
+        TabPage3.Controls.Add(lblAzureUrl)
+        TabPage3.Controls.Add(lblAzureNote)
+        TabPage3.Controls.Add(txtAzureApiKey)
+        TabPage3.Controls.Add(txtAzureUrl)
+        TabPage3.Location = New Point(4, 24)
+        TabPage3.Name = "TabPage3"
+        TabPage3.Padding = New Padding(3)
+        TabPage3.Size = New Size(692, 223)
+        TabPage3.TabIndex = 2
+        TabPage3.Text = "Azure"
+        TabPage3.UseVisualStyleBackColor = True
+        ' 
+        ' chkUseAzure
+        ' 
+        chkUseAzure.AutoSize = True
+        chkUseAzure.Location = New Point(77, 155)
+        chkUseAzure.Name = "chkUseAzure"
+        chkUseAzure.Size = New Size(78, 19)
+        chkUseAzure.TabIndex = 26
+        chkUseAzure.Text = "Use Azure"
+        chkUseAzure.UseVisualStyleBackColor = True
+        ' 
+        ' lblAzureApiKey
+        ' 
+        lblAzureApiKey.AutoSize = True
+        lblAzureApiKey.Font = New Font("Yu Gothic UI", 10.2F)
+        lblAzureApiKey.ForeColor = SystemColors.MenuHighlight
+        lblAzureApiKey.Location = New Point(63, 40)
+        lblAzureApiKey.Name = "lblAzureApiKey"
+        lblAzureApiKey.Size = New Size(56, 19)
+        lblAzureApiKey.TabIndex = 22
+        lblAzureApiKey.Text = "API Key"
+        ' 
+        ' lblAzureUrl
+        ' 
+        lblAzureUrl.AutoSize = True
+        lblAzureUrl.Enabled = False
+        lblAzureUrl.Font = New Font("Yu Gothic UI", 10.2F)
+        lblAzureUrl.ForeColor = SystemColors.MenuHighlight
+        lblAzureUrl.Location = New Point(63, 92)
+        lblAzureUrl.Name = "lblAzureUrl"
+        lblAzureUrl.Size = New Size(34, 19)
+        lblAzureUrl.TabIndex = 25
+        lblAzureUrl.Text = "URL"
+        ' 
+        ' lblAzureNote
+        ' 
+        lblAzureNote.AutoSize = True
+        lblAzureNote.Font = New Font("Yu Gothic UI", 10.2F)
+        lblAzureNote.ForeColor = Color.OrangeRed
+        lblAzureNote.Location = New Point(37, 177)
+        lblAzureNote.Name = "lblAzureNote"
+        lblAzureNote.RightToLeft = RightToLeft.Yes
+        lblAzureNote.Size = New Size(150, 19)
+        lblAzureNote.TabIndex = 21
+        lblAzureNote.Text = "Azure Vision を使用する"
+        ' 
+        ' txtAzureApiKey
+        ' 
+        txtAzureApiKey.BorderStyle = BorderStyle.FixedSingle
+        txtAzureApiKey.Font = New Font("Yu Gothic UI", 10.2F)
+        txtAzureApiKey.ImeMode = ImeMode.Disable
+        txtAzureApiKey.Location = New Point(77, 59)
+        txtAzureApiKey.Margin = New Padding(3, 2, 3, 2)
+        txtAzureApiKey.Name = "txtAzureApiKey"
+        txtAzureApiKey.Size = New Size(553, 26)
+        txtAzureApiKey.TabIndex = 23
+        ' 
+        ' txtAzureUrl
+        ' 
+        txtAzureUrl.BorderStyle = BorderStyle.FixedSingle
+        txtAzureUrl.Enabled = False
+        txtAzureUrl.Font = New Font("Yu Gothic UI", 10.2F)
+        txtAzureUrl.ImeMode = ImeMode.Disable
+        txtAzureUrl.Location = New Point(77, 112)
+        txtAzureUrl.Margin = New Padding(3, 2, 3, 2)
+        txtAzureUrl.Name = "txtAzureUrl"
+        txtAzureUrl.Size = New Size(553, 26)
+        txtAzureUrl.TabIndex = 24
         ' 
         ' frmSetting
         ' 
@@ -357,9 +463,10 @@ Partial Class frmSetting
         TabPage1.PerformLayout()
         TabPage2.ResumeLayout(False)
         TabPage2.PerformLayout()
+        TabPage3.ResumeLayout(False)
+        TabPage3.PerformLayout()
         ResumeLayout(False)
     End Sub
-    Friend WithEvents TextBox2 As TextBox
     Friend WithEvents txtOutputHolder As TextBox
     Friend WithEvents Panel1 As Panel
     Friend WithEvents btnCancel As Button
@@ -377,11 +484,19 @@ Partial Class frmSetting
     Public WithEvents txtMyCallsigns As TextBox
     Friend WithEvents TabPage2 As TabPage
     Public WithEvents txtGoogleApiKey As TextBox
-    Friend WithEvents lblNote As Label
+    Friend WithEvents lblGoogleNote As Label
     Public WithEvents txtGoogleURL As TextBox
     Friend WithEvents lblGoogleApiKey As Label
     Friend WithEvents lblGoogleUrl As Label
     Friend WithEvents lblFontSize As Label
     Public WithEvents txtFontSize As TextBox
     Friend WithEvents Label1 As Label
+    Friend WithEvents TabPage3 As TabPage
+    Friend WithEvents chkUseAzure As CheckBox
+    Friend WithEvents lblAzureApiKey As Label
+    Friend WithEvents lblAzureUrl As Label
+    Friend WithEvents lblAzureNote As Label
+    Public WithEvents txtAzureApiKey As TextBox
+    Public WithEvents txtAzureUrl As TextBox
+    Friend WithEvents chkUseGoogle As CheckBox
 End Class

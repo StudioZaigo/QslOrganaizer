@@ -64,7 +64,7 @@ JPEG / JPG / PNG / BMP / GIF / TIFF
 
 
 
-2026-09-21 Ver 1.1.2.5
+2026-09-26 Ver 1.1.2.5a
 
 ・Autoモードの時、対象ファイルが「jpg」のみになっていた。「jpeg、png、bmp」を追加した
 
@@ -87,6 +87,8 @@ JPEG / JPG / PNG / BMP / GIF / TIFF
 　これを「Online」、「Offline」処理が継続するようにした。
 
 ・「AboutBox」を見直した。
+
+・「Auto」モードの処理を見直した。
 
 
 

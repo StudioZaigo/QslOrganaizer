@@ -4,6 +4,7 @@ Imports System.Diagnostics.Eventing.Reader
 Imports System.Drawing.Imaging
 Imports System.IO
 Imports System.Linq
+Imports System.Net
 Imports System.Net.Http
 Imports System.Runtime.CompilerServices
 Imports System.Runtime.InteropServices
@@ -33,6 +34,9 @@ Imports ZXing
 Imports ZXing.Common
 Imports ZXing.Windows.Compatibility
 
+Imports Azure
+Imports Azure.AI.Vision.ImageAnalysis
+
 Public Structure QsoData
     Public Valid As Boolean
     Public Callsign As String
@@ -48,9 +52,10 @@ Public Structure QsoData
 End Structure
 
 Public Enum ReadingModes As Integer
-    OfflineMode       ' Tesseractで読み混み
-    OnlineMode        ' Google Visionで読み込み
-    QrCodeMode        ' Qrコードで読み込み
+    OfflineMode         ' Tesseractで読み混み
+    GoogleMode          ' Google Visionで読み込み
+    AzureMode           ' Azure Visionで読み込む
+    QrCodeMode          ' Qrコードで読み込み
 End Enum
 
 
@@ -91,6 +96,12 @@ Public Class frmMain
     Private Shared FontSize As Double
     Private Shared GoogleApiKey As String
     Private Shared GoogleURL As String
+    Private Shared UseGoogle As Boolean
+    Private Shared AzureApiKey As String
+    Private Shared AzureApiKey2 As String
+    Private Shared AzureUrl As String
+    Private Shared UseAzure As Boolean
+
     Private Shared IntInputFolder As Boolean = True
     Private Shared IntoutputFolder As Boolean = True
 
@@ -107,6 +118,12 @@ Public Class frmMain
     Dim CurrentQso As QsoData
     Private CurrentOcrMode As OcrMode
     Private OcrProcessing As Boolean
+
+    Private TesseractBackColor = SystemColors.Control
+    Private QrCodeBackColor = Color.FloralWhite
+    Private GoogleBackColor = Color.PeachPuff
+    Private AzureBackColor = Color.LightPink
+
     Private SavedColor As Color
 
     Private Sub PicQsl_Click(sender As Object, e As EventArgs) Handles PicQsl.Click
@@ -193,7 +210,7 @@ Public Class frmMain
 
                 Dim widthInch As Single = widthPx / dpiX
                 Dim heightInch As Single = heightPx / dpiY
-                lstFileInfo.Items.Add("横縦長: " & (widthInch * 2.54).ToString("#.0") & "×" & (heightInch * 2.54).ToString("#.0") & " mm")
+                lstFileInfo.Items.Add("横縦長: " & (widthInch * 2.54).ToString("#.0") & "×" & (heightInch * 2.54).ToString("#.0") & " cm")
 
             End Using
             lstFileInfo.Items.Add("作成日時: " & fileInfo.CreationTime)
@@ -212,7 +229,8 @@ Public Class frmMain
 
         If FileIndex >= FileList.Count Then
             MessageBox.Show("すべてのファイルを処理しました")
-            chkAuto.Enabled = False
+            chkAuto.Checked = True
+            chkAuto.Enabled = True
             Return False
         End If
 
@@ -666,6 +684,23 @@ Public Class frmMain
         Return ""
     End Function
 
+    Private Function ParseAzureReadResult(json As String) As String
+        Dim jo As JObject = JObject.Parse(json)
+        Dim sb As New StringBuilder()
+
+        Dim lines = jo("analyzeResult")?("readResults")
+        If lines Is Nothing Then Return ""
+
+        For Each page In lines
+            For Each line In page("lines")
+                sb.AppendLine(line("text").ToString())
+            Next
+        Next
+
+        Return sb.ToString().Trim()
+    End Function
+
+
 
     Private Function OcrGoogleVision(img As Image) As String
         Dim apiKey As String = GoogleApiKey
@@ -692,10 +727,31 @@ Public Class frmMain
             Dim response As HttpResponseMessage = client.PostAsync(url, content).Result
 
             If Not response.IsSuccessStatusCode Then
+                'Dim errBody As String = response.Content.ReadAsStringAsync().Result
+                '' ログ表示または MessageBox で確認
+                'MessageBox.Show($"HTTP {(CInt(response.StatusCode))} {response.ReasonPhrase}{vbCrLf}{errBody}")
+                'Return "" ' または適切なエラー処理
+
                 Dim errBody As String = response.Content.ReadAsStringAsync().Result
-                ' ログ表示または MessageBox で確認
+
+                ' ★★★ 無料枠超過の判定 ★★★
+                If response.StatusCode = HttpStatusCode.TooManyRequests OrElse
+                   errBody.Contains("Quota") OrElse
+                   errBody.Contains("exceeded") OrElse
+                   errBody.Contains("billing") OrElse
+                   errBody.Contains("RESOURCE_EXHAUSTED") Then
+
+                    Dim msg = "無料枠を超えた可能性があります。" & vbCrLf &
+                              "有料枠で続行しますか？"
+
+                    If MessageBox.Show(msg, "確認", MessageBoxButtons.YesNo) = DialogResult.No Then
+                        Return ""
+                    End If
+                End If
+
                 MessageBox.Show($"HTTP {(CInt(response.StatusCode))} {response.ReasonPhrase}{vbCrLf}{errBody}")
-                Return "" ' または適切なエラー処理
+                Return ""
+
             End If
 
             Dim jsonRes As String = response.Content.ReadAsStringAsync().Result
@@ -703,80 +759,82 @@ Public Class frmMain
         End Using
     End Function
 
+    Private Function OcrAzureVision(img As Image) As String
+        Dim endpoint As String = AzureUrl   ' 例: https://xxxx.cognitiveservices.azure.com/
+        Dim apiKey As String = AzureApiKey
 
-    'Private Async Function OcrGoogleVisionAsync(img As Image) As Task(Of String)
-    '    ' 非同期は他の処理に影響するのでやめた
+        ' Read API v3.2 の URL
+        Dim url As String = $"{endpoint}/vision/v3.2/read/analyze"
 
-    '    Dim apiKey As String = GoogleApiKey
-    '    Dim url As String = GoogleURL & apiKey
-    '    'Dim url As String = $"https://vision.googleapis.com/v1/images:annotate?key={apiKey}"
+        ' 画像 → バイト配列
+        Dim imgBytes As Byte()
+        Using ms As New MemoryStream()
+            img.Save(ms, Imaging.ImageFormat.Jpeg)
+            imgBytes = ms.ToArray()
+        End Using
 
-    '    ' 画像 → Base64
-    '    Dim base64Img As String = ImageToBase64(img)
+        Using client As New HttpClient()
+            client.Timeout = TimeSpan.FromSeconds(10)
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", apiKey)
 
-    '    ' JSON リクエスト
-    '    Dim jsonReq As String =
-    '    "{" &
-    '    "  ""requests"": [" &
-    '    "    {" &
-    '    "      ""image"": {""content"": """ & base64Img & """}," &
-    '    "      ""features"": [{""type"": ""TEXT_DETECTION""}]" &
-    '    "    }" &
-    '    "  ]" &
-    '    "}"
+            Dim content As New ByteArrayContent(imgBytes)
+            content.Headers.ContentType = New System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream")
 
-    '    ' ★★★ タイムアウト設定 ★★★
-    '    Dim client As New HttpClient()
-    '    client.Timeout = TimeSpan.FromSeconds(10)
+            ' ★★★ 同期呼び出し ★★★
+            Dim response As HttpResponseMessage = client.PostAsync(url, content).Result
 
-    '    Try
-    '        Dim content As New StringContent(jsonReq, Encoding.UTF8, "application/json")
+            If Not response.IsSuccessStatusCode Then
+                Dim errBody As String = response.Content.ReadAsStringAsync().Result
+                MessageBox.Show($"HTTP {(CInt(response.StatusCode))} {response.ReasonPhrase}{vbCrLf}{errBody}")
+                Return ""
+            End If
 
-    '        ' ★★★ Await に変更（UIフリーズ防止）★★★
-    '        Dim response As HttpResponseMessage = Await client.PostAsync(url, content)
+            ' 成功すると "operation-location" が返る
+            Dim operationUrl As String = response.Headers.GetValues("operation-location").First()
 
-    '        If Not response.IsSuccessStatusCode Then
-    '            Dim errBody As String = Await response.Content.ReadAsStringAsync()
-    '            MessageBox.Show($"HTTP {(CInt(response.StatusCode))} {response.ReasonPhrase}{vbCrLf}{errBody}")
-    '            Return ""
-    '        End If
+            ' ★★★ 結果が出るまでポーリング（同期）★★★
+            Dim resultJson As String = ""
+            For i As Integer = 1 To 10
+                Threading.Thread.Sleep(300) ' 0.3秒待つ
 
-    '        Dim jsonRes As String = Await response.Content.ReadAsStringAsync()
-    '        Return ParseGoogleVisionResponse(jsonRes)
+                Dim resultRes As HttpResponseMessage = client.GetAsync(operationUrl).Result
+                resultJson = resultRes.Content.ReadAsStringAsync().Result
 
-    '    Catch ex As TaskCanceledException
-    '        ' ★★★ タイムアウト時の処理 ★★★
-    '        MessageBox.Show("Google Cloud Vision の応答がありません（タイムアウト）。再試行してください。")
-    '        Return ""
+                If resultJson.Contains("""status"":""succeeded""") Then
+                    Exit For
+                End If
+            Next
 
-    '    Catch ex As Exception
-    '        MessageBox.Show("Google Cloud Vision 呼び出し中にエラーが発生しました。" & vbCrLf & ex.Message)
-    '        Return ""
-    '    End Try
-    'End Function
+            Return ParseAzureReadResult(resultJson)
+        End Using
+    End Function
 
 
+    Private Function RunOCR(img As Image, engine As OcrMode) As String
 
-    Private Function RunOCR(img As Image, Engine As OcrMode) As String
-        Select Case Engine
+        Select Case engine
             Case OcrMode.Offline
                 ReadingMode = ReadingModes.OfflineMode
-
-                LstOcrResult.BackColor = SystemColors.Control
-                'LstOcrResult.BackColor = SystemColors.MenuHighlight     ' test用
+                LstOcrResult.BackColor = TesseractBackColor
                 Return OcrTesseract(img)
-            Case OcrMode.Online
-                ReadingMode = ReadingModes.OnlineMode
-                LstOcrResult.BackColor = Color.FromArgb(255, 255, 240)      ' （レモンシフォンに近い非常に薄い黄色）
 
-                Dim s = OcrGoogleVision(img)
-                'Dim s = OcrGoogleVisionAsync(img).GetAwaiter().GetResult()
-                Return s
+            Case OcrMode.Online
+                If UseGoogle = True Then
+                    ReadingMode = ReadingModes.GoogleMode
+                    LstOcrResult.BackColor = GoogleBackColor
+
+                    Dim s = OcrGoogleVision(img)
+                    Return s
+                Else
+                    ReadingMode = ReadingModes.AzureMode
+                    LstOcrResult.BackColor = AzureBackColor
+                    Dim s = OcrAzureVision(img)
+                    Return s
+                End If
 
         End Select
-        SavedColor = LstOcrResult.BackColor
-        Return ""
 
+        Return ""
     End Function
 
 
@@ -1113,6 +1171,8 @@ Public Class frmMain
                 img.Dispose()
 
                 Dim writer As New HistoryAdifWriter()
+
+                ' 通常実行時の処理
                 writer.AppendRecord(callSign:=cs, qsoDate:=dt, timeOn:=dt, band:=bd, mode:=md)
 
                 'File.Copy(inputImagePath, savePath, overwrite:=False)
@@ -1338,7 +1398,7 @@ Public Class frmMain
         LstOcrResult.Items.Clear()
         lstFileInfo.Items.Clear()
 
-        LstOcrResult.BackColor = SystemColors.Control
+        LstOcrResult.BackColor = TesseractBackColor
         SetButtons()
     End Sub
 
@@ -1402,9 +1462,21 @@ Public Class frmMain
         MyCallsigns = AppSettings.GetJson("General", "MyCallsigns", "")
         InputFolder = AppSettings.GetJson("General", "InputFolder", "")
         OutputFolder = AppSettings.GetJson("General", "OutputFolder", "")
-        FontSize = AppSettings.GetJson("General", "FontSize", "9")
+        'FontSize = AppSettings.GetJson("General", "FontSize", "9")
+        Dim s = AppSettings.GetJson("General", "FontSize", "9")
+        If Double.TryParse(s, FontSize) Then
+            ' 変換成功時の処理
+        Else
+            ' 変換失敗時の処理（数値ではない文字列など）
+            FontSize = 9.0
+        End If
         GoogleApiKey = AppSettings.GetJson("Google", "ApiKey", "")
         GoogleURL = AppSettings.GetJson("Google", "URL", "")
+        UseGoogle = Boolean.Parse(AppSettings.GetJson("Google", "UseGoogle", "true"))
+        AzureApiKey = AppSettings.GetJson("Azure", "ApiKey", "")
+        AzureUrl = AppSettings.GetJson("Azure", "URL", "")
+        UseAzure = Boolean.Parse(AppSettings.GetJson("Azure", "UseAzure", "false"))
+
     End Sub
 
 
@@ -1759,10 +1831,10 @@ Public Class frmMain
                     End If
                 End If
 
-            ElseIf e.KeyCode = Keys.Right Then                              ' CTLR+→ 画像を右に90度回転
+            ElseIf e.KeyCode = Keys.left Then                              ' CTLR+→ 画像を右に90度回転
                 PicQsl.Image.RotateFlip(RotateFlipType.Rotate90FlipNone)
                 PicQsl.Refresh()
-            ElseIf e.KeyCode = Keys.Left Then
+            ElseIf e.KeyCode = Keys.right Then
                 PicQsl.Image.RotateFlip(RotateFlipType.Rotate270FlipNone)   ' Ctrl+← 画像を左に90度回転
                 PicQsl.Refresh()
             End If
@@ -1801,19 +1873,21 @@ Public Class frmMain
         Dim IntFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
 
         'loadSetting(FileName)
-        MyCallsigns = AppSettings.GetJson("General", "MyCallsigns", "")
-        InputFolder = AppSettings.GetJson("General", "InputFolder", IntFolder)
-        OutputFolder = AppSettings.GetJson("General", "OutputFolder", IntFolder)
-        Dim s = AppSettings.GetJson("General", "FontSize", "9")
-        If Double.TryParse(s, FontSize) Then
-            ' 変換成功時の処理
-        Else
-            ' 変換失敗時の処理（数値ではない文字列など）
-            FontSize = 9.0
-        End If
-        'FontSize = AppSettings.GetJson("General", "FontSize", "9")
-        GoogleApiKey = AppSettings.GetJson("Google", "ApiKey", "")
-        GoogleURL = AppSettings.GetJson("Google", "URL", "")
+        loadSetting(AppSettings.SettingsFile)
+        'MyCallsigns = AppSettings.GetJson("General", "MyCallsigns", "")
+        'InputFolder = AppSettings.GetJson("General", "InputFolder", IntFolder)
+        'OutputFolder = AppSettings.GetJson("General", "OutputFolder", IntFolder)
+        'Dim s = AppSettings.GetJson("General", "FontSize", "9")
+        'If Double.TryParse(s, FontSize) Then
+        '    ' 変換成功時の処理
+        'Else
+        '    ' 変換失敗時の処理（数値ではない文字列など）
+        '    FontSize = 9.0
+        'End If
+        ''FontSize = AppSettings.GetJson("General", "FontSize", "9")
+        'GoogleApiKey = AppSettings.GetJson("Google", "ApiKey", "")
+        'GoogleURL = AppSettings.GetJson("Google", "URL", "")
+
 
         tessVersion = OcrEngine.GetTesseractVersion()
 
@@ -2191,25 +2265,6 @@ Public Class frmMain
 
     Private NowText As String
 
-    'PrivaSub TextBox_Enter(sender As Object, e As EventArgs) Handles txtQsoDate.Enter, cmbCallsign.Enter, txtQsoTime.Enter, txtBand.Enter
-    '    Dim tb = CType(sender, TextBox)
-    '    NowText = tb.Text
-    '          If tb.ForeColor = Color.Gray Then
-    '    tb.Text = ""
-    '    tb.ForeColor = Color.Black
-    '       End If
-    'End Sub
-
-    'Private Sub textbox_Enter(sender As Object, e As EventArgs)
-    '    Dim tb = CType(sender, TextBox)
-    '    NowText = tb.Text
-    '    '      If tb.ForeColor = Color.Gray Then
-    '    'tb.Text = ""
-    '    'tb.ForeColor = Color.Black
-    '    'End If
-    'End Sub
-
-
 
     Private Sub TextBox_Leave(sender As Object, e As EventArgs)
         Dim tb = CType(sender, TextBox)
@@ -2319,6 +2374,7 @@ Public Class frmMain
         Dim candidates As New List(Of String)
         Dim lst As New List(Of String)
 
+        TextFileSize = "0"
         Dim CurrentQso As New QsoData
         CurrentQso.CandidatesCallsigns = New List(Of String)()
 
@@ -2348,7 +2404,7 @@ Public Class frmMain
                     Continue For
                 Else
                     ReadingMode = ReadingModes.QrCodeMode
-                    LstOcrResult.BackColor = Color.FromArgb(255, 250, 240)      ' （FloralWhite　薄いオレンジ色）
+                    LstOcrResult.BackColor = QrCodeBackColor      ' （FloralWhite　薄いオレンジ色）
                     Exit For
                 End If
             Next
@@ -2358,6 +2414,7 @@ Public Class frmMain
                 ' QRコードの場合は、日付・時刻・モード・周波数を抽出する
                 CurrentQso = RegexExtractor.ExtractFromQrCode(text)
                 preview = text
+                TextFileSize = text.Length.ToString
 
                 If CurrentQso.Valid Then
                     SetUiFromCurrentQso(CurrentQso)                   ' QRコードの読み取り値をUIに設定
@@ -2403,6 +2460,7 @@ Public Class frmMain
                 preview = text
                 LastTextFull = text
                 text = NormalizeText(text)
+                TextFileSize = text.Length.ToString                 ' ADIFに書き込むための長さ
             Else
                 text = LastTextFull
                 preview = text
@@ -2477,6 +2535,7 @@ Public Class frmMain
 
         'Dim dashChars = {ChrW(&H2014), ChrW(&H2013), ChrW(&H2212), ChrW(&H2010), ChrW(&H2015)}     ' 今後のため残す
         text = text.Replace(vbLf, " ")
+        text = text.Replace(vbCr, " ")
         text = Regex.Replace(text, " +", " ")       ' 連続する複数のスペースをひとつにする
         Return text
     End Function
@@ -2515,9 +2574,11 @@ Public Class frmMain
 
     Private Sub btnTest_Click(sender As Object, e As EventArgs) Handles btnTest.Click
 
-        Dim text = "TO RADIO JATFKF JIA ! 7 F K F CONFIRMING OUR QSO DATE TIME RS BAND MODE YEAR ‘MONTH DAY * UST UTC ‘MHZ 2WAY  JAN.  10 SSB RIG: IC-7300 OUTPUT 100 W ANT: LW+AH-3 L7MH RAKS: SRA LS BHUBRLEF. QSL#: 71297 PSE QSL"
-        Dim band = RegexExtractor.ExtractBand(text)
-        Debug.Print(band)
+        'OcrAzureVision()
+
+        'Dim text = "TO RADIO JATFKF JIA ! 7 F K F CONFIRMING OUR QSO DATE TIME RS BAND MODE YEAR ‘MONTH DAY * UST UTC ‘MHZ 2WAY  JAN.  10 SSB RIG: IC-7300 OUTPUT 100 W ANT: LW+AH-3 L7MH RAKS: SRA LS BHUBRLEF. QSL#: 71297 PSE QSL"
+        'Dim band = RegexExtractor.ExtractBand(text)
+        'Debug.Print(band)
 
 
 
