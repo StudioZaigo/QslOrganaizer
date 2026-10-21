@@ -1,11 +1,14 @@
 ﻿
 Imports System.Collections.Specialized
+'Imports System.Windows.Forms.VisualStyles.VisualStyleElement       ' なぜが、この行が勝手に追加される　追加されるとビルドエラーになる（Optionで変更した）
+Imports System.Diagnostics
 Imports System.Diagnostics.Eventing.Reader
 Imports System.Drawing.Imaging
 Imports System.IO
 Imports System.Linq
 Imports System.Net
 Imports System.Net.Http
+Imports System.Net.WebRequestMethods
 Imports System.Runtime.CompilerServices
 Imports System.Runtime.InteropServices
 Imports System.SystemException
@@ -14,18 +17,12 @@ Imports System.Text.Json
 Imports System.Text.RegularExpressions
 Imports System.Windows
 Imports System.Windows.Forms
-'Imports System.Windows.Forms.VisualStyles.VisualStyleElement
-Imports System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox
-'Imports System.Windows.Forms.VisualStyles.VisualStyleElement
-'Imports System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel
-
-'Imports System.Windows.Forms.VisualStyles.VisualStyleElement       ' なぜが、この行が勝手に追加される　追加されるとビルドエラーになる（Optionで変更した）
-'Imports System.Windows.Forms.VisualStyles.VisualStyleElement
+'Imports System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox
+Imports Azure
+Imports Azure.AI.Vision.ImageAnalysis
 Imports Microsoft.VisualBasic
 Imports Newtonsoft.Json.Linq
 Imports QslOrganizer.frmMain
-
-'Imports QslOrganizer.frmMain
 
 'Imports OpenCvSharp
 Imports Tesseract
@@ -33,9 +30,6 @@ Imports Windows.Win32.UI.Input
 Imports ZXing
 Imports ZXing.Common
 Imports ZXing.Windows.Compatibility
-
-Imports Azure
-Imports Azure.AI.Vision.ImageAnalysis
 
 Public Structure QsoData
     Public Valid As Boolean
@@ -63,6 +57,8 @@ Public Enum OcrMode
     Offline   ' Tesseract
     Online    ' Google Vision
 End Enum
+
+
 
 
 Public Class frmMain
@@ -158,65 +154,68 @@ Public Class frmMain
 
     Private Sub SetImageFromFile(fileName As String)
 
-        Dim fileInfo As New System.IO.FileInfo(fileName)
+        ' Usingブロックを抜けた時点で自動的にファイルが開放されます
+        '     Using fileInfo As IO.FileStream = New IO.FileStream(fileName, IO.FileMode.Open, IO.FileShare.ReadWrite)
+        Using fileInfo As IO.FileStream = New IO.FileStream(fileName, IO.FileMode.Open, IO.FileAccess.Read, IO.FileShare.ReadWrite)
 
-        lstFileInfo.Items.Clear()
+            lstFileInfo.Items.Clear()
 
-        If System.IO.File.Exists(fileName) Then
-            lstFileInfo.Items.Add("ファイル名: " & fileInfo.Name)
-            lstFileInfo.Items.Add("サイズ: " & fileInfo.Length.ToString("#,0") & " byte")
+            If System.IO.File.Exists(fileName) Then
+                lstFileInfo.Items.Add("ファイル名: " & System.IO.Path.GetFileName(fileName))
+                Dim fi As New System.IO.FileInfo(fileName)
+                lstFileInfo.Items.Add("サイズ: " & fi.Length.ToString() & " byte")
 
-            ' Imageオブジェクトを作成
-            Using img As Image = Image.FromFile(fileName)
-                '     Using img
 
-                For Each prop As PropertyItem In img.PropertyItems
-                    If prop.Id = &H112 Then ' Orientation
-                        Dim orientation As Integer = BitConverter.ToInt16(prop.Value, 0)
+                ' Imageオブジェクトを作成
+                Using imgFromStream As Image = Image.FromStream(fileInfo)
+                    ' 3. 元ファイルと完全に紐付けを絶った「コピー（Bitmap）」を作成する
+                    Dim img As New Bitmap(imgFromStream)
 
-                        Select Case orientation
-                            Case 2
-                                'If img.Width < img.Height Then
-                                '    img.RotateFlip(RotateFlipType.Rotate270FlipNone)
-                                'End If
-                            Case 3
-                                img.RotateFlip(RotateFlipType.Rotate180FlipNone)
-                            Case 6
-                                img.RotateFlip(RotateFlipType.Rotate90FlipNone)
-                            Case 8
-                                img.RotateFlip(RotateFlipType.Rotate270FlipNone)
-                            Case Else
-                                'If img.Width < img.Height Then
-                                '    img.RotateFlip(RotateFlipType.Rotate270FlipNone)
-                                'End If
-                        End Select
+                    For Each prop As PropertyItem In img.PropertyItems
+                        If prop.Id = &H112 Then ' Orientation
+                            Dim orientation As Integer = BitConverter.ToInt16(prop.Value, 0)
 
-                        Exit For
-                    End If
-                Next
+                            Select Case orientation
+                                Case 2
 
-                PicQsl.Image = CType(img.Clone(), Image)
+                                Case 3
+                                    img.RotateFlip(RotateFlipType.Rotate180FlipNone)
+                                Case 6
+                                    img.RotateFlip(RotateFlipType.Rotate90FlipNone)
+                                Case 8
+                                    img.RotateFlip(RotateFlipType.Rotate270FlipNone)
+                                Case Else
 
-                ' 幅（Width）と高さ（Height）を取得
-                ' 1. ピクセルサイズ
-                Dim widthPx As Integer = img.Width
-                Dim heightPx As Integer = img.Height
-                ' 2. 解像度（DPI: Dots Per Inch）を取得
-                Dim dpiX As Single = img.HorizontalResolution
-                Dim dpiY As Single = img.VerticalResolution
+                            End Select
 
-                lstFileInfo.Items.Add("大きさ: " & widthPx.ToString("#") & "×" & heightPx.ToString("#") & " px")
-                lstFileInfo.Items.Add("解像度: " & dpiX.ToString("#") & "x" & dpiY.ToString("#") & " dpi")
+                            Exit For
+                        End If
+                    Next
 
-                Dim widthInch As Single = widthPx / dpiX
-                Dim heightInch As Single = heightPx / dpiY
-                lstFileInfo.Items.Add("横縦長: " & (widthInch * 2.54).ToString("#.0") & "×" & (heightInch * 2.54).ToString("#.0") & " cm")
+                    PicQsl.Image = CType(img.Clone(), Image)
 
-            End Using
-            lstFileInfo.Items.Add("作成日時: " & fileInfo.CreationTime)
-        End If
+                    ' 幅（Width）と高さ（Height）を取得
+                    ' 1. ピクセルサイズ
+                    Dim widthPx As Integer = img.Width
+                    Dim heightPx As Integer = img.Height
+                    ' 2. 解像度（DPI: Dots Per Inch）を取得
+                    Dim dpiX As Single = img.HorizontalResolution
+                    Dim dpiY As Single = img.VerticalResolution
 
-        ' Return img
+                    lstFileInfo.Items.Add("大きさ: " & widthPx.ToString("#") & "×" & heightPx.ToString("#") & " px")
+                    lstFileInfo.Items.Add("解像度: " & dpiX.ToString("#") & "x" & dpiY.ToString("#") & " dpi")
+
+                    Dim widthInch As Single = widthPx / dpiX
+                    Dim heightInch As Single = heightPx / dpiY
+                    lstFileInfo.Items.Add("横縦長: " & (widthInch * 2.54).ToString("#.0") & "×" & (heightInch * 2.54).ToString("#.0") & " cm")
+
+                End Using
+                lstFileInfo.Items.Add("作成日時: " & System.IO.File.GetCreationTime(fileName))
+                'lstFileInfo.Items.Add("作成日時: " & fileInfo.CreationTime)
+            End If
+
+        End Using ' ← ここで確実に Close / Dispose されます
+
     End Sub
 
 
@@ -235,6 +234,11 @@ Public Class frmMain
         End If
 
         Dim file As String = FileList(FileIndex)
+        While Not System.IO.File.Exists(file)
+            FileIndex += 1
+            If FileIndex >= FileList.Count Then Return False
+            file = FileList(FileIndex)
+        End While
 
         ' 既存の画像読み込み処理を呼ぶ
         SetImageFromFile(file)
@@ -570,6 +574,8 @@ Public Class frmMain
     'End Class
 
 
+
+
     Public Class OcrEngine
 
         Private Shared _dataPath As String
@@ -783,6 +789,10 @@ Public Class frmMain
             ' ★★★ 同期呼び出し ★★★
             Dim response As HttpResponseMessage = client.PostAsync(url, content).Result
 
+
+            ' ★★★ POST直後に少し待つ（Azureの内部キューが落ち着く）★★★
+            Threading.Thread.Sleep(500)
+
             If Not response.IsSuccessStatusCode Then
                 Dim errBody As String = response.Content.ReadAsStringAsync().Result
                 MessageBox.Show($"HTTP {(CInt(response.StatusCode))} {response.ReasonPhrase}{vbCrLf}{errBody}")
@@ -807,6 +817,7 @@ Public Class frmMain
 
             Return ParseAzureReadResult(resultJson)
         End Using
+
     End Function
 
 
@@ -1018,7 +1029,7 @@ Public Class frmMain
     Sub DiagnosePath(folderPath As String)
         ' デバッグ用に呼び出す（例: SaveImageWithRules の直前など）
         Try
-            Dim attrs = File.GetAttributes(folderPath)
+            Dim attrs = System.IO.File.GetAttributes(folderPath)
             'Debug.WriteLine("Attributes: " & attrs.ToString())
         Catch ex As Exception
             'Debug.WriteLine("GetAttributes failed: " & ex.Message)
@@ -1035,8 +1046,8 @@ Public Class frmMain
         ' 書き込みテスト
         Try
             Dim testFile = System.IO.Path.Combine(folderPath, ".__write_test__")
-            File.WriteAllText(testFile, "test")
-            File.Delete(testFile)
+            System.IO.File.WriteAllText(testFile, "test")
+            System.IO.File.Delete(testFile)
             Debug.WriteLine("Write test: OK")
         Catch ex As Exception
             Debug.WriteLine("Write test failed: " & ex.Message)
@@ -1140,63 +1151,128 @@ Public Class frmMain
 
         Dim savePath As String = Path.Combine(saveFolder, saveName)
 
-        If File.Exists(savePath) Then
-            Dim result = MessageBox.Show($"{savePath}" & vbLf & "ファイルは既に存在します。 ファイルを削除してよいですか？", "ファイル重複", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-            If result = DialogResult.Yes Then
-                PicQsl.Image.Dispose()
+        If System.IO.File.Exists(savePath) Then
 
-                Try
-                    Dim filePath = InputFileName
-                    If File.Exists(filePath) Then
-                        PicQsl.Image.Dispose()
-                        ' ごみ箱に送る場合
-                        My.Computer.FileSystem.DeleteFile(
-                        filePath, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
+            Dim proc As Integer = 0
+            Using form As New frmSelect()
+                Using fileInfo As IO.FileStream = IO.File.Open(savePath, IO.FileMode.Open)
+                    form.PicOldQsl.Image = Image.FromStream(fileInfo) ' または Image.FromStream(fileInfo)
+                End Using ' ここで Stream は閉じられるはずだが…
+
+                If form.ShowDialog() = DialogResult.Cancel Then
+                    Return False
+                Else
+                    '                ElseIf form.ShowDialog() = DialogResult.OK Then
+                    form.PicOldQsl.Image.Dispose()
+                    If form.rbtnOldFile.Checked Then
+                        proc = 0
+                    ElseIf form.rbtnNewFile.Checked Then
+                        proc = 1
+                    ElseIf form.rbtnBotthFile.Checked Then
+                        proc = 2
                     End If
-                Catch ex As Exception
-                    MessageBox.Show("元画像の削除に失敗しました: " & ex.Message)
-                End Try
+                End If
+            End Using
+
+            If proc = 0 Then
+                SendToTrushbox(InputFileName)
+            ElseIf proc = 1 Then
+                Dim img As Image = PicQsl.Image
+                SaveImage(img, savePath)
+                SendToTrushbox(InputFileName)
+
+            ElseIf proc = 2 Then
+                Dim fn = Path.GetFileNameWithoutExtension(savePath)
+                ext = Path.GetExtension(savePath)
+                Dim i = 1
+                Do
+                    Dim newName = $"{fn}_dup{i}{ext}"
+                    savePath = Path.Combine(saveFolder, newName)
+                    If Not System.IO.File.Exists(savePath) Then
+                        SaveImage(PicQsl.Image, savePath)
+                        Exit Do
+                    End If
+                    i += 1
+                Loop
+                DeleteFile(inputImagePath)
             End If
             PicQsl.Image.Dispose()
-            'Return False
         Else
-
+            ' 通常実行時の処理
             '=== 画像保存 ===
             Try
-                ' PNG形式で保存する場合
                 Dim img As Image = PicQsl.Image
-                InputFileFormat = img.RawFormat
-                img.Save(savePath, InputFileFormat)
-
-                img.Dispose()
+                SaveImage(img, savePath)
 
                 Dim writer As New HistoryAdifWriter()
-
-                ' 通常実行時の処理
                 writer.AppendRecord(callSign:=cs, qsoDate:=dt, timeOn:=dt, band:=bd, mode:=md)
 
-                'File.Copy(inputImagePath, savePath, overwrite:=False)
             Catch ex As Exception
                 MessageBox.Show("保存に失敗しました: " & ex.Message)
-                'Return False
             End Try
 
             Dim idx = FileList.IndexOf(InputFileName)
             FileIndex = idx + 1
-        End If
 
-        '=== 元画像削除 ===
-        PicQsl.Image.Dispose()
-        Try
-            File.Delete(inputImagePath)
-        Catch ex As Exception
-            MessageBox.Show("元画像の削除に失敗しました: " & ex.Message)
-            ' 保存は成功しているので True を返す
-        End Try
+            '=== 元画像削除 ===
+            PicQsl.Image.Dispose()
+            DeleteFile(inputImagePath)
+        End If
 
         Return True
     End Function
 
+
+    Private Sub SaveImage(img As Image, savePath As String)
+        If System.IO.File.Exists(savePath) Then
+            ' 既存ファイルを削除
+            System.IO.File.Delete(savePath)
+        End If
+        InputFileFormat = img.RawFormat
+        img.Save(savePath, InputFileFormat)
+
+        img.Dispose()
+    End Sub
+
+    Private Sub DeleteFile(DeleateFilePath As String)
+        'If DeleateFilePath IsNot Nothing Then
+        '    DeleateFilePath.Close()
+        '    DeleateFilePath.Dispose()
+        'End If
+        'DeleateFilePath.Close()
+        PicQsl.Image.Dispose()
+        Try
+            If System.IO.File.Exists(DeleateFilePath) Then
+                System.IO.File.Delete(DeleateFilePath)
+            End If
+        Catch ex As Exception
+            MessageBox.Show("ファイルの削除に失敗しました: " & ex.Message)
+        End Try
+    End Sub
+
+    Private Sub ReplaceFile(SourceFile As String, destFile As String)
+        Try
+            If System.IO.File.Exists(SourceFile) Then
+                System.IO.File.Replace(SourceFile, destFile, Nothing)
+            End If
+        Catch ex As Exception
+            MessageBox.Show("ファイルの置き換えに失敗しました: " & ex.Message)
+        End Try
+    End Sub
+
+    Private Sub SendToTrushbox(InputFileName As String)
+        Try
+            Dim filePath = InputFileName
+            If System.IO.File.Exists(filePath) Then
+                PicQsl.Image.Dispose()
+                ' ごみ箱に送る場合
+                My.Computer.FileSystem.DeleteFile(
+                filePath, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
+            End If
+        Catch ex As Exception
+            MessageBox.Show("元画像の削除に失敗しました: " & ex.Message)
+        End Try
+    End Sub
 
     Private Sub cmbCallsign_Leave(sender As Object, e As EventArgs)
 
@@ -1498,7 +1574,7 @@ Public Class frmMain
 
             Dim json As String
             If System.IO.File.Exists(AppSettings.SettingsFile) Then
-                json = File.ReadAllText(FileName)
+                json = System.IO.File.ReadAllText(FileName)
             Else
                 json = "{ ""General"": {  }}"
             End If
@@ -1519,7 +1595,7 @@ Public Class frmMain
             Dim jsonString As String = JsonSerializer.Serialize(JsonSettings,
         New JsonSerializerOptions With {.WriteIndented = True}
     )
-            File.WriteAllText(FileName, jsonString)
+            System.IO.File.WriteAllText(FileName, jsonString)
         End Sub
 
 
@@ -1764,6 +1840,7 @@ Public Class frmMain
         '    e.SuppressKeyPress = True
         'End If
 
+
         If e.Control Then
             ' 警告音（ピピッという音）を鳴らさないようにする
             e.SuppressKeyPress = True   ' ← これが重要
@@ -1810,7 +1887,7 @@ Public Class frmMain
                     PicQsl.Image.Dispose()
 
                     Dim filePath = InputFileName
-                    If File.Exists(filePath) Then
+                    If System.IO.File.Exists(filePath) Then
                         ' ごみ箱に送る場合
                         My.Computer.FileSystem.DeleteFile(
                         filePath, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
@@ -1831,10 +1908,10 @@ Public Class frmMain
                     End If
                 End If
 
-            ElseIf e.KeyCode = Keys.left Then                              ' CTLR+→ 画像を右に90度回転
+            ElseIf e.KeyCode = Keys.Left Then                              ' CTLR+→ 画像を右に90度回転
                 PicQsl.Image.RotateFlip(RotateFlipType.Rotate90FlipNone)
                 PicQsl.Refresh()
-            ElseIf e.KeyCode = Keys.right Then
+            ElseIf e.KeyCode = Keys.Right Then
                 PicQsl.Image.RotateFlip(RotateFlipType.Rotate270FlipNone)   ' Ctrl+← 画像を左に90度回転
                 PicQsl.Refresh()
             End If
@@ -1842,11 +1919,116 @@ Public Class frmMain
         End If
     End Sub
 
+    Private Sub TextBox_Leave(sender As Object, e As EventArgs)
+        Dim tb = CType(sender, TextBox)
+
+        'If tb.Text.Trim() = "" Then
+        '    tb.ForeColor = Color.Gray
+        '    tb.Text = tb.Tag.ToString()
+        'End If
+    End Sub
+
+    Private Sub Control_KeyDown_Enter(sender As Object, e As EventArgs) Handles cmbCallsign.Enter, txtQsoDate.Enter, txtQsoTime.Enter, txtBand.Enter, txtMode.Enter
+        NowText = sender.text
+    End Sub
+
+
+    Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) Handles cmbCallsign.KeyDown, txtQsoDate.KeyDown,
+                txtQsoTime.KeyDown, txtBand.KeyDown, txtMode.KeyDown
+
+        If e.KeyCode = Keys.Escape Then
+            sender.text = NowText
+            Exit Sub
+        End If
+
+        If e.KeyCode = Keys.Enter Then                          ' Enterキーが押された場合の処理 次の項目に移動する
+
+            Dim current = CType(sender, Control)
+            Dim nextCtrl As Control
+
+            e.SuppressKeyPress = True
+            If e.Shift Then
+                ' Shift + Enter → 前へ
+                nextCtrl = GetPrevInputControl(current)
+            Else
+                ' Enter → 次へ
+                nextCtrl = GetNextInputControl(current)
+            End If
+
+            If nextCtrl IsNot Nothing Then
+                nextCtrl.Focus()
+            End If
+        End If
+
+        If TypeOf sender Is ComboBox Then
+            If e.KeyCode = Keys.Down Then
+                ' すでにドロップダウン中でなければ開く
+                If Not cmbCallsign.DroppedDown Then
+                    cmbCallsign.DroppedDown = True      ' これでListを表示するはずだが、開かない。 [Alt] + [下矢印(↓)] キー、または [F4] キーを使います　でも開かない
+                    e.Handled = True ' 標準のキー動作を抑制
+                End If
+            End If
+
+            'If Not cmbCallsign.DroppedDown AndAlso e.KeyCode = Keys.Up Then
+            '    ' 本体のコンボボックスの項目切り替え動作をキャンセル
+            '    e.Handled = True
+            '    e.SuppressKeyPress = True
+
+            '    ' Shift + Tab の動作（前のコントロールへフォーカス移動）を実行する
+            '    ' 第1引数: forward (Falseで逆方向/前へ), 第2引数: tabStopOnly (TrueでTabStop有効なもののみ)
+            '    Me.SelectNextControl(DirectCast(sender, Control), False, True, True, True)
+            'End If
+        End If
+
+    End Sub
+
+
+    Private Sub frmMain_PreviewKeyDown(sender As Object, e As PreviewKeyDownEventArgs) Handles cmbCallsign.PreviewKeyDown, txtQsoDate.PreviewKeyDown, txtQsoTime.PreviewKeyDown,
+        txtBand.PreviewKeyDown, txtMode.PreviewKeyDown
+
+
+        'If TypeOf sender Is ComboBox Then
+        '    ' ドロップダウンが閉じていて、↑キーが押された場合
+        '    If Not cmbCallsign.DroppedDown AndAlso e.KeyCode = Keys.Up Then
+        '        ' ↑キーが押された際、デフォルトの「項目移動」ではなく「通常のキー入力」として処理させる
+        '        e.IsInputKey = True
+        '    End If
+
+        'Else
+        ' 修飾キー（Shift, Ctrl, Alt）が押されていない、かつ「↑」キーであるかをチェック
+
+        If e.Modifiers = Keys.None AndAlso e.KeyCode = Keys.Up Then
+
+            ' IsInputKey を True にすることで、通常の KeyDown イベントを発生させることができます
+            e.IsInputKey = True
+
+            Dim current = CType(sender, Control)
+            Dim nextCtrl As Control
+
+            nextCtrl = GetPrevInputControl(current)            ' ↑キーで前の項目へ移動
+            If Not (TypeOf sender Is ComboBox) Then
+
+                If nextCtrl IsNot Nothing Then
+                    nextCtrl.Focus()
+                End If
+            Else
+                If Not cmbCallsign.DroppedDown Then
+                    If nextCtrl IsNot Nothing Then
+                        nextCtrl.Focus()
+                    End If
+                End If
+            End If
+            'End If
+        End If
+
+        SetSaveButton()
+    End Sub
 
     Private tessVersion As String
 
 
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        'MessageBox.Show(AppDomain.CurrentDomain.BaseDirectory)
 
         Height = 600
         PnlList.Height = PnlPic.Height
@@ -1963,16 +2145,11 @@ Public Class frmMain
 
 
     Private Sub cmbCallsign_TextChanged(sender As Object, e As EventArgs) Handles cmbCallsign.TextChanged
-        cmbCallsign.Text = cmbCallsign.Text.Trim
-
         Dim cb = DirectCast(sender, ComboBox)
-        Dim start As Integer = cb.SelectionStart
-        cb.Text = cb.Text.ToUpper() ' 小文字にする場合は .ToLower()
+        Dim start = cb.SelectionStart
+        cb.Text = cb.Text.ToUpper ' 小文字にする場合は .ToLower()
+
         cb.SelectionStart = start
-
-        qsoCallsign = cmbCallsign.Text
-
-        SetSaveButton()
     End Sub
 
 
@@ -1992,94 +2169,141 @@ Public Class frmMain
 
 
     Private Sub txtDate_Validating(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles txtQsoDate.Validating
+        Dim dt As Date
 
         txtQsoDate.Text = txtQsoDate.Text.Trim.ToUpper
 
         If txtQsoDate.Text = "" Then Exit Sub
 
         txtQsoDate.Text = txtQsoDate.Text.Replace("-", "/")
+        txtQsoDate.Text = txtQsoDate.Text.Replace(".", "/")
 
         Dim year As String = "0000"
         Dim month As String = "00"
         Dim day As String = "00"
+        Dim Gengou As String = ""
         Dim ymd As String
 
-        Dim parts = txtQsoDate.Text.Split("/"c)
+        ymd = txtQsoDate.Text
+        Gengou = ymd.Substring(0, 1)
+        If (Gengou >= "A") AndAlso (Gengou <= "Z") Then
+            ymd = ymd.Substring(1, ymd.Length - 1)
+        Else
+            Gengou = ""
+        End If
 
-        If parts.Count = 3 Then
-            year = parts(0)
-            month = parts(1)
-            day = parts(2)
-        ElseIf parts.Count = 2 Then
-            month = parts(0)
-            day = parts(1)
-            If (month > Now.Month) OrElse ((month = Now.Month) AndAlso (day > Now.Day)) Then
-                year = Now.Year - 1
-            Else
-                year = Now.Year
-            End If
-        ElseIf parts.Count = 1 Then
-            ymd = "0" & txtQsoDate.Text
+        Dim parts = ymd.Split("/"c)
 
-            day = ymd.Substring(ymd.Length - 2, 2)
-            month = ymd.Substring(ymd.Length - 4, 2)
-
-            Select Case txtQsoDate.Text.Length
-                Case <= 4               ' 年が省略されている
-                    year = Now.Year
-                Case 5, 6               ' 年が2桁以下
-                    year = Now.Year - (Now.Year Mod 100) + txtQsoDate.Text.Substring(0, txtQsoDate.Text.Length - 4)
-                    If year > Now.Year Then year = year - 100
-                Case 7, 8
-                    year = txtQsoDate.Text.Substring(0, 4)
-                Case Else
-                    MessageBox.Show($"日付の長さが正しくありません(YYYY/MM/DD): {txtQsoDate.Text}", "入力エラー")
+        If Gengou <> "" Then
+            ' 和暦で入力
+            If parts.Count = 3 Then
+                ' CTypeを使ってDate型に変換
+                If Date.TryParse(Gengou & ymd, dt) Then
+                    ymd = dt.ToString("yyyy/MM/dd")
+                Else
+                    MessageBox.Show($"存在しない日付です。{txtQsoDate.Text}", "入力エラー",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning)
                     e.Cancel = True
                     Exit Sub
-            End Select
+                End If
+            ElseIf parts.Count = 1 Then         ' 年月日がスラッシュなしで入力されている場合
+                ymd = "0" & ymd
+
+                day = ymd.Substring(ymd.Length - 2, 2)
+                month = ymd.Substring(ymd.Length - 4, 2)
+                year = ymd.Substring(0, ymd.Length - 4)
+
+                ymd = $"{Gengou}{year}/{month}/{day}"
+                'If parts.Count = 3 Then
+                ' CTypeを使ってDate型に変換
+                If Date.TryParse(ymd, dt) Then
+                    ymd = dt.ToString("yyyy/MM/dd")
+                Else
+                    MessageBox.Show($"存在しない日付です。{txtQsoDate.Text}", "入力エラー",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                    e.Cancel = True
+                    Exit Sub
+                End If
+                'End If
+            End If
         Else
-            MessageBox.Show($"日付の区切り符号の数が正しくありません(YYYY/MM/DD): {txtQsoDate.Text}", "入力エラー")
-            e.Cancel = True
-            Exit Sub
-        End If
+            ' 西暦で入力されたとき
+            If parts.Count = 3 Then
+                year = parts(0)
+                month = parts(1)
+                day = parts(2)
+            ElseIf parts.Count = 2 Then
+                month = parts(0)
+                day = parts(1)
+                If (month > Now.Month) OrElse ((month = Now.Month) AndAlso (day > Now.Day)) Then
+                    year = Now.Year - 1
+                Else
+                    year = Now.Year
+                End If
+            ElseIf parts.Count = 1 Then
+                ymd = "0" & txtQsoDate.Text
 
-        If year.Length = 2 Then
-            year = Now.Year - (Now.Year Mod 100) + year
-            If year > Now.Year Then year = year - 100
-        End If
-        If month.Length <> 2 Then
-            month = ("00" & month)
-            month = month.Substring(month.Length - 2, 2)
-        End If
-        If day.Length <> 2 Then
-            day = ("00" & day)
-            day = day.Substring(day.Length - 2, 2)
-        End If
+                day = ymd.Substring(ymd.Length - 2, 2)
+                month = ymd.Substring(ymd.Length - 4, 2)
 
-        ymd = year & "/" & month & "/" & day
+                Select Case txtQsoDate.Text.Length
+                    Case <= 4               ' 年が省略されている
+                        year = Now.Year
+                    Case 5, 6               ' 年が2桁以下
+                        year = Now.Year - (Now.Year Mod 100) + txtQsoDate.Text.Substring(0, txtQsoDate.Text.Length - 4)
+                        If year > Now.Year Then year = year - 100
+                    Case 7, 8
+                        year = txtQsoDate.Text.Substring(0, 4)
+                    Case Else
+                        MessageBox.Show($"日付の長さが正しくありません(YYYY/MM/DD): {txtQsoDate.Text}", "入力エラー")
+                        e.Cancel = True
+                        Exit Sub
+                End Select
 
-        ' 正規表現：YYYY/MM/DD または YY/MM/DD
-        Dim pattern = "^(19|20)\d{2}/(0[1-9]|1[0-2])/([0-2]\d|3[01])$"
-        If Not Regex.IsMatch(ymd, pattern) Then
-            MessageBox.Show($"日付の形式が正しくありません(YYYY/MM/DD): {ymd}", "入力エラー")
-            e.Cancel = True
-            Exit Sub
-        End If
-
-        Dim dt As Date
-        Try
-            dt = New Date(year, month, day)
-            If dt > Now Then
-                MessageBox.Show($"日付は未来の日付に設定できません。{dt}", "入力エラー")
+            Else
+                MessageBox.Show($"日付の区切り符号の数が正しくありません(YYYY/MM/DD): {txtQsoDate.Text}", "入力エラー")
                 e.Cancel = True
                 Exit Sub
             End If
-        Catch ex As Exception
-            MessageBox.Show($"存在しない日付です。{dt}", "入力エラー",
+
+            If year.Length = 2 Then
+                year = Now.Year - (Now.Year Mod 100) + year
+                If year > Now.Year Then year = year - 100
+            End If
+            If month.Length <> 2 Then
+                month = ("00" & month)
+                month = month.Substring(month.Length - 2, 2)
+            End If
+            If day.Length <> 2 Then
+                day = ("00" & day)
+                day = day.Substring(day.Length - 2, 2)
+            End If
+
+            ymd = year & "/" & month & "/" & day
+
+            ' 正規表現：YYYY/MM/DD または YY/MM/DD
+            Dim pattern = "^(19|20)\d{2}/(0[1-9]|1[0-2])/([0-2]\d|3[01])$"
+            If Not Regex.IsMatch(ymd, pattern) Then
+                MessageBox.Show($"日付の形式が正しくありません(YYYY/MM/DD): {ymd}", "入力エラー")
+                e.Cancel = True
+                Exit Sub
+            End If
+
+            Try
+                dt = New Date(year, month, day)
+                If dt > Now Then
+                    MessageBox.Show($"日付は未来の日付に設定できません。{dt}", "入力エラー")
+                    e.Cancel = True
+                    Exit Sub
+                End If
+            Catch ex As Exception
+                MessageBox.Show($"存在しない日付です。{dt}", "入力エラー",
                             MessageBoxButtons.OK, MessageBoxIcon.Warning)
-            e.Cancel = True
-            Exit Sub
-        End Try
+                e.Cancel = True
+                Exit Sub
+            End Try
+        End If
+
 
         ' --- 範囲チェック ---
         Dim minDate = New Date(1952, 7, 29)
@@ -2189,7 +2413,8 @@ Public Class frmMain
 
         Dim ErrMess1 = $"Modeの値ModeListsにありません。 ""{txtMode.Text}""" & vbLf & "継続しますか？"
         Dim ErrMess2 = "エラー"
-        Dim Result = MessageBox.Show(ErrMess1, ErrMess2, MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1)
+        ' Noを選択した場合、入力欄にフォーカスを戻す Noをdefault(Button2)にした   
+        Dim Result = MessageBox.Show(ErrMess1, ErrMess2, MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2)
         If Result = DialogResult.Yes Then
         Else
             e.Cancel = True
@@ -2214,36 +2439,29 @@ Public Class frmMain
 
         Dim dlg As New OpenFileDialog
         dlg.Filter = "画像ファイル|*.jpg;*.jpeg;*.png;*.bmp"
-        'If InitSub Then
         If IntInputFolder Then
             dlg.InitialDirectory = IntInputFolder
-            'Else
-            '    dlg.InitialDirectory = My.Application.Info.DirectoryPath
-            'End If
             dlg.RestoreDirectory = False
             dlg.InitialDirectory = InputFolder        ' 初期フォルダの設定
             dlg.FileName = ""
             IntInputFolder = False
-            'InitSub = False
         End If
 
         If dlg.ShowDialog = DialogResult.OK Then
 
-            Using img = Image.FromFile(dlg.FileName)
-                ' PictureBoxに表示する場合
-                'PictureBox1.Image = New Bitmap(img)
+            'Using img = Image.FromFile(dlg.FileName)
 
-                SetImageFromFile(dlg.FileName)
+            SetImageFromFile(dlg.FileName)
 
                 ' 画像の上下左右を自動判断し,方向をそろえる機能
                 ' 処理が重いので組み込まない
                 'PicQsl.Image = AutoRotateImageByOCR(PicQsl.Image, System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "tessdata"))
 
                 InputFileName = dlg.FileName
-                InputFileFormat = img.RawFormat
+            'InputFileFormat = img.RawFormat
 
-                img.Dispose()
-            End Using ' ここで自動的に開放される
+            'img.Dispose()
+            'End Using ' ここで自動的に開放される
 
             If InputFileName = "" Then
                 Text = "QslOrganizer"
@@ -2265,56 +2483,6 @@ Public Class frmMain
 
     Private NowText As String
 
-
-    Private Sub TextBox_Leave(sender As Object, e As EventArgs)
-        Dim tb = CType(sender, TextBox)
-
-        'If tb.Text.Trim() = "" Then
-        '    tb.ForeColor = Color.Gray
-        '    tb.Text = tb.Tag.ToString()
-        'End If
-    End Sub
-
-    Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) Handles cmbCallsign.KeyDown, txtQsoDate.KeyDown,
-                txtQsoTime.KeyDown, txtBand.KeyDown, txtMode.KeyDown
-
-        If e.KeyCode = Keys.Escape Then
-            sender.text = NowText
-            Exit Sub
-        End If
-
-        If e.KeyCode = Keys.Enter Then
-
-            Dim current = CType(sender, Control)
-            Dim nextCtrl As Control
-
-            e.SuppressKeyPress = True
-            If e.Shift Then
-                ' Shift + Enter → 前へ
-                nextCtrl = GetPrevInputControl(current)
-            Else
-                ' Enter → 次へ
-                nextCtrl = GetNextInputControl(current)
-            End If
-
-            If nextCtrl IsNot Nothing Then
-                nextCtrl.Focus()
-            End If
-        End If
-
-        'If e.Control Then
-        If TypeOf sender Is ComboBox Then
-            If e.KeyCode = Keys.Down Then
-                ' すでにドロップダウン中でなければ開く
-                If Not cmbCallsign.DroppedDown Then
-                    cmbCallsign.DroppedDown = True      ' これでListを表示するはずだが、開かない。 [Alt] + [下矢印(↓)] キー、または [F4] キーを使います　でも開かない
-                    e.Handled = True ' 標準のキー動作を抑制
-                End If
-            End If
-        End If
-
-        'End If
-    End Sub
 
 
     Private Sub btnOnlineOcr_Click(sender As Object, e As EventArgs) Handles btnOnlineOcr.Click
@@ -2352,18 +2520,18 @@ Public Class frmMain
 
     Sub SetUiFromCurrentQso(CurrentQso As QsoData)
         With CurrentQso
-            If cmbCallsign.Text = "" Then cmbCallsign.Text = .Callsign
-            If cmbCallsign.Items.Count = 0 Then
-                cmbCallsign.Items.Clear()
-                Dim i As Integer
-                For i = 0 To .CandidatesCallsigns.Count - 1
-                    cmbCallsign.Items.Add(.CandidatesCallsigns(i))
-                Next
-            End If
-            If txtQsoDate.Text = "" Then txtQsoDate.Text = .QsoDate
-            If txtQsoTime.Text = "" Then txtQsoTime.Text = .QsoTime
-            If txtBand.Text = "" Then txtBand.Text = .Band
-            If txtMode.Text = "" Then txtMode.Text = .Mode
+            If .Callsign <> "" Then cmbCallsign.Text = .Callsign
+            'If cmbCallsign.Items.Count = 0 Then
+            cmbCallsign.Items.Clear()
+            Dim i As Integer
+            For i = 0 To .CandidatesCallsigns.Count - 1
+                cmbCallsign.Items.Add(.CandidatesCallsigns(i))
+            Next
+            'End If
+            If .QsoDate <> "" Then txtQsoDate.Text = .QsoDate
+            If .QsoTime <> "" Then txtQsoTime.Text = .QsoTime
+            If .Band <> "" Then txtBand.Text = .Band
+            If .Mode <> "" Then txtMode.Text = .Mode
         End With
     End Sub
 
@@ -2542,26 +2710,27 @@ Public Class frmMain
 
 
     Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
-        SaveImageWithRules(InputFileName)
 
-        PicQsl.Image = Nothing
-        SetImage(Nothing)
-        ClearForm(True)
-        ClearCurrentQso(CurrentQso)
+        If SaveImageWithRules(InputFileName) Then
 
-        ' ★ 保存が成功したら次のファイルを読み込む
-        If chkAuto.Checked Then
-            If LoadNextFile() Then                  ' 次のファイルがないとFalse
-                CheckFileName(InputFileName)
+            PicQsl.Image = Nothing
+            SetImage(Nothing)
+            ClearForm(True)
+            ClearCurrentQso(CurrentQso)
 
-                If CurrentQso.Valid Then
-                    SetUiFromCurrentQso(CurrentQso)                           ' CurrentQsoをUIに設定
-                Else
-                    ProcessWithOCR()
+            ' ★ 保存が成功したら次のファイルを読み込む
+            If chkAuto.Checked Then
+                If LoadNextFile() Then                  ' 次のファイルがないとFalse
+                    CheckFileName(InputFileName)
+
+                    If CurrentQso.Valid Then
+                        SetUiFromCurrentQso(CurrentQso)                           ' CurrentQsoをUIに設定
+                    Else
+                        ProcessWithOCR()
+                    End If
+                    SetButtons()
                 End If
-                SetButtons()
             End If
-            'RunAutoOCR()
         End If
 
     End Sub
@@ -2574,17 +2743,34 @@ Public Class frmMain
 
     Private Sub btnTest_Click(sender As Object, e As EventArgs) Handles btnTest.Click
 
-        'OcrAzureVision()
-
-        'Dim text = "TO RADIO JATFKF JIA ! 7 F K F CONFIRMING OUR QSO DATE TIME RS BAND MODE YEAR ‘MONTH DAY * UST UTC ‘MHZ 2WAY  JAN.  10 SSB RIG: IC-7300 OUTPUT 100 W ANT: LW+AH-3 L7MH RAKS: SRA LS BHUBRLEF. QSL#: 71297 PSE QSL"
-        'Dim band = RegexExtractor.ExtractBand(text)
-        'Debug.Print(band)
+        Using form As New frmSelect()
+            'form.PicOldQsl.Image = Image.FromFile("D:\eQSL\2\2Z711_20250106_1715_17M_FT8.jpg")
+            form.PicOldQsl.Image = Image.FromFile("D:\QSLtest\JJ7\JJ7AAE_19940806_2120_6M_SSB_X.jpg")
 
 
+            ' 設定を読み込み
+            If form.ShowDialog() = DialogResult.OK Then
+                If form.rbtnOldFile.Checked Then
 
-        ''Dim pattern = "(?<=\s|:|;|\b)(\d{1,7})([.,\.]{0,2})(\d{0,6})(?=[\s\]MKG]|$)"           ' 直前が空白であり、直後が数字以外であること
-        'Dim text = "    ' <CALL:6>IW1QLH<QSO_DATE:8:D>20000101<TIME_ON:4>0000<BAND:3>20M<MODE:3>USB<EOR>"
-        'Dim r = RegexExtractor.ExtractFromADIF("QSO_DATE", text)
+                ElseIf form.rbtnNewFile.Checked Then
+
+                ElseIf form.rbtnBotthFile.Checked Then
+
+                End If
+            End If
+        End Using
+
+        ''OcrAzureVision()
+
+        ''Dim text = "TO RADIO JATFKF JIA ! 7 F K F CONFIRMING OUR QSO DATE TIME RS BAND MODE YEAR ‘MONTH DAY * UST UTC ‘MHZ 2WAY  JAN.  10 SSB RIG: IC-7300 OUTPUT 100 W ANT: LW+AH-3 L7MH RAKS: SRA LS BHUBRLEF. QSL#: 71297 PSE QSL"
+        ''Dim band = RegexExtractor.ExtractBand(text)
+        ''Debug.Print(band)
+
+
+
+        'Dim yearPattern As String = "(?<Gengo>(昭|平|令|S|H|R)(和|成|和)?)(?<year>(d{1,2}|元)) {0,2}(?=年)"                  ' 直前が空白であり、直後が数字以外であること
+        'Dim text = "  平成元年6月30日 "
+        'Dim r = RegexExtractor.ExtractDate(text)
         'r = RegexExtractor.ExtractFromADIF("MODE", text)
         'r = RegexExtractor.ExtractFromADIF("BAND", text)
 
@@ -2595,6 +2781,20 @@ Public Class frmMain
         frmSettingOpen()
     End Sub
 
+    Private Sub AzureToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AzureToolStripMenuItem.Click
+        ' 指定したURLを規定のブラウザで開く
+        Process.Start("explorer.exe", "https://portal.azure.com/")          ' Azureを開く
+    End Sub
+
+    Private Sub GoogleToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles GoogleToolStripMenuItem.Click
+        ' 指定したURLを規定のブラウザで開く
+        Process.Start("explorer.exe", "https://console.cloud.google.com/welcome?")      ' Google Cloud Consoleを開く
+    End Sub
+
+    Private Sub QslOrganizerToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles QslOrganizerToolStripMenuItem.Click
+        ' 指定したURLを規定のブラウザで開く
+        Process.Start("explorer.exe", "https://www7b.biglobe.ne.jp/~studiozaigo/QslOrganizer.htm")      ' QslOrganizerを開く
+    End Sub
 
     Private Sub mnuAbout_Click(sender As Object, e As EventArgs) Handles mnuAbout.Click
         Using form As New frmAboutBox

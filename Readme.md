@@ -1,4 +1,4 @@
-1．はじめに
+﻿1．はじめに
 
 QslOrganizerは、QSＬカードのイメージファイルを効率よく整理・管理するためのアプリケーション（以下、アプリ）です。
 
@@ -61,6 +61,26 @@ JPEG / JPG / PNG / BMP / GIF / TIFF
 
 
 5．履歴
+
+
+
+2026-10-31 Ver 1.1.3.1
+・和暦（令和〇年〇月〇日、R〇年〇月〇日、）を読み取るようにした。
+・上向き矢印（↑）で「Shift＋Tab」機能を実行すｒ。
+・Save時、Callsign\_yyyymmdd\_hhnn\_bbb\_mmmm形式のファイル名がすでに存在したとき、残すファイルを選択できるようにした。
+・AzureでのOCR時、「429 Too many requests・・・」のエラー発生頻度を削減した。
+・Google,Azure,Studiozaigo/QslOrganizerのサイトへのリンクメニューを追加した。
+・細かな誤りの修正
+
+・ファイル名とフォルダー名の不一致を整理するPower Shell「QslTidyup.ps1」を作成した。
+
+未リリース        ' 指定したURLを規定のブラウザで開く
+
+
+
+
+
+
 
 
 

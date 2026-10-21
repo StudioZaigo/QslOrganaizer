@@ -456,7 +456,7 @@ Partial Class frmSetting
         MinimizeBox = False
         Name = "frmSetting"
         StartPosition = FormStartPosition.CenterParent
-        Text = "Setting"
+        Text = "Settings"
         Panel1.ResumeLayout(False)
         TabControl1.ResumeLayout(False)
         TabPage1.ResumeLayout(False)

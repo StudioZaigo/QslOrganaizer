@@ -25,7 +25,10 @@ Partial Class frmMain
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmMain))
         MenuStrip1 = New MenuStrip()
         mnuSetting = New ToolStripMenuItem()
-        DeskewToolStripMenuItem = New ToolStripMenuItem()
+        ToolStripMenuItem1 = New ToolStripMenuItem()
+        GoogleToolStripMenuItem = New ToolStripMenuItem()
+        AzureToolStripMenuItem = New ToolStripMenuItem()
+        QslOrganizerToolStripMenuItem = New ToolStripMenuItem()
         ImAGEToolStripMenuItem = New ToolStripMenuItem()
         QslCardListToolStripMenuItem = New ToolStripMenuItem()
         mnuAbout = New ToolStripMenuItem()
@@ -38,7 +41,6 @@ Partial Class frmMain
         Label2 = New Label()
         Label1 = New Label()
         btnExit = New Button()
-        Button1 = New Button()
         cmbCallsign = New ComboBox()
         btnTest = New Button()
         btnDeskew = New Button()
@@ -64,7 +66,7 @@ Partial Class frmMain
         ' MenuStrip1
         ' 
         MenuStrip1.ImageScalingSize = New Size(20, 20)
-        MenuStrip1.Items.AddRange(New ToolStripItem() {mnuSetting, DeskewToolStripMenuItem, ImAGEToolStripMenuItem, mnuAbout})
+        MenuStrip1.Items.AddRange(New ToolStripItem() {mnuSetting, ToolStripMenuItem1, ImAGEToolStripMenuItem, mnuAbout})
         MenuStrip1.Location = New Point(0, 0)
         MenuStrip1.Name = "MenuStrip1"
         MenuStrip1.Padding = New Padding(5, 2, 0, 2)
@@ -79,19 +81,39 @@ Partial Class frmMain
         mnuSetting.Size = New Size(56, 20)
         mnuSetting.Text = "Setting"
         ' 
-        ' DeskewToolStripMenuItem
+        ' ToolStripMenuItem1
         ' 
-        DeskewToolStripMenuItem.Enabled = False
-        DeskewToolStripMenuItem.Name = "DeskewToolStripMenuItem"
-        DeskewToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.D
-        DeskewToolStripMenuItem.Size = New Size(59, 20)
-        DeskewToolStripMenuItem.Text = "Deskew"
+        ToolStripMenuItem1.DropDownItems.AddRange(New ToolStripItem() {GoogleToolStripMenuItem, AzureToolStripMenuItem, QslOrganizerToolStripMenuItem})
+        ToolStripMenuItem1.Name = "ToolStripMenuItem1"
+        ToolStripMenuItem1.Size = New Size(50, 20)
+        ToolStripMenuItem1.Text = "Cloud"
+        ' 
+        ' GoogleToolStripMenuItem
+        ' 
+        GoogleToolStripMenuItem.Name = "GoogleToolStripMenuItem"
+        GoogleToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.G
+        GoogleToolStripMenuItem.Size = New Size(184, 22)
+        GoogleToolStripMenuItem.Text = "Google"
+        ' 
+        ' AzureToolStripMenuItem
+        ' 
+        AzureToolStripMenuItem.Name = "AzureToolStripMenuItem"
+        AzureToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.M
+        AzureToolStripMenuItem.Size = New Size(184, 22)
+        AzureToolStripMenuItem.Text = "Azure"
+        ' 
+        ' QslOrganizerToolStripMenuItem
+        ' 
+        QslOrganizerToolStripMenuItem.Name = "QslOrganizerToolStripMenuItem"
+        QslOrganizerToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.Q
+        QslOrganizerToolStripMenuItem.Size = New Size(184, 22)
+        QslOrganizerToolStripMenuItem.Text = "QslOrganizer"
         ' 
         ' ImAGEToolStripMenuItem
         ' 
         ImAGEToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {QslCardListToolStripMenuItem})
         ImAGEToolStripMenuItem.Name = "ImAGEToolStripMenuItem"
-        ImAGEToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.O
+        ImAGEToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.Q
         ImAGEToolStripMenuItem.Size = New Size(40, 20)
         ImAGEToolStripMenuItem.Text = "QSL"
         ' 
@@ -104,6 +126,7 @@ Partial Class frmMain
         ' mnuAbout
         ' 
         mnuAbout.Name = "mnuAbout"
+        mnuAbout.ShortcutKeys = Keys.Control Or Keys.A
         mnuAbout.Size = New Size(52, 20)
         mnuAbout.Text = "About"
         ' 
@@ -118,7 +141,6 @@ Partial Class frmMain
         pnlBtn.Controls.Add(Label2)
         pnlBtn.Controls.Add(Label1)
         pnlBtn.Controls.Add(btnExit)
-        pnlBtn.Controls.Add(Button1)
         pnlBtn.Controls.Add(cmbCallsign)
         pnlBtn.Controls.Add(btnTest)
         pnlBtn.Controls.Add(btnDeskew)
@@ -229,18 +251,6 @@ Partial Class frmMain
         btnExit.Text = "&Exit"
         btnExit.UseVisualStyleBackColor = True
         ' 
-        ' Button1
-        ' 
-        Button1.Location = New Point(846, 35)
-        Button1.Margin = New Padding(3, 2, 3, 2)
-        Button1.Name = "Button1"
-        Button1.Size = New Size(108, 21)
-        Button1.TabIndex = 42
-        Button1.TabStop = False
-        Button1.Text = "Open Form2"
-        Button1.UseVisualStyleBackColor = True
-        Button1.Visible = False
-        ' 
         ' cmbCallsign
         ' 
         cmbCallsign.Font = New Font("Consolas", 11.25F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
@@ -256,7 +266,7 @@ Partial Class frmMain
         ' btnTest
         ' 
         btnTest.Font = New Font("Yu Gothic UI", 10.2F)
-        btnTest.Location = New Point(802, 61)
+        btnTest.Location = New Point(792, 64)
         btnTest.Margin = New Padding(3, 2, 3, 2)
         btnTest.Name = "btnTest"
         btnTest.Size = New Size(108, 30)
@@ -268,7 +278,7 @@ Partial Class frmMain
         ' 
         ' btnDeskew
         ' 
-        btnDeskew.Location = New Point(846, 4)
+        btnDeskew.Location = New Point(802, 10)
         btnDeskew.Margin = New Padding(3, 2, 3, 2)
         btnDeskew.Name = "btnDeskew"
         btnDeskew.Size = New Size(108, 30)
@@ -463,7 +473,6 @@ Partial Class frmMain
     Friend WithEvents Button3 As Button
     Friend WithEvents MenuStrip1 As MenuStrip
     Friend WithEvents mnuSetting As ToolStripMenuItem
-    Friend WithEvents DeskewToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents mnuAbout As ToolStripMenuItem
     Friend WithEvents ImAGEToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents pnlBtn As Panel
@@ -474,7 +483,6 @@ Partial Class frmMain
     Friend WithEvents Label2 As Label
     Friend WithEvents Label1 As Label
     Friend WithEvents btnExit As Button
-    Friend WithEvents Button1 As Button
     Friend WithEvents cmbCallsign As ComboBox
     Friend WithEvents btnTest As Button
     Friend WithEvents btnDeskew As Button
@@ -492,5 +500,9 @@ Partial Class frmMain
     Friend WithEvents LstOcrResult As ListBox
     Friend WithEvents chkAuto As CheckBox
     Friend WithEvents QslCardListToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem1 As ToolStripMenuItem
+    Friend WithEvents GoogleToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents AzureToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents QslOrganizerToolStripMenuItem As ToolStripMenuItem
 
 End Class
