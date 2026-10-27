@@ -22,9 +22,8 @@ Partial Class frmMain
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmMain))
         MenuStrip1 = New MenuStrip()
-        mnuSetting = New ToolStripMenuItem()
+        mnuSettings = New ToolStripMenuItem()
         ToolStripMenuItem1 = New ToolStripMenuItem()
         GoogleToolStripMenuItem = New ToolStripMenuItem()
         AzureToolStripMenuItem = New ToolStripMenuItem()
@@ -66,7 +65,7 @@ Partial Class frmMain
         ' MenuStrip1
         ' 
         MenuStrip1.ImageScalingSize = New Size(20, 20)
-        MenuStrip1.Items.AddRange(New ToolStripItem() {mnuSetting, ToolStripMenuItem1, ImAGEToolStripMenuItem, mnuAbout})
+        MenuStrip1.Items.AddRange(New ToolStripItem() {mnuSettings, ToolStripMenuItem1, ImAGEToolStripMenuItem, mnuAbout})
         MenuStrip1.Location = New Point(0, 0)
         MenuStrip1.Name = "MenuStrip1"
         MenuStrip1.Padding = New Padding(5, 2, 0, 2)
@@ -74,12 +73,12 @@ Partial Class frmMain
         MenuStrip1.TabIndex = 16
         MenuStrip1.Text = "MenuStrip1"
         ' 
-        ' mnuSetting
+        ' mnuSettings
         ' 
-        mnuSetting.Name = "mnuSetting"
-        mnuSetting.ShortcutKeys = Keys.Control Or Keys.S
-        mnuSetting.Size = New Size(56, 20)
-        mnuSetting.Text = "Setting"
+        mnuSettings.Name = "mnuSettings"
+        mnuSettings.ShortcutKeys = Keys.Control Or Keys.S
+        mnuSettings.Size = New Size(61, 20)
+        mnuSettings.Text = "Settings"
         ' 
         ' ToolStripMenuItem1
         ' 
@@ -451,7 +450,6 @@ Partial Class frmMain
         Controls.Add(MenuStrip1)
         Font = New Font("Consolas", 9F)
         FormBorderStyle = FormBorderStyle.FixedSingle
-        Icon = CType(resources.GetObject("$this.Icon"), Icon)
         KeyPreview = True
         MainMenuStrip = MenuStrip1
         Margin = New Padding(3, 2, 3, 2)
@@ -472,7 +470,7 @@ Partial Class frmMain
     Friend WithEvents TextBox4 As TextBox
     Friend WithEvents Button3 As Button
     Friend WithEvents MenuStrip1 As MenuStrip
-    Friend WithEvents mnuSetting As ToolStripMenuItem
+    Friend WithEvents mnuSettings As ToolStripMenuItem
     Friend WithEvents mnuAbout As ToolStripMenuItem
     Friend WithEvents ImAGEToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents pnlBtn As Panel

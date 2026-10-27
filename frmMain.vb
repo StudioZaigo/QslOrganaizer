@@ -1,13 +1,17 @@
-﻿
-Imports System.Collections.Specialized
+﻿Imports System.Collections.Specialized
 'Imports System.Windows.Forms.VisualStyles.VisualStyleElement       ' なぜが、この行が勝手に追加される　追加されるとビルドエラーになる（Optionで変更した）
 Imports System.Diagnostics
 Imports System.Diagnostics.Eventing.Reader
+'Imports Amazon.Textract.Model
+
+
+Imports System.Drawing
 Imports System.Drawing.Imaging
 Imports System.IO
 Imports System.Linq
 Imports System.Net
 Imports System.Net.Http
+Imports System.Net.Sockets
 Imports System.Net.WebRequestMethods
 Imports System.Runtime.CompilerServices
 Imports System.Runtime.InteropServices
@@ -15,15 +19,20 @@ Imports System.SystemException
 Imports System.Text
 Imports System.Text.Json
 Imports System.Text.RegularExpressions
+'Imports System.Text.Json
 Imports System.Windows
 Imports System.Windows.Forms
-'Imports System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox
+'Imports Amazon
+'Imports Amazon.BedrockRuntime
+'Imports Amazon.BedrockRuntime.Model
+'Imports Amazon.Textract
+'Imports Amazon.Textract.Model 'Imports Amazon.Textract
+''Imports System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox
 Imports Azure
 Imports Azure.AI.Vision.ImageAnalysis
 Imports Microsoft.VisualBasic
 Imports Newtonsoft.Json.Linq
 Imports QslOrganizer.frmMain
-
 'Imports OpenCvSharp
 Imports Tesseract
 Imports Windows.Win32.UI.Input
@@ -49,6 +58,7 @@ Public Enum ReadingModes As Integer
     OfflineMode         ' Tesseractで読み混み
     GoogleMode          ' Google Visionで読み込み
     AzureMode           ' Azure Visionで読み込む
+    AwsMode             ' Amazon AWS Rekognitionで読み込む
     QrCodeMode          ' Qrコードで読み込み
 End Enum
 
@@ -97,6 +107,9 @@ Public Class frmMain
     Private Shared AzureApiKey2 As String
     Private Shared AzureUrl As String
     Private Shared UseAzure As Boolean
+    Private Shared AwsAccessKey As String
+    Private Shared AwsSecretKey As String
+    Private Shared UseAws As Boolean
 
     Private Shared IntInputFolder As Boolean = True
     Private Shared IntoutputFolder As Boolean = True
@@ -119,6 +132,7 @@ Public Class frmMain
     Private QrCodeBackColor = Color.FloralWhite
     Private GoogleBackColor = Color.PeachPuff
     Private AzureBackColor = Color.LightPink
+    Private AwsbackColor = Color.AliceBlue
 
     Private SavedColor As Color
 
@@ -142,7 +156,7 @@ Public Class frmMain
     End Sub
 
 
-    Private Sub SetImage(img As Image)
+    Private Sub SetImage(img As System.Drawing.Image)
         ' PictureBox に画像があるかどうかでボタンの状態を更新
         Dim hasImage As Boolean = (img IsNot Nothing)
 
@@ -167,7 +181,7 @@ Public Class frmMain
 
 
                 ' Imageオブジェクトを作成
-                Using imgFromStream As Image = Image.FromStream(fileInfo)
+                Using imgFromStream As System.Drawing.Image = System.Drawing.Image.FromStream(fileInfo)
                     ' 3. 元ファイルと完全に紐付けを絶った「コピー（Bitmap）」を作成する
                     Dim img As New Bitmap(imgFromStream)
 
@@ -192,7 +206,7 @@ Public Class frmMain
                         End If
                     Next
 
-                    PicQsl.Image = CType(img.Clone(), Image)
+                    PicQsl.Image = CType(img.Clone(), System.Drawing.Image)
 
                     ' 幅（Width）と高さ（Height）を取得
                     ' 1. ピクセルサイズ
@@ -614,7 +628,7 @@ Public Class frmMain
         End Function
 
 
-        Public Function RecognizeTextFromImage(img As Image) As String
+        Public Function RecognizeTextFromImage(img As System.Drawing.Image) As String
             Try
                 Using engine As New TesseractEngine(_dataPath, "eng", EngineMode.Default)
 
@@ -625,7 +639,7 @@ Public Class frmMain
                     ' Image → Pix に変換
                     Using bmp As New Bitmap(img)
                         Using ms As New MemoryStream()
-                            bmp.Save(ms, Imaging.ImageFormat.Bmp)
+                            bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp)
                             ms.Position = 0
                             Using pix = Tesseract.Pix.LoadFromMemory(ms.ToArray())
                                 Using page = engine.Process(pix)
@@ -648,7 +662,7 @@ Public Class frmMain
 
     Private ocr As New OcrEngine()
 
-    Private Function OcrTesseract(img As Image) As String
+    Private Function OcrTesseract(img As System.Drawing.Image) As String
         If chkAuto.Checked Then
             Return ocr.RecognizeTextFromImage(img)
             Return ""
@@ -659,7 +673,7 @@ Public Class frmMain
     End Function
 
 
-    Private Function ImageToBase64(img As Image) As String
+    Private Function ImageToBase64(img As System.Drawing.Image) As String
         Using ms As New MemoryStream()
             img.Save(ms, Imaging.ImageFormat.Jpeg)
             Return Convert.ToBase64String(ms.ToArray())
@@ -708,7 +722,7 @@ Public Class frmMain
 
 
 
-    Private Function OcrGoogleVision(img As Image) As String
+    Private Function OcrGoogleVision(img As System.Drawing.Image) As String
         Dim apiKey As String = GoogleApiKey
         Dim url As String = GoogleURL & apiKey
 
@@ -765,7 +779,7 @@ Public Class frmMain
         End Using
     End Function
 
-    Private Function OcrAzureVision(img As Image) As String
+    Private Function OcrAzureVision(img As System.Drawing.Image) As String
         Dim endpoint As String = AzureUrl   ' 例: https://xxxx.cognitiveservices.azure.com/
         Dim apiKey As String = AzureApiKey
 
@@ -821,7 +835,79 @@ Public Class frmMain
     End Function
 
 
-    Private Function RunOCR(img As Image, engine As OcrMode) As String
+    'Public Function OCR_AWS(img As System.Drawing.Image) As String
+
+    '    Dim AccessKey As String = AwsAccessKey
+    '    Dim SecretKey As String = AwsSecretKey
+
+    '    ' 画像をBase64に変換
+    '    Dim base64Image As String
+    '    Using imageStream As New MemoryStream()
+    '        img.Save(imageStream, System.Drawing.Imaging.ImageFormat.Jpeg)
+    '        base64Image = Convert.ToBase64String(imageStream.ToArray())
+    '    End Using
+
+    '    ' Bedrockクライアントの初期化
+    '    Using client As New AmazonBedrockRuntimeClient(AccessKey, SecretKey, Amazon.RegionEndpoint.USEast1)
+
+    '        ' リクエストのJSON作成
+    '        Dim requestBody = New With {
+    '        .anthropic_version = "bedrock-2023-05-31",
+    '        .max_tokens = 2000,
+    '        .messages = New Object() {
+    '            New With {
+    '                .role = "user",
+    '                .content = New Object() {
+    '                    New With {
+    '                        .type = "image",
+    '                        .source = New With {
+    '                            .type = "base64",
+    '                            .media_type = "image/jpeg",
+    '                            .data = base64Image
+    '                        }
+    '                    },
+    '                    New With {
+    '                        .type = "text",
+    '                        .text = "この画像に含まれるテキストをすべて抽出してください。テキストのみを返してください。"
+    '                    }
+    '                }
+    '            }
+    '        }
+    '    }
+
+    '        Dim requestJson As String = JsonSerializer.Serialize(requestBody)
+
+    '        Dim request As New InvokeModelRequest() With {
+    '        .ModelId = "us.anthropic.claude-opus-4-5-20251101-v1:0",
+    '        .ContentType = "application/json",
+    '        .Accept = "application/json",
+    '        .Body = New MemoryStream(System.Text.Encoding.UTF8.GetBytes(requestJson))
+    '                }
+
+    '        Try
+    '            Dim response As InvokeModelResponse = client.InvokeModelAsync(request).GetAwaiter().GetResult()
+
+    '            Dim responseJson As String = New StreamReader(response.Body).ReadToEnd()
+    '            ' VB.NET用に一行で書く
+    '            Dim doc As JsonDocument = JsonDocument.Parse(responseJson)
+    '            Dim contentArray As JsonElement = doc.RootElement.GetProperty("content")
+    '            Dim firstContent As JsonElement = contentArray(0)
+    '            Dim extractedText As String = firstContent.GetProperty("text").GetString()
+
+    '            Return extractedText.Trim()
+
+    '        Catch ex As AmazonBedrockRuntimeException
+    '            Console.WriteLine($"AWSエラーが発生しました: {ex.Message}")
+    '            Throw
+    '        Catch ex As Exception
+    '            Console.WriteLine($"予期しないエラーが発生しました: {ex.Message}")
+    '            Throw
+    '        End Try
+    '    End Using
+    'End Function
+
+
+    Private Function RunOCR(img As System.Drawing.Image, engine As OcrMode) As String
 
         Select Case engine
             Case OcrMode.Offline
@@ -836,13 +922,20 @@ Public Class frmMain
 
                     Dim s = OcrGoogleVision(img)
                     Return s
-                Else
+                ElseIf UseAzure Then
                     ReadingMode = ReadingModes.AzureMode
                     LstOcrResult.BackColor = AzureBackColor
                     Dim s = OcrAzureVision(img)
                     Return s
+                    'ElseIf UseAws Then
+                    '    ReadingMode = ReadingModes.AzureMode
+                    '    LstOcrResult.BackColor = AwsbackColor
+                    '    Dim s = OCR_AWS(img)
+                    '    Return s
                 End If
-
+                Return ""
+            Case Else
+                Return ""
         End Select
 
         Return ""
@@ -1156,7 +1249,7 @@ Public Class frmMain
             Dim proc As Integer = 0
             Using form As New frmSelect()
                 Using fileInfo As IO.FileStream = IO.File.Open(savePath, IO.FileMode.Open)
-                    form.PicOldQsl.Image = Image.FromStream(fileInfo) ' または Image.FromStream(fileInfo)
+                    form.PicOldQsl.Image = System.Drawing.Image.FromStream(fileInfo) ' または Image.FromStream(fileInfo)
                 End Using ' ここで Stream は閉じられるはずだが…
 
                 If form.ShowDialog() = DialogResult.Cancel Then
@@ -1177,7 +1270,7 @@ Public Class frmMain
             If proc = 0 Then
                 SendToTrushbox(InputFileName)
             ElseIf proc = 1 Then
-                Dim img As Image = PicQsl.Image
+                Dim img As System.Drawing.Image = PicQsl.Image
                 SaveImage(img, savePath)
                 SendToTrushbox(InputFileName)
 
@@ -1201,7 +1294,7 @@ Public Class frmMain
             ' 通常実行時の処理
             '=== 画像保存 ===
             Try
-                Dim img As Image = PicQsl.Image
+                Dim img As System.Drawing.Image = PicQsl.Image
                 SaveImage(img, savePath)
 
                 Dim writer As New HistoryAdifWriter()
@@ -1223,7 +1316,7 @@ Public Class frmMain
     End Function
 
 
-    Private Sub SaveImage(img As Image, savePath As String)
+    Private Sub SaveImage(img As System.Drawing.Image, savePath As String)
         If System.IO.File.Exists(savePath) Then
             ' 既存ファイルを削除
             System.IO.File.Delete(savePath)
@@ -1511,20 +1604,12 @@ Public Class frmMain
     End Sub
 
 
-    'Private Sub SetPlaceholder(tb As TextBox, placeholder As String)
-    '    tb.Tag = placeholder
-    '    '      tb.ForeColor = Color.Gray
-    '    tb.Text = placeholder
-    'End Sub
-
-
-
-    Private Sub frmSettingOpen()
-        Using form As New frmSetting()
+    Private Sub frmSettingsOpen()
+        Using form As New frmSettings()
             ' 設定を読み込み
             If form.ShowDialog() = DialogResult.OK Then
 
-                loadSetting(AppSettings.SettingsFile)
+                loadSettings(AppSettings.SettingsFile)
                 IntInputFolder = True
                 IntoutputFolder = True
             End If
@@ -1532,7 +1617,7 @@ Public Class frmMain
     End Sub
 
 
-    Private Sub loadSetting(FileName As String)
+    Private Sub loadSettings(FileName As String)
         AppSettings.LoadJson(FileName)
 
         MyCallsigns = AppSettings.GetJson("General", "MyCallsigns", "")
@@ -1552,6 +1637,9 @@ Public Class frmMain
         AzureApiKey = AppSettings.GetJson("Azure", "ApiKey", "")
         AzureUrl = AppSettings.GetJson("Azure", "URL", "")
         UseAzure = Boolean.Parse(AppSettings.GetJson("Azure", "UseAzure", "false"))
+        AwsAccessKey = AppSettings.GetJson("AWS", "AccessKey", "")
+        AwsSecretKey = AppSettings.GetJson("AWS", "SecretKey", "")
+        UseAws = Boolean.Parse(AppSettings.GetJson("AWS", "UseAWS", "false"))
 
     End Sub
 
@@ -1593,8 +1681,8 @@ Public Class frmMain
 
         Public Shared Sub SaveJson(FileName As String)
             Dim jsonString As String = JsonSerializer.Serialize(JsonSettings,
-        New JsonSerializerOptions With {.WriteIndented = True}
-    )
+                New JsonSerializerOptions With {.WriteIndented = True}
+            )
             System.IO.File.WriteAllText(FileName, jsonString)
         End Sub
 
@@ -1740,7 +1828,7 @@ Public Class frmMain
                         fn = folderName
                         'Console.WriteLine("{0} は数字ではありません。", Str)
                     End If
-                    Using img As Image = Image.FromFile(file)
+                    Using img As System.Drawing.Image = System.Drawing.Image.FromFile(file)
 
                         ' 元の値
                         Dim widthPx = img.Width
@@ -2055,7 +2143,7 @@ Public Class frmMain
         Dim IntFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
 
         'loadSetting(FileName)
-        loadSetting(AppSettings.SettingsFile)
+        loadSettings(AppSettings.SettingsFile)
         'MyCallsigns = AppSettings.GetJson("General", "MyCallsigns", "")
         'InputFolder = AppSettings.GetJson("General", "InputFolder", IntFolder)
         'OutputFolder = AppSettings.GetJson("General", "OutputFolder", IntFolder)
@@ -2117,7 +2205,7 @@ Public Class frmMain
         ClearForm(True)
 
         If MyCallsigns = "" OrElse InputFolder = "" OrElse OutputFolder = "" Then
-            frmSettingOpen()
+            frmSettingsOpen()
         End If
 
         chkAuto.Checked = False
@@ -2453,11 +2541,11 @@ Public Class frmMain
 
             SetImageFromFile(dlg.FileName)
 
-                ' 画像の上下左右を自動判断し,方向をそろえる機能
-                ' 処理が重いので組み込まない
-                'PicQsl.Image = AutoRotateImageByOCR(PicQsl.Image, System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "tessdata"))
+            ' 画像の上下左右を自動判断し,方向をそろえる機能
+            ' 処理が重いので組み込まない
+            'PicQsl.Image = AutoRotateImageByOCR(PicQsl.Image, System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "tessdata"))
 
-                InputFileName = dlg.FileName
+            InputFileName = dlg.FileName
             'InputFileFormat = img.RawFormat
 
             'img.Dispose()
@@ -2678,7 +2766,7 @@ Public Class frmMain
         cmbCallsign.SelectAll()
     End Sub
 
-    Private Function GetTextFromImage(img As Image, engine As OcrMode, ReductionRate As Integer) As String
+    Private Function GetTextFromImage(img As System.Drawing.Image, engine As OcrMode, ReductionRate As Integer) As String
         Dim g = ToGrayScale(img)
         Dim ResizedImage = ResizeImageHalf(g, ReductionRate)       'テスト用として縮小したIMGを表示する
 
@@ -2743,42 +2831,31 @@ Public Class frmMain
 
     Private Sub btnTest_Click(sender As Object, e As EventArgs) Handles btnTest.Click
 
-        Using form As New frmSelect()
-            'form.PicOldQsl.Image = Image.FromFile("D:\eQSL\2\2Z711_20250106_1715_17M_FT8.jpg")
-            form.PicOldQsl.Image = Image.FromFile("D:\QSLtest\JJ7\JJ7AAE_19940806_2120_6M_SSB_X.jpg")
+        Dim s = RegexExtractor.ExtractBand(" 21 .150MHz ")
+
+        'Using form As New frmSelect()
+        '    'form.PicOldQsl.Image = Image.FromFile("D:\eQSL\2\2Z711_20250106_1715_17M_FT8.jpg")
+        '    PicQsl.Image = System.Drawing.Image.FromFile("D:\QSLtest\7K1III_20200531_1321_2M_FT8.jpg")
 
 
-            ' 設定を読み込み
-            If form.ShowDialog() = DialogResult.OK Then
-                If form.rbtnOldFile.Checked Then
+        '    ' 設定を読み込み
+        '    'If form.ShowDialog() = DialogResult.OK Then
+        '    '    If form.rbtnOldFile.Checked Then
 
-                ElseIf form.rbtnNewFile.Checked Then
+        '    '    ElseIf form.rbtnNewFile.Checked Then
 
-                ElseIf form.rbtnBotthFile.Checked Then
+        '    '    ElseIf form.rbtnBotthFile.Checked Then
 
-                End If
-            End If
-        End Using
-
-        ''OcrAzureVision()
-
-        ''Dim text = "TO RADIO JATFKF JIA ! 7 F K F CONFIRMING OUR QSO DATE TIME RS BAND MODE YEAR ‘MONTH DAY * UST UTC ‘MHZ 2WAY  JAN.  10 SSB RIG: IC-7300 OUTPUT 100 W ANT: LW+AH-3 L7MH RAKS: SRA LS BHUBRLEF. QSL#: 71297 PSE QSL"
-        ''Dim band = RegexExtractor.ExtractBand(text)
-        ''Debug.Print(band)
-
-
-
-        'Dim yearPattern As String = "(?<Gengo>(昭|平|令|S|H|R)(和|成|和)?)(?<year>(d{1,2}|元)) {0,2}(?=年)"                  ' 直前が空白であり、直後が数字以外であること
-        'Dim text = "  平成元年6月30日 "
-        'Dim r = RegexExtractor.ExtractDate(text)
-        'r = RegexExtractor.ExtractFromADIF("MODE", text)
-        'r = RegexExtractor.ExtractFromADIF("BAND", text)
+        '    '    End If
+        '    'End If
+        '    'Dim s = OCR_AWS(PicQsl.Image)
+        'End Using
 
     End Sub
 
 
-    Private Sub mnuSetting_Click(sender As Object, e As EventArgs) Handles mnuSetting.Click
-        frmSettingOpen()
+    Private Sub mnuSettings_Click(sender As Object, e As EventArgs) Handles mnuSettings.Click
+        frmSettingsOpen()
     End Sub
 
     Private Sub AzureToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AzureToolStripMenuItem.Click

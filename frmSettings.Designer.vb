@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class frmSetting
+Partial Class frmSettings
     Inherits System.Windows.Forms.Form
 
     'フォームがコンポーネントの一覧をクリーンアップするために dispose をオーバーライドします。
@@ -22,12 +22,11 @@ Partial Class frmSetting
     'コード エディターを使って変更しないでください。
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmSetting))
         txtOutputHolder = New TextBox()
         Panel1 = New Panel()
         btnOK = New Button()
         btnCancel = New Button()
-        TabControl1 = New TabControl()
+        TabAWS = New TabControl()
         TabPage1 = New TabPage()
         Label1 = New Label()
         lblFontSize = New Label()
@@ -55,11 +54,19 @@ Partial Class frmSetting
         lblAzureNote = New Label()
         txtAzureApiKey = New TextBox()
         txtAzureUrl = New TextBox()
+        TabPage4 = New TabPage()
+        chkUseAws = New CheckBox()
+        Label3 = New Label()
+        lblAwsNote = New Label()
+        txtAwsAccessKey = New TextBox()
+        txtAwsSecretKey = New TextBox()
+        Label2 = New Label()
         Panel1.SuspendLayout()
-        TabControl1.SuspendLayout()
+        TabAWS.SuspendLayout()
         TabPage1.SuspendLayout()
         TabPage2.SuspendLayout()
         TabPage3.SuspendLayout()
+        TabPage4.SuspendLayout()
         SuspendLayout()
         ' 
         ' txtOutputHolder
@@ -102,18 +109,19 @@ Partial Class frmSetting
         btnCancel.Text = "Cancel"
         btnCancel.UseVisualStyleBackColor = True
         ' 
-        ' TabControl1
+        ' TabAWS
         ' 
-        TabControl1.Controls.Add(TabPage1)
-        TabControl1.Controls.Add(TabPage2)
-        TabControl1.Controls.Add(TabPage3)
-        TabControl1.Dock = DockStyle.Fill
-        TabControl1.Location = New Point(0, 0)
-        TabControl1.Margin = New Padding(3, 2, 3, 2)
-        TabControl1.Name = "TabControl1"
-        TabControl1.SelectedIndex = 0
-        TabControl1.Size = New Size(700, 251)
-        TabControl1.TabIndex = 1
+        TabAWS.Controls.Add(TabPage1)
+        TabAWS.Controls.Add(TabPage2)
+        TabAWS.Controls.Add(TabPage3)
+        TabAWS.Controls.Add(TabPage4)
+        TabAWS.Dock = DockStyle.Fill
+        TabAWS.Location = New Point(0, 0)
+        TabAWS.Margin = New Padding(3, 2, 3, 2)
+        TabAWS.Name = "TabAWS"
+        TabAWS.SelectedIndex = 0
+        TabAWS.Size = New Size(700, 251)
+        TabAWS.TabIndex = 1
         ' 
         ' TabPage1
         ' 
@@ -241,7 +249,6 @@ Partial Class frmSetting
         ' btnInputFolder
         ' 
         btnInputFolder.BackColor = SystemColors.Control
-        btnInputFolder.Image = CType(resources.GetObject("btnInputFolder.Image"), Image)
         btnInputFolder.Location = New Point(602, 74)
         btnInputFolder.Margin = New Padding(3, 2, 3, 2)
         btnInputFolder.Name = "btnInputFolder"
@@ -262,7 +269,6 @@ Partial Class frmSetting
         ' 
         ' btnOutputFolder
         ' 
-        btnOutputFolder.Image = CType(resources.GetObject("btnOutputFolder.Image"), Image)
         btnOutputFolder.Location = New Point(602, 122)
         btnOutputFolder.Margin = New Padding(3, 2, 3, 2)
         btnOutputFolder.Name = "btnOutputFolder"
@@ -347,7 +353,6 @@ Partial Class frmSetting
         ' txtGoogleURL
         ' 
         txtGoogleURL.BorderStyle = BorderStyle.FixedSingle
-        txtGoogleURL.Enabled = False
         txtGoogleURL.Font = New Font("Yu Gothic UI", 10.2F)
         txtGoogleURL.ImeMode = ImeMode.Disable
         txtGoogleURL.Location = New Point(38, 86)
@@ -431,7 +436,6 @@ Partial Class frmSetting
         ' txtAzureUrl
         ' 
         txtAzureUrl.BorderStyle = BorderStyle.FixedSingle
-        txtAzureUrl.Enabled = False
         txtAzureUrl.Font = New Font("Yu Gothic UI", 10.2F)
         txtAzureUrl.ImeMode = ImeMode.Disable
         txtAzureUrl.Location = New Point(77, 112)
@@ -440,38 +444,126 @@ Partial Class frmSetting
         txtAzureUrl.Size = New Size(553, 26)
         txtAzureUrl.TabIndex = 24
         ' 
-        ' frmSetting
+        ' TabPage4
+        ' 
+        TabPage4.Controls.Add(chkUseAws)
+        TabPage4.Controls.Add(Label3)
+        TabPage4.Controls.Add(lblAwsNote)
+        TabPage4.Controls.Add(txtAwsAccessKey)
+        TabPage4.Controls.Add(txtAwsSecretKey)
+        TabPage4.Controls.Add(Label2)
+        TabPage4.Location = New Point(4, 24)
+        TabPage4.Name = "TabPage4"
+        TabPage4.Padding = New Padding(3)
+        TabPage4.Size = New Size(692, 223)
+        TabPage4.TabIndex = 3
+        TabPage4.Text = "AWS"
+        TabPage4.UseVisualStyleBackColor = True
+        ' 
+        ' chkUseAws
+        ' 
+        chkUseAws.AutoSize = True
+        chkUseAws.Enabled = False
+        chkUseAws.Location = New Point(90, 139)
+        chkUseAws.Name = "chkUseAws"
+        chkUseAws.Size = New Size(73, 19)
+        chkUseAws.TabIndex = 31
+        chkUseAws.Text = "Use AWS"
+        chkUseAws.UseVisualStyleBackColor = True
+        ' 
+        ' Label3
+        ' 
+        Label3.AutoSize = True
+        Label3.Enabled = False
+        Label3.Font = New Font("Yu Gothic UI", 10.2F)
+        Label3.ForeColor = SystemColors.MenuHighlight
+        Label3.Location = New Point(76, 76)
+        Label3.Name = "Label3"
+        Label3.Size = New Size(72, 19)
+        Label3.TabIndex = 30
+        Label3.Text = "Secret Key"
+        ' 
+        ' lblAwsNote
+        ' 
+        lblAwsNote.AutoSize = True
+        lblAwsNote.Font = New Font("Yu Gothic UI", 10.2F)
+        lblAwsNote.ForeColor = Color.OrangeRed
+        lblAwsNote.Location = New Point(50, 161)
+        lblAwsNote.Name = "lblAwsNote"
+        lblAwsNote.RightToLeft = RightToLeft.Yes
+        lblAwsNote.Size = New Size(102, 19)
+        lblAwsNote.TabIndex = 27
+        lblAwsNote.Text = "AWS を使用する"
+        ' 
+        ' txtAwsAccessKey
+        ' 
+        txtAwsAccessKey.BorderStyle = BorderStyle.FixedSingle
+        txtAwsAccessKey.Enabled = False
+        txtAwsAccessKey.Font = New Font("Yu Gothic UI", 10.2F)
+        txtAwsAccessKey.ImeMode = ImeMode.Disable
+        txtAwsAccessKey.Location = New Point(90, 43)
+        txtAwsAccessKey.Margin = New Padding(3, 2, 3, 2)
+        txtAwsAccessKey.Name = "txtAwsAccessKey"
+        txtAwsAccessKey.Size = New Size(553, 26)
+        txtAwsAccessKey.TabIndex = 28
+        ' 
+        ' txtAwsSecretKey
+        ' 
+        txtAwsSecretKey.BorderStyle = BorderStyle.FixedSingle
+        txtAwsSecretKey.Enabled = False
+        txtAwsSecretKey.Font = New Font("Yu Gothic UI", 10.2F)
+        txtAwsSecretKey.ImeMode = ImeMode.Disable
+        txtAwsSecretKey.Location = New Point(90, 96)
+        txtAwsSecretKey.Margin = New Padding(3, 2, 3, 2)
+        txtAwsSecretKey.Name = "txtAwsSecretKey"
+        txtAwsSecretKey.Size = New Size(553, 26)
+        txtAwsSecretKey.TabIndex = 29
+        ' 
+        ' Label2
+        ' 
+        Label2.AutoSize = True
+        Label2.Font = New Font("Yu Gothic UI", 10.2F)
+        Label2.ForeColor = SystemColors.MenuHighlight
+        Label2.Location = New Point(76, 22)
+        Label2.Name = "Label2"
+        Label2.Size = New Size(74, 19)
+        Label2.TabIndex = 23
+        Label2.Text = "Access key"
+        ' 
+        ' frmSettings
         ' 
         AcceptButton = btnOK
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         CancelButton = btnCancel
         ClientSize = New Size(700, 303)
-        Controls.Add(TabControl1)
+        Controls.Add(TabAWS)
         Controls.Add(Panel1)
         ForeColor = SystemColors.ControlDarkDark
         FormBorderStyle = FormBorderStyle.FixedDialog
         Margin = New Padding(3, 2, 3, 2)
         MaximizeBox = False
         MinimizeBox = False
-        Name = "frmSetting"
+        Name = "frmSettings"
         StartPosition = FormStartPosition.CenterParent
         Text = "Settings"
         Panel1.ResumeLayout(False)
-        TabControl1.ResumeLayout(False)
+        TabAWS.ResumeLayout(False)
         TabPage1.ResumeLayout(False)
         TabPage1.PerformLayout()
         TabPage2.ResumeLayout(False)
         TabPage2.PerformLayout()
         TabPage3.ResumeLayout(False)
         TabPage3.PerformLayout()
+        TabPage4.ResumeLayout(False)
+        TabPage4.PerformLayout()
         ResumeLayout(False)
     End Sub
     Friend WithEvents txtOutputHolder As TextBox
     Friend WithEvents Panel1 As Panel
     Friend WithEvents btnCancel As Button
     Friend WithEvents btnOK As Button
-    Friend WithEvents TabControl1 As TabControl
+    Friend WithEvents TabAWS As TabControl
     Friend WithEvents TabPage1 As TabPage
     Friend WithEvents lblComment As Label
     Friend WithEvents lblOutputFolder As Label
@@ -499,4 +591,11 @@ Partial Class frmSetting
     Public WithEvents txtAzureApiKey As TextBox
     Public WithEvents txtAzureUrl As TextBox
     Friend WithEvents chkUseGoogle As CheckBox
+    Friend WithEvents TabPage4 As TabPage
+    Friend WithEvents chkUseAws As CheckBox
+    Friend WithEvents Label3 As Label
+    Friend WithEvents lblAwsNote As Label
+    Public WithEvents txtAwsAccessKey As TextBox
+    Public WithEvents txtAwsSecretKey As TextBox
+    Friend WithEvents Label2 As Label
 End Class

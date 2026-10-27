@@ -1,10 +1,10 @@
-﻿1．はじめに
+﻿\#1．はじめに#
 
 QslOrganizerは、QSＬカードのイメージファイルを効率よく整理・管理するためのアプリケーション（以下、アプリ）です。
 
 紙のQSLカードを電子化した場合、
 
-•	画像の向きがバラバラ
+•	画像の向きがバラバラ2026-09-30 第6版	Ver 1.1.3.0対応
 
 •	ファイル名が統一されていない
 
@@ -62,23 +62,27 @@ JPEG / JPG / PNG / BMP / GIF / TIFF
 
 5．履歴
 
+2026-10-27 Ver 1.1.3.1
 
-
-2026-10-31 Ver 1.1.3.1
 ・和暦（令和〇年〇月〇日、R〇年〇月〇日、）を読み取るようにした。
-・上向き矢印（↑）で「Shift＋Tab」機能を実行すｒ。
-・Save時、Callsign\_yyyymmdd\_hhnn\_bbb\_mmmm形式のファイル名がすでに存在したとき、残すファイルを選択できるようにした。
+
+・上向き矢印（↑）で「Shift＋Tab」機能を実行する。「Shift＋Enter」よりキー操作が楽になります。
+
+・Save時、Callsign\_yyyymmdd\_hhnn\_bbb\_mmmm形式の同一ファイル名がすでに存在したとき、残すファイルを選択できるようにした。
+
 ・AzureでのOCR時、「429 Too many requests・・・」のエラー発生頻度を削減した。
+
 ・Google,Azure,Studiozaigo/QslOrganizerのサイトへのリンクメニューを追加した。
-・細かな誤りの修正
 
 ・ファイル名とフォルダー名の不一致を整理するPower Shell「QslTidyup.ps1」を作成した。
 
-未リリース        ' 指定したURLを規定のブラウザで開く
+・Amazon AWSのOCR機能を組み込もうとしましたが、AWSの設定が難しく諦めました。
 
+・”Setting”を”Settings”に変更した。
 
+・SettingsでGoogle,AzureのURLを変更できるようにしました。（Many thanks to 児玉さん）
 
-
+・細かな誤りの修正
 
 
 

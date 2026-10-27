@@ -3191,7 +3191,14 @@ Partial Class frmMain
                 Return band
             End If
 
-            ' 4. 周波数を求め、Bandにする        ' 周波数抽出（例：7.074）
+
+            ' 4.1 周波数を求め、Bandにする        ' 周波数抽出（例：7.074, 145.04）
+            band = ExtractFrequencyByReal(cleaned)
+            If band <> "" Then
+                Return band
+            End If
+
+            ' 4.2 周波数を求め、Bandにする        ' 周波数抽出（例：7, 144）
             band = ExtractFrequency(cleaned)
             'If band <> "" Then
             '    Return band
@@ -3307,13 +3314,14 @@ Partial Class frmMain
             Dim m As Match
             Dim unit As String = ""
 
-            pattern = "\b(BAND|YOUR|Y0UR)? {0,2}(\d+(\.\d+)?) ?(M|CM)\b"                   ' eQSlにある ”Band: 160M”　のパターン Bandのあとの：はCleanTextFreqで空白に置き換えてある
+            pattern = "\b(BAND|YOUR|Y0UR)? {0,2}(\d+(\. ?\d+)?) ?(M|CM)"                   ' eQSlにある ”Band: 160M”　のパターン Bandのあとの：はCleanTextFreqで空白に置き換えてある
             For Each m In Regex.Matches(text, pattern)
                 If IsUsed(m.Index, m.Length) Then Continue For
 
                 Dim f As Double
                 If Not Double.TryParse(m.Groups(2).Value, f) Then Continue For
 
+                'Dim s As String = f.ToString() & m.Groups(4).Value
                 Dim s As String = f.ToString() & m.Groups(4).Value
 
                 Dim after1 As String = ""
@@ -3334,6 +3342,10 @@ Partial Class frmMain
 
                 If Array.IndexOf(Bands, s) < 0 Then Continue For     ' Bandのリストにない
                 If NegrectBand(text, s, m.Index, m.Length) Then Continue For
+
+                If BandBaseTitle.Index <> 0 Then
+                    If m.Index > BandBaseTitle.Index + 100 Then Continue For
+                End If
                 ' 行とカラムを計算するメソッドを呼び出す
                 Dim row As Integer = 0
                 Dim col As Integer = 0
@@ -3438,6 +3450,25 @@ Partial Class frmMain
 
             Return ""
         End Function
+
+
+        ' 4.　メータ表示のない周波数 表記を直接抽出　' 7、 144 等の波長表示
+        Private Shared Function ExtractFrequencyByReal(text As String) As String
+            ' 検出不能　　”18. 101  FT8"で" 101"が10MHzと判断される
+
+            text = CleanTextFreq(text)
+
+            Dim pattern = "(\d+ ?(\.\d+))"          ' なぜか小数点前に空白１個が入るケースが多い
+            ExtractFrequencySub(text, pattern)
+
+            If DetectionBands.Count = 1 Then
+                Return DetectionBands(0).Value
+            End If
+
+            Return ""
+        End Function
+
+
 
 
         ' 4.　メータ表示のない周波数 表記を直接抽出　' 7、 144 等の波長表示

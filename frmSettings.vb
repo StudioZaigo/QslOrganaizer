@@ -2,7 +2,7 @@
 Imports QslOrganizer.frmMain
 
 
-Public Class frmSetting
+Public Class frmSettings
 
     Private Sub frmSetting_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
@@ -12,6 +12,7 @@ Public Class frmSetting
         lblComment.Text = "複数のCallsinは、カンマ区切りで入力"
         lblGoogleNote.Text = "Google Clude Vision AI を使用する時に設定する"
         lblAzureNote.Text = "Micrsoft Azure AI を使用する時に設定する"
+        lblAwsNote.Text = "Amazon AWS Rekognition を使用する時に設定する"
 
         lblAzureApiKey.Location = lblGoogleApiKey.Location
         lblAzureUrl.Location = lblGoogleUrl.Location
@@ -19,6 +20,9 @@ Public Class frmSetting
         txtAzureApiKey.Location = txtGoogleApiKey.Location
         txtAzureUrl.Location = txtGoogleURL.Location
         chkUseAzure.Location = chkUseGoogle.Location
+        txtAwsAccessKey.Location = txtGoogleApiKey.Location
+        txtAwsSecretKey.Location = txtGoogleURL.Location
+        chkUseAws.Location = chkUseGoogle.Location
 
         '' 設定を読み込み
         'AppSettings.LoadJson(AppSettings.SettingsFile)
@@ -54,10 +58,14 @@ Public Class frmSetting
         chkUseGoogle.Checked = Boolean.Parse(AppSettings.GetJson("Google", "UseGoogle", "True"))
 
         txtAzureApiKey.Text = AppSettings.GetJson("Azure", "ApiKey", "")
-        txtAzureUrl.Text = AppSettings.GetJson("Azure", "Url", AzureUrl)
+        txtAzureUrl.Text = AppSettings.GetJson("Azure", "URL", AzureUrl)
         chkUseAzure.Checked = Boolean.Parse(AppSettings.GetJson("Azure", "UseAzure", "False"))
 
-        TabControl1.TabIndex = TabIndex
+        txtAwsAccessKey.Text = AppSettings.GetJson("AWS", "AccessKey", "")
+        txtAwsSecretKey.Text = AppSettings.GetJson("AWS", "SecretKey", "")
+        chkUseAws.Checked = Boolean.Parse(AppSettings.GetJson("AWS", "UseAWS", "False"))
+
+        TabAWS.TabIndex = TabIndex
     End Sub
 
     Private Sub btnOK_Click(sender As Object, e As EventArgs) Handles btnOK.Click
@@ -107,12 +115,15 @@ Public Class frmSetting
 
         AppSettings.SetJson("Google", "ApiKey", txtGoogleApiKey.Text)
         AppSettings.SetJson("Google", "URL", txtGoogleURL.Text)
-        Dim s = chkUseGoogle.Checked.ToString
         AppSettings.SetJson("Google", "UseGoogle", chkUseGoogle.Checked.ToString)
 
         AppSettings.SetJson("Azure", "ApiKey", txtAzureApiKey.Text)
         AppSettings.SetJson("Azure", "URL", txtAzureUrl.Text)
         AppSettings.SetJson("Azure", "UseAzure", chkUseAzure.Checked.ToString)
+
+        AppSettings.SetJson("AWS", "AccessKey", txtAwsAccessKey.Text)
+        AppSettings.SetJson("AWS", "SecretKey", txtAwsSecretKey.Text)
+        AppSettings.SetJson("AWS", "UseAWS", chkUseAws.Checked.ToString)
 
         AppSettings.SaveJson(AppSettings.SettingsFile)
 
@@ -164,7 +175,7 @@ Public Class frmSetting
 
         AppSettings.SetJson(Me.Name, "Top", AppWindowTop.ToString())
         AppSettings.SetJson(Me.Name, "Left", AppWindowLeft.ToString())
-        AppSettings.SetJson(Me.Name, "TabIndex", TabControl1.TabIndex.ToString())
+        AppSettings.SetJson(Me.Name, "TabIndex", TabAWS.TabIndex.ToString())
 
         AppSettings.SaveJson(AppSettings.SettingsFile)
 
@@ -208,9 +219,16 @@ Public Class frmSetting
 
     Private Sub chkUseGoogle_CheckedChanged(sender As Object, e As EventArgs) Handles chkUseGoogle.CheckedChanged
         chkUseAzure.Checked = Not chkUseGoogle.Checked
+        'chkUseAws.Checked = Not chkUseGoogle.Checked
     End Sub
 
     Private Sub chkUseAzure_CheckedChanged(sender As Object, e As EventArgs) Handles chkUseAzure.CheckedChanged
         chkUseGoogle.Checked = Not chkUseAzure.Checked
+        'chkUseAws.Checked = Not chkUseAzure.Checked
+    End Sub
+
+    Private Sub chkUseAws_CheckedChanged(sender As Object, e As EventArgs) Handles chkUseAws.CheckedChanged
+        'chkUseGoogle.Checked = Not chkUseAws.Checked
+        'chkUseAzure.Checked = Not chkUseAws.Checked
     End Sub
 End Class
