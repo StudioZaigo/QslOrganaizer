@@ -22,6 +22,7 @@ Partial Class frmMain
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmMain))
         MenuStrip1 = New MenuStrip()
         mnuSettings = New ToolStripMenuItem()
         ToolStripMenuItem1 = New ToolStripMenuItem()
@@ -42,7 +43,6 @@ Partial Class frmMain
         btnExit = New Button()
         cmbCallsign = New ComboBox()
         btnTest = New Button()
-        btnDeskew = New Button()
         btnOnlineOcr = New Button()
         btnOfflineOcr = New Button()
         txtBand = New TextBox()
@@ -142,7 +142,6 @@ Partial Class frmMain
         pnlBtn.Controls.Add(btnExit)
         pnlBtn.Controls.Add(cmbCallsign)
         pnlBtn.Controls.Add(btnTest)
-        pnlBtn.Controls.Add(btnDeskew)
         pnlBtn.Controls.Add(btnOnlineOcr)
         pnlBtn.Controls.Add(btnOfflineOcr)
         pnlBtn.Controls.Add(txtBand)
@@ -274,18 +273,6 @@ Partial Class frmMain
         btnTest.Text = "Test"
         btnTest.UseVisualStyleBackColor = True
         btnTest.Visible = False
-        ' 
-        ' btnDeskew
-        ' 
-        btnDeskew.Location = New Point(802, 10)
-        btnDeskew.Margin = New Padding(3, 2, 3, 2)
-        btnDeskew.Name = "btnDeskew"
-        btnDeskew.Size = New Size(108, 30)
-        btnDeskew.TabIndex = 40
-        btnDeskew.TabStop = False
-        btnDeskew.Text = "Deskew"
-        btnDeskew.UseVisualStyleBackColor = True
-        btnDeskew.Visible = False
         ' 
         ' btnOnlineOcr
         ' 
@@ -450,6 +437,7 @@ Partial Class frmMain
         Controls.Add(MenuStrip1)
         Font = New Font("Consolas", 9F)
         FormBorderStyle = FormBorderStyle.FixedSingle
+        Icon = CType(resources.GetObject("$this.Icon"), Icon)
         KeyPreview = True
         MainMenuStrip = MenuStrip1
         Margin = New Padding(3, 2, 3, 2)
@@ -483,7 +471,6 @@ Partial Class frmMain
     Friend WithEvents btnExit As Button
     Friend WithEvents cmbCallsign As ComboBox
     Friend WithEvents btnTest As Button
-    Friend WithEvents btnDeskew As Button
     Friend WithEvents btnOnlineOcr As Button
     Friend WithEvents btnOfflineOcr As Button
     Friend WithEvents txtBand As TextBox

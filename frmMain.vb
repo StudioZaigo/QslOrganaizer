@@ -22,12 +22,13 @@ Imports System.Text.RegularExpressions
 'Imports System.Text.Json
 Imports System.Windows
 Imports System.Windows.Forms
+'Imports System.Windows.Forms.VisualStyles.VisualStyleElement
+
 'Imports Amazon
 'Imports Amazon.BedrockRuntime
 'Imports Amazon.BedrockRuntime.Model
 'Imports Amazon.Textract
 'Imports Amazon.Textract.Model 'Imports Amazon.Textract
-''Imports System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox
 Imports Azure
 Imports Azure.AI.Vision.ImageAnalysis
 Imports Microsoft.VisualBasic
@@ -67,8 +68,6 @@ Public Enum OcrMode
     Offline   ' Tesseract
     Online    ' Google Vision
 End Enum
-
-
 
 
 Public Class frmMain
@@ -721,7 +720,6 @@ Public Class frmMain
     End Function
 
 
-
     Private Function OcrGoogleVision(img As System.Drawing.Image) As String
         Dim apiKey As String = GoogleApiKey
         Dim url As String = GoogleURL & apiKey
@@ -779,6 +777,7 @@ Public Class frmMain
         End Using
     End Function
 
+
     Private Function OcrAzureVision(img As System.Drawing.Image) As String
         Dim endpoint As String = AzureUrl   ' 例: https://xxxx.cognitiveservices.azure.com/
         Dim apiKey As String = AzureApiKey
@@ -832,6 +831,49 @@ Public Class frmMain
             Return ParseAzureReadResult(resultJson)
         End Using
 
+    End Function
+
+
+    Public Function FixCyrillicCallsign(inputText As String) As String
+        ' キリル文字をラテン文字に置換する関数
+        If String.IsNullOrEmpty(inputText) Then Return inputText
+
+        ' 1. まず全体を「全角」から「半角」に変換（日本語文字はそのまま保持されます）
+        ' これにより、全角の「ＪＡ９」などが半角の「JA9」になります
+        'Dim halfText As String = Microsoft.VisualBasic.Strings.StrConv(inputText, VbStrConv.Narrow)
+        Dim halfText As String = inputText
+
+        ' 2. 形が同じ大文字キリル文字（左）とラテン文字（右）の対応辞書
+        ' ※StrConv(Narrow)を通しても、キリル文字は半角ラテン文字にはならないため、ここで個別に直します
+        Dim mapping As New Dictionary(Of Char, Char) From {
+            {ChrW(&H410), "A"c}, ' キリル文字のアー
+            {ChrW(&H412), "B"c}, ' キリル文字のヴェー
+            {ChrW(&H415), "E"c},
+            {ChrW(&H41A), "K"c},
+            {ChrW(&H41C), "M"c},
+            {ChrW(&H41D), "H"c},
+            {ChrW(&H41E), "O"c}, ' キリル文字のオー
+            {ChrW(&H420), "P"c},
+            {ChrW(&H421), "S"c},
+            {ChrW(&H422), "T"c},
+            {ChrW(&H425), "X"c},
+            {ChrW(&H42F), "Y"c},
+            {ChrW(&H408), "J"c}  ' キリル文字のイェー
+        }
+
+        ' 3. 1文字ずつチェックして、キリル文字だけをピンポイントで置換
+        Dim sb As New System.Text.StringBuilder()
+        For Each c As Char In halfText
+            Dim upperChar As Char = Char.ToUpper(c)
+
+            If mapping.ContainsKey(upperChar) Then
+                sb.Append(mapping(upperChar))
+            Else
+                sb.Append(c)
+            End If
+        Next
+
+        Return sb.ToString()
     End Function
 
 
@@ -1578,7 +1620,7 @@ Public Class frmMain
             btnOnlineOcr.Enabled = False
         Else
             btnOfflineOcr.Enabled = True
-            If GoogleApiKey <> "" Then
+            If (GoogleApiKey <> "") OrElse (AzureApiKey <> "") OrElse (AwsAccessKey <> "") Then
                 btnOnlineOcr.Enabled = True
             Else
                 btnOnlineOcr.Enabled = False
@@ -1953,7 +1995,7 @@ Public Class frmMain
                 End If
                 cmbCallsign.Select()
 
-            ElseIf e.KeyCode = Keys.X Then          ' Ctlr+A  CalsignのないQSLの場合、Callsignの最後に * を付ける
+            ElseIf e.KeyCode = Keys.X Then          ' Ctlr+X  CalsignのないQSLの場合、Callsignの最後に -X を付ける
                 e.SuppressKeyPress = True   ' ← これが重要
                 e.Handled = True
 
@@ -1967,7 +2009,7 @@ Public Class frmMain
                     cmbCallsign.SelectionStart = cmbCallsign.Text.Length
                 End If
 
-            ElseIf e.KeyCode = Keys.B Then
+            ElseIf e.KeyCode = Keys.B Then           ' Ctlr+B  白紙カードの場合、そのカードを削除する
                 If PicQsl.Image Is Nothing Then Exit Sub
 
                 Dim result = MessageBox.Show($"{InputFileName} を削除していいですか", "ファイル削除", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
@@ -2016,14 +2058,16 @@ Public Class frmMain
         'End If
     End Sub
 
-    Private Sub Control_KeyDown_Enter(sender As Object, e As EventArgs) Handles cmbCallsign.Enter, txtQsoDate.Enter, txtQsoTime.Enter, txtBand.Enter, txtMode.Enter
+    Private Sub cmbCallsign_Enter(sender As Object, e As EventArgs) Handles cmbCallsign.Enter, txtQsoDate.Enter, txtQsoTime.Enter, txtBand.Enter, txtMode.Enter
+        ' 次に「ESC」キーを押されたときに元の値に戻すため、現在の値を保存しておく
         NowText = sender.text
-    End Sub
 
+    End Sub
 
     Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) Handles cmbCallsign.KeyDown, txtQsoDate.KeyDown,
                 txtQsoTime.KeyDown, txtBand.KeyDown, txtMode.KeyDown
 
+        ' 「ESC」キーを押されたときに元の値に戻す
         If e.KeyCode = Keys.Escape Then
             sender.text = NowText
             Exit Sub
@@ -2048,12 +2092,27 @@ Public Class frmMain
             End If
         End If
 
-        If TypeOf sender Is ComboBox Then
+        ' ComboBox型として安全に取得を試みる
+        Dim cmb As ComboBox = TryCast(sender, ComboBox)
+
+        If cmb IsNot Nothing Then
+            'If TypeOf sender Is ComboBox Then
             If e.KeyCode = Keys.Down Then
                 ' すでにドロップダウン中でなければ開く
                 If Not cmbCallsign.DroppedDown Then
                     cmbCallsign.DroppedDown = True      ' これでListを表示するはずだが、開かない。 [Alt] + [下矢印(↓)] キー、または [F4] キーを使います　でも開かない
                     e.Handled = True ' 標準のキー動作を抑制
+                End If
+            End If
+
+            If e.KeyCode = Keys.Escape Then
+                ' Escキーが押されたときのデフォルト動作を無効化する
+                e.Handled = True
+                e.SuppressKeyPress = True
+
+                ' 必要に応じて、ドロップダウンを閉じるだけにするなどの処理を記述
+                If cmbCallsign.DroppedDown Then
+                    cmbCallsign.DroppedDown = False
                 End If
             End If
 
@@ -2159,7 +2218,7 @@ Public Class frmMain
         'GoogleURL = AppSettings.GetJson("Google", "URL", "")
 
 
-        tessVersion = OcrEngine.GetTesseractVersion()
+        tessVersion = OcrEngine.GetTesseractVersion
 
         LoadCtyDatabase()               ' cty.json 読み込み
 
@@ -2211,9 +2270,9 @@ Public Class frmMain
         chkAuto.Checked = False
 
         'form　サイズを変更した場合の処理
-        Dim baseFont As Single = 9.0F           ' [F]hは浮動小数円の意味
-        Dim userFont As Single = Single.Parse(FontSize)
-        Dim factor As Single = userFont / baseFont
+        Dim baseFont = 9.0F           ' [F]hは浮動小数円の意味
+        Dim userFont = Single.Parse(FontSize)
+        Dim factor = userFont / baseFont
         ApplyScanDataScale(factor)
 
     End Sub
@@ -2644,39 +2703,49 @@ Public Class frmMain
 
         ' img が Image型 の変数だとします
         Dim bmp As New Bitmap(PicQsl.Image)         ' Qrコードを読み取るためにBitmapに変換
-        Dim reader As New BarcodeReader With {.Options = New DecodingOptions With {.TryHarder = True}}       ' QRコード読み取り
-        Dim Qrresults As Result() = reader.DecodeMultiple(bmp)
-        text = ""
-        If (Qrresults IsNot Nothing) AndAlso Qrresults.Length > 0 Then
-            For Each result In Qrresults
-                ' フォーマットがQRコードかどうかを判定
-                If (result.BarcodeFormat() <> BarcodeFormat.QR_CODE) Then
-                    Continue For
-                End If
 
-                text = result.Text
-                If (text.Contains("http")) OrElse (text.Length <= 30) Then           ' QRコードがURLの場合はOCRを実行しない または　QRコード以外をQRコードと誤読した場合
-                    text = ""
-                    Continue For
-                Else
-                    ReadingMode = ReadingModes.QrCodeMode
-                    LstOcrResult.BackColor = QrCodeBackColor      ' （FloralWhite　薄いオレンジ色）
-                    Exit For
-                End If
-            Next
+        ' 元の画像をBitmapに変換
+        Dim originalBmp As New Bitmap(bmp)
 
-            ' Qrコードは検出できた最初のもので処理
-            If text <> "" Then
-                ' QRコードの場合は、日付・時刻・モード・周波数を抽出する
-                CurrentQso = RegexExtractor.ExtractFromQrCode(text)
-                preview = text
-                TextFileSize = text.Length.ToString
+        ' 【追加】読み取り精度を上げるために2値化画像を作成する
+        'Using binaryBmp As Bitmap = PreprocessForQr(bmp)
+        'Using binaryBmp As Bitmap = ConvertToBinaryBitmap(originalBmp)
+        Using binaryBmp As Bitmap = bmp
 
-                If CurrentQso.Valid Then
-                    SetUiFromCurrentQso(CurrentQso)                   ' QRコードの読み取り値をUIに設定
+            Dim reader As New BarcodeReader With {.Options = New DecodingOptions With {.TryHarder = True}}       ' QRコード読み取り
+            Dim QrResults As Result() = reader.DecodeMultiple(originalBmp)
+            text = ""
+            If (QrResults IsNot Nothing) AndAlso QrResults.Length > 0 Then
+                For Each result In QrResults
+                    ' フォーマットがQRコードかどうかを判定
+                    If (result.BarcodeFormat() <> BarcodeFormat.QR_CODE) Then
+                        Continue For
+                    End If
+
+                    text = result.Text
+                    If (text.Contains("http")) OrElse (text.Length <= 30) Then           ' QRコードがURLの場合はOCRを実行しない または　QRコード以外をQRコードと誤読した場合
+                        text = ""
+                        Continue For
+                    Else
+                        ReadingMode = ReadingModes.QrCodeMode
+                        LstOcrResult.BackColor = QrCodeBackColor      ' （FloralWhite　薄いオレンジ色）
+                        Exit For
+                    End If
+                Next
+
+                ' Qrコードは検出できた最初のもので処理
+                If text <> "" Then
+                    ' QRコードの場合は、日付・時刻・モード・周波数を抽出する
+                    CurrentQso = RegexExtractor.ExtractFromQrCode(text)
+                    preview = text
+                    TextFileSize = text.Length.ToString
+
+                    If CurrentQso.Valid Then
+                        SetUiFromCurrentQso(CurrentQso)                   ' QRコードの読み取り値をUIに設定
+                    End If
                 End If
             End If
-        End If
+        End Using
 
         ' QRコードを検出できないとき、OCR処理をする
         If text = "" Then
@@ -2723,30 +2792,38 @@ Public Class frmMain
                 text = NormalizeText(text)
             End If
             RegexExtractor.ExtractCallsignCandidates(text)
-        End If
+            'End If
 
-        If text = "" Then
-            'MessageBox.Show("OCR結果が空です")       ' うるさいのでMessageをださない
-            Exit Sub
-        End If
-
-        UsedRanges.Clear()      ' OCR → Extract の処理へ    ' 既出の文字列リストをクリアする
-
-        RegexExtractor.CandidateCallsigns = RegexExtractor.RemoveMyCallsign(MyCallsigns, RegexExtractor.CandidateCallsigns)    ' 自分のコールサインを除外
-        For Each c In RegexExtractor.CandidateCallsigns
-            If Not CurrentQso.CandidatesCallsigns.Contains(c.Callsign) Then
-                CurrentQso.CandidatesCallsigns.Add(c.Callsign)
+            If text = "" Then
+                'MessageBox.Show("OCR結果が空です")       ' うるさいのでMessageをださない
+                Exit Sub
             End If
-        Next
 
-        CurrentQso.Callsign = RegexExtractor.ChooseBestCallsign("")
-        CurrentQso.Valid = True
-        With CurrentQso
-            .QsoDate = RegexExtractor.ExtractDate(text)
-            .QsoTime = RegexExtractor.ExtractTime(text)
-            .Mode = RegexExtractor.ExtractMode(text)
-            .Band = RegexExtractor.ExtractBand(text)
-        End With
+            UsedRanges.Clear()      ' OCR → Extract の処理へ    ' 既出の文字列リストをクリアする
+
+            RegexExtractor.CandidateCallsigns = RegexExtractor.RemoveMyCallsign(MyCallsigns, RegexExtractor.CandidateCallsigns)    ' 自分のコールサインを除外
+            For Each c In RegexExtractor.CandidateCallsigns
+                If Not CurrentQso.CandidatesCallsigns.Contains(c.Callsign) Then
+                    CurrentQso.CandidatesCallsigns.Add(c.Callsign)
+                End If
+            Next
+
+            CurrentQso.Callsign = RegexExtractor.ChooseBestCallsign("")
+            CurrentQso.Valid = True
+            With CurrentQso
+                .QsoDate = RegexExtractor.ExtractDate(text)
+                .QsoTime = RegexExtractor.ExtractTime(text)
+                .Mode = RegexExtractor.ExtractMode(text)
+                .Band = RegexExtractor.ExtractBand(text)
+            End With
+
+
+            ' UI に反映
+            If CurrentQso.Valid Then
+                SetUiFromCurrentQso(CurrentQso)                   ' QRコードの読み取り値をUIに設定
+            End If
+
+        End If
 
         ' とりあえずメッセージで全文を確認5
         preview = If(preview.Length > 500, preview.Substring(0, 500) & " ...", preview)
@@ -2755,16 +2832,103 @@ Public Class frmMain
         LstOcrResult.Items.Clear()
         LstOcrResult.Items.AddRange(preview.Split(New String() {vbLf}, StringSplitOptions.RemoveEmptyEntries))
 
-        ' UI に反映
-        If CurrentQso.Valid Then
-            SetUiFromCurrentQso(CurrentQso)                   ' QRコードの読み取り値をUIに設定
-        End If
-
         SetButtons()
 
         cmbCallsign.Select()
         cmbCallsign.SelectAll()
     End Sub
+
+
+    ''  　以下負荷が重いので組み込みをやめる
+    ''' <summary>
+    ''' Bitmap画像を拡大・グレースケール化・2値化する関数
+    ''' </summary>
+    'Private Function PreprocessForQr(srcBmp As Bitmap) As Bitmap
+    '    ' 1. 解像度不足を補うため、画像を2倍に拡大する（必要に応じて 3倍 などに調整）
+    '    Dim newWidth As Integer = srcBmp.Width * 2
+    '    Dim newHeight As Integer = srcBmp.Height * 2
+    '    Dim resizedBmp As New Bitmap(newWidth, newHeight, Imaging.PixelFormat.Format24bppRgb)
+
+    '    Using g As Graphics = Graphics.FromImage(resizedBmp)
+    '        ' 補間モードを高品質にして綺麗に拡大する
+    '        g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic
+    '        g.DrawImage(srcBmp, 0, 0, newWidth, newHeight)
+    '    End Using
+
+    '    ' 2. 拡大した画像に対して2値化（白黒化）を行う
+    '    Dim dstBmp As New Bitmap(newWidth, newHeight, Imaging.PixelFormat.Format24bppRgb)
+    '    Dim totalBrightness As Long = 0
+    '    Dim pixelCount As Long = newWidth * newHeight
+
+    '    For y As Integer = 0 To newHeight - 1
+    '        For x As Integer = 0 To newWidth - 1
+    '            Dim c As Color = resizedBmp.GetPixel(x, y)
+    '            Dim brightness As Integer = CInt(0.299 * c.R + 0.587 * c.G + 0.114 * c.B)
+    '            totalBrightness += brightness
+    '        Next
+    '    Next
+
+    '    Dim threshold As Integer = CInt(totalBrightness / pixelCount)
+
+    '    For y As Integer = 0 To newHeight - 1
+    '        For x As Integer = 0 To newWidth - 1
+    '            Dim c As Color = resizedBmp.GetPixel(x, y)
+    '            Dim brightness As Integer = CInt(0.299 * c.R + 0.587 * c.G + 0.114 * c.B)
+
+    '            If brightness < threshold Then
+    '                dstBmp.SetPixel(x, y, Color.Black)
+    '            Else
+    '                dstBmp.SetPixel(x, y, Color.White)
+    '            End If
+    '        Next
+    '    Next
+
+    '    resizedBmp.Dispose()
+    '    Return dstBmp
+    'End Function
+
+
+    '''' <summary>
+    '''' Bitmap画像をグレースケール化し、簡易的な閾値で2値化する
+    '''' </summary>
+    'Private Function ConvertToBinaryBitmap(srcBmp As Bitmap) As Bitmap
+    '    Dim width As Integer = srcBmp.Width
+    '    Dim height As Integer = srcBmp.Height
+    '    Dim dstBmp As New Bitmap(width, height, Imaging.PixelFormat.Format24bppRgb)
+
+    '    ' 1. まずグレースケールの平均輝度を算出する（簡易的な閾値決定）
+    '    Dim totalBrightness As Long = 0
+    '    Dim pixelCount As Long = width * height
+
+    '    ' 高速化のため LockBits を使用することも可能ですが、分かりやすく GetPixel/SetPixel で記述しています
+    '    ' ※処理速度が気になる場合は LockBits に書き換えてください
+    '    For y As Integer = 0 To height - 1
+    '        For x As Integer = 0 To width - 1
+    '            Dim c As Color = srcBmp.GetPixel(x, y)
+    '            ' 輝度（Y = 0.299R + 0.587G + 0.114B）を計算
+    '            Dim brightness As Integer = CInt(0.299 * c.R + 0.587 * c.G + 0.114 * c.B)
+    '            totalBrightness += brightness
+    '        Next
+    '    Next
+
+    '    Dim threshold As Integer = CInt(totalBrightness / pixelCount)
+
+    '    ' 2. 閾値を元に白黒（2値化）に変換
+    '    For y As Integer = 0 To height - 1
+    '        For x As Integer = 0 To width - 1
+    '            Dim c As Color = srcBmp.GetPixel(x, y)
+    '            Dim brightness As Integer = CInt(0.299 * c.R + 0.587 * c.G + 0.114 * c.B)
+
+    '            If brightness < threshold Then
+    '                dstBmp.SetPixel(x, y, Color.Black)
+    '            Else
+    '                dstBmp.SetPixel(x, y, Color.White)
+    '            End If
+    '        Next
+    '    Next
+
+    '    Return dstBmp
+    'End Function
 
     Private Function GetTextFromImage(img As System.Drawing.Image, engine As OcrMode, ReductionRate As Integer) As String
         Dim g = ToGrayScale(img)
@@ -2793,6 +2957,10 @@ Public Class frmMain
         text = text.Replace(vbLf, " ")
         text = text.Replace(vbCr, " ")
         text = Regex.Replace(text, " +", " ")       ' 連続する複数のスペースをひとつにする
+
+        text = FixCyrillicCallsign(text)            ' キリル文字をラテン文字に置き換える  
+        ' 他にもギリシャ文字や特殊文字がある場合は、ここで置き換えるよう改造する
+
         Return text
     End Function
 

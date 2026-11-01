@@ -64,7 +64,6 @@ Public Module BandList
     (10450.0, 10500.0, "3CM")
 }
 
-
     Public ReadOnly MisReadingBands As New Dictionary(Of String, String)() From {
        {"19", "160M"}, {"35", "80M"}
    }
@@ -102,10 +101,9 @@ Module ModeList
         {"PSK3I", "PSK31"}, {"PSK31A", "PSK31"},
         {"JT65A", "JT65"}, {"JT65B", "JT65"}, {"JT65C", "JT65"},
         {"SSTV8", "SSTV"}, {"SSTV9", "SSTV"},
-        {"OW", "CW"}, {"CN", "CW"}, {"CU", "CW"}, {"CV", "CW"}, {"AIA", "CW"},
+        {"OW", "CW"}, {"CN", "CW"}, {"CU", "CW"}, {"CV", "CW"}, {"AIA", "CW"}, {"ALA", "CW"},
         {"J165", "JT65"}
     }
-
 
 End Module
 
@@ -138,7 +136,6 @@ End Module
 
 
 Partial Class frmMain
-
 
     Public Class HistoryAdifWriter
 
@@ -307,6 +304,8 @@ Partial Class frmMain
             Dim results As New List(Of String)
             Dim items() As String
             Dim dt As String
+
+            CandidateCallsigns.Clear()
 
             With Qso
                 .Valid = False
@@ -588,7 +587,7 @@ Partial Class frmMain
                 End If
             Next
 
-            pattern = "\b(J|7) ?([A-S]) ?([0-9]) ?([A-Z]) ?([A-Z]) ?([A-Z]?)\b"        ' 国内のCallsignのみ 文字間に空白 例：J A 7 F K F 前記の条件と同じ?
+            pattern = "\b([J7]) ?([A-S]) ?([0-9]) ?([A-Z]) ?([A-Z]) ?([A-Z])?\b"        ' 国内のCallsignのみ 文字間に空白 例：J A 7 F K F 前記の条件と同じ?
             For Each m As Match In Regex.Matches(text, pattern)
                 Dim part1 = m.Groups(1).Value & m.Groups(2).Value
                 Dim part2 = m.Groups(3).Value           ' Area番号
@@ -605,7 +604,7 @@ Partial Class frmMain
                 End If
             Next
 
-            pattern = "\b(J|7) ?([0-9]) ?([0-9]) ?([A-Z]) ?([A-Z]) ?([A-Z]?)\b"        ' 国内のCallsignのみ 文字間に空白 例：J A 7 F K F 前記の条件と同じ?
+            pattern = "\b([J7]) ?([0-9]) ?([0-9]) ?([A-Z]) ?([A-Z]) ?([A-Z]?)\b"        ' 国内のCallsignのみ 文字間に空白 例：J A 7 F K F 前記の条件と同じ?
             For Each m As Match In Regex.Matches(text, pattern)
                 Dim part1 = m.Groups(1).Value & m.Groups(2).Value
                 Dim part2 = m.Groups(3).Value           ' Area番号
@@ -1030,7 +1029,6 @@ Partial Class frmMain
         Private Shared Function ExtractDateWithMonthName(text As String) As String
             ' 月名の順に整合しているので、複数行の年月日がある場合、1番目の行が選択されると限らない
 
-
             Dim pattern As String
             Dim m As Match
             Dim ms As MatchCollection
@@ -1068,9 +1066,17 @@ Partial Class frmMain
 
                             If isValidDate(year, month, day) Then
                                 sm = FormatDate(year, month, day)
-                                UsedRanges.Add((sm, m.Index, m.Length))
-                                SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, 0, 0)
-                                Return sm
+                                If Not IsUsed(m.Index, m.Length) Then
+                                    Dim idx = m.Groups(0).Index
+                                    Dim Len = m.Groups(0).Length
+                                    DetectionDates.Add(New Detection With {.Value = sm, .Index = idx, .Length = Len, .Row = 0, .Column = 0})
+                                End If
+
+
+
+                                'UsedRanges.Add((sm, m.Index, m.Length))
+                                'SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, 0, 0)
+                                'Return sm
                             End If
                             'DateFormat = DateFormats.InvalidFormat
                         End If
@@ -1098,9 +1104,17 @@ Partial Class frmMain
 
                             If isValidDate(year, month, day) Then
                                 sm = FormatDate(year, month, day)
-                                UsedRanges.Add((sm, m.Index, m.Length))
-                                SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, 0, 0)
-                                Return sm
+                                If Not IsUsed(m.Index, m.Length) Then
+                                    Dim idx = m.Groups(0).Index
+                                    Dim Len = m.Groups(0).Length
+                                    DetectionDates.Add(New Detection With {.Value = sm, .Index = idx, .Length = Len, .Row = 0, .Column = 0})
+                                End If
+
+
+                                'UsedRanges.Add((sm, m.Index, m.Length))
+                                'SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, 0, 0)
+                                'sm = FormatDate(year, month, day)
+                                'Return sm
                             End If
                             'DateFormat = DateFormats.InvalidFormat
                         End If
@@ -1134,9 +1148,16 @@ Partial Class frmMain
                             year = FixYear(year)          ' 年が2桁なら2000年代とみなす
                             If isValidDate(year, month, day) Then
                                 sm = FormatDate(year, month, day)
-                                AddUsed(sm, m.Index, m.Length)
-                                SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, 0, 0)
-                                Return sm
+                                If Not IsUsed(m.Index, m.Length) Then
+                                    Dim idx = m.Groups(0).Index
+                                    Dim Len = m.Groups(0).Length
+                                    DetectionDates.Add(New Detection With {.Value = sm, .Index = idx, .Length = Len, .Row = 0, .Column = 0})
+                                End If
+
+
+                                'AddUsed(sm, m.Index, m.Length)
+                                'SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, 0, 0)
+                                'Return sm
                             End If
                             'DateFormat = DateFormats.InvalidFormat
                         End If
@@ -1183,9 +1204,16 @@ Partial Class frmMain
 
                                 If isValidDate(year, month, day) Then
                                     sm = FormatDate(year, month, day)
-                                    UsedRanges.Add((sm, m.Index, m.Length))
-                                    SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, 0, 0)
-                                    Return sm
+                                    If Not IsUsed(m.Index, m.Length) Then
+                                        Dim idx = m.Groups(0).Index
+                                        Dim Len = m.Groups(0).Length
+                                        DetectionDates.Add(New Detection With {.Value = sm, .Index = idx, .Length = Len, .Row = 0, .Column = 0})
+                                    End If
+
+                                    'UsedRanges.Add((sm, m.Index, m.Length))
+                                    'SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, 0, 0)
+
+                                    'Return sm
                                 End If
                             ElseIf (m.Groups(2).Value.Length <= 2 AndAlso m.Groups(4).Value.Length >= 3) OrElse     ' 長さで年を判断'　日、月、年
                                 (m.Groups(3).Value = "'") OrElse                                                    ' 年を省略の’を付けた
@@ -1224,9 +1252,14 @@ Partial Class frmMain
 
                                 If isValidDate(year, month, day) Then
                                     sm = FormatDate(year, month, day)
-                                    UsedRanges.Add((sm, m.Index, m.Length))
-                                    SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, 0, 0)
-                                    Return sm
+                                    If Not IsUsed(m.Index, m.Length) Then
+                                        Dim idx = m.Groups(0).Index
+                                        Dim Len = m.Groups(0).Length
+                                        DetectionDates.Add(New Detection With {.Value = sm, .Index = idx, .Length = Len, .Row = 0, .Column = 0})
+                                    End If
+                                    'UsedRanges.Add((sm, m.Index, m.Length))
+                                    'SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, 0, 0)
+                                    'Return sm
                                 Else
                                     month = MonthNames(key)
                                     day = Integer.Parse(m.Groups(2).Value)
@@ -1239,9 +1272,14 @@ Partial Class frmMain
 
                                     If isValidDate(year, month, day) Then
                                         sm = FormatDate(year, month, day)
-                                        UsedRanges.Add((sm, m.Index, m.Length))
-                                        SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, 0, 0)
-                                        Return sm
+                                        If Not IsUsed(m.Index, m.Length) Then
+                                            Dim idx = m.Groups(0).Index
+                                            Dim Len = m.Groups(0).Length
+                                            DetectionDates.Add(New Detection With {.Value = sm, .Index = idx, .Length = Len, .Row = 0, .Column = 0})
+                                        End If
+                                        'UsedRanges.Add((sm, m.Index, m.Length))
+                                        'SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, 0, 0)
+                                        'Return sm
                                     End If
                                 End If
                             Else
@@ -1252,9 +1290,15 @@ Partial Class frmMain
                                     year = FixYear(year)          ' 年が2桁なら2000年代とみなす
                                     If isValidDate(year, month, day) Then
                                         sm = FormatDate(year, month, day)
-                                        UsedRanges.Add((sm, m.Index, m.Length))
-                                        SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, 0, 0)
-                                        Return sm
+                                        If Not IsUsed(m.Index, m.Length) Then
+                                            Dim idx = m.Groups(0).Index
+                                            Dim Len = m.Groups(0).Length
+                                            DetectionDates.Add(New Detection With {.Value = sm, .Index = idx, .Length = Len, .Row = 0, .Column = 0})
+                                        End If
+
+                                        'UsedRanges.Add((sm, m.Index, m.Length))
+                                        'SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, 0, 0)
+                                        'Return sm
                                     End If
                                 ElseIf m.Groups(4).Length >= 2 Then
                                     month = MonthNames(key)
@@ -1263,9 +1307,15 @@ Partial Class frmMain
                                     year = FixYear(year)          ' 年が2桁なら2000年代とみなす
                                     If isValidDate(year, month, day) Then
                                         sm = FormatDate(year, month, day)
-                                        UsedRanges.Add((sm, m.Index, m.Length))
-                                        SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, 0, 0)
-                                        Return sm
+                                        If Not IsUsed(m.Index, m.Length) Then
+                                            Dim idx = m.Groups(0).Index
+                                            Dim Len = m.Groups(0).Length
+                                            DetectionDates.Add(New Detection With {.Value = sm, .Index = idx, .Length = Len, .Row = 0, .Column = 0})
+                                        End If
+
+                                        'UsedRanges.Add((sm, m.Index, m.Length))
+                                        'SetBaseDetection(DateBase, m.Groups(0).Value, m.Index, m.Length, 0, 0)
+                                        'Return sm
                                     End If
                                 Else
 
@@ -1299,17 +1349,35 @@ Partial Class frmMain
                             If after = ":" Then Continue For                                             ' 時間の値を食ってしまった
 
                             If isValidDate(year, month, day) Then
-                                Dim s As String = FormatDate(year, month, day)
-                                Dim idx = m.Groups(3).Index
-                                Dim len = m.Groups(5).Index - m.Groups(3).Index + m.Groups(5).Length
-                                UsedRanges.Add((s, idx, len))
-                                SetBaseDetection(DateBase, s, idx, len, 0, 0)
-                                Return s
+                                sm = FormatDate(year, month, day)
+                                If Not IsUsed(m.Index, m.Length) Then
+                                    Dim idx = m.Groups(0).Index
+                                    Dim Len = m.Groups(0).Length
+                                    DetectionDates.Add(New Detection With {.Value = sm, .Index = idx, .Length = Len, .Row = 0, .Column = 0})
+                                End If
+
+
+                                'Dim idx = m.Groups(3).Index
+                                'Dim len = m.Groups(5).Index - m.Groups(3).Index + m.Groups(5).Length
+                                'UsedRanges.Add((s, idx, len))
+                                'SetBaseDetection(DateBase, s, idx, len, 0, 0)
+                                'Return s
                             End If
                         End If
                     Next
                 End If
             Next
+
+            If DetectionDates.Count = 1 Then
+                Return DetectionDates(0).Value
+            End If
+
+            Dim bestAwnser As String() = ChooseBestDetection(DetectionDates, DateBaseTitle, False)
+            If bestAwnser(0) <> "" Then
+                AddUsed(bestAwnser(0), bestAwnser(1), bestAwnser(2))
+                SetBaseDetection(TimeBase, bestAwnser(0), bestAwnser(1), bestAwnser(2), 0, 0)
+                Return bestAwnser(0)
+            End If
 
             Return ""
         End Function
@@ -1367,6 +1435,7 @@ Partial Class frmMain
                     If m.Groups(2).Value.Trim <> m.Groups(4).Value.Trim Then Continue For     ' 区切り符号が違うなら
 
                     year = m.Groups(5).Value
+                    year = year.Replace("'", "")        ' 省略符号を削除"
                     month = m.Groups(3).Value
                     day = m.Groups(1).Value
                     ymd = FormatDate(year, month, day)
@@ -2331,7 +2400,8 @@ Partial Class frmMain
 
             ' 時刻パターン（例：09:00JST 9:00など）　パターン2
             ' 文字区切りがあり、時と分の間は区切符号が1個 UTC,JSZ,Zの１文字があってもなくてもよい
-            pattern = "\b([01]\d|2[0-3]|[1-9]) {0,3}([:/]) {0,3}([0-5]\d)\s?[JUZTA]?\b"
+            'pattern = "\b([01]\d|2[0-3]|[1-9]) {0,3}([-:\. ]) {0,3}([0-5]\d)\s?[JUZTA]?\b"
+            pattern = "\b([01]\d|2[0-3]|[1-9]) ?([-:\.]) ?([0-5]\d)\s?[JUZTA]?\b"
             mc = Regex.Matches(cleaned, pattern)
             For Each m In mc
                 'Debug.Print($"({m.Value}, {m.Index}, {m.Length})")
@@ -2361,13 +2431,14 @@ Partial Class frmMain
                         DetectionTimes.Add(New Detection With {.Value = s, .Index = m.Groups(0).Index, .Length = s.Length, .Row = 0, .Column = 0})
                     End If
                 End If
-
-                'If DetectionTimes.Count = 1 Then        ' 厳密チェックで１つしか見つからない場合、それをそのまま答えとする
-                '    AddUsed(DetectionTimes(0).Value, DetectionTimes(0).Index, DetectionTimes(0).Length)
-                '    SetBaseDetection(TimeBase, DetectionTimes(0).Value, DetectionTimes(0).Index, DetectionTimes(0).Length, 0, 0)
-                '    Return FormatTime(DetectionTimes(0).Value)
-                'End If
             Next
+
+            If DetectionTimes.Count = 1 Then        ' 厳密チェックで１つしか見つからない場合、それをそのまま答えとする
+                AddUsed(DetectionTimes(0).Value, DetectionTimes(0).Index, DetectionTimes(0).Length)
+                SetBaseDetection(TimeBase, DetectionTimes(0).Value, DetectionTimes(0).Index, DetectionTimes(0).Length, 0, 0)
+                Return FormatTime(DetectionTimes(0).Value)
+            End If
+
             If TimeBaseTitle.Value <> "" Then
                 Dim bestAwnser As String() = ChooseBestDetection(DetectionTimes, TimeBaseTitle, False)
                 If bestAwnser(0) <> "" Then
@@ -2431,7 +2502,7 @@ Partial Class frmMain
             'End If
 
             ' 文字区切りがなくてもよい、JSTなどで終わらなくてもよい
-            '          pattern = "\b([01]\d|2[0-3]|[1-9]) {0,3}([-:\.])? {0,3}([0-5]\d)(\s{0,2})\b?"       ' TIはTIMEの一部,ASは誤読対策
+            '          pattern = "\b([01]\d|2[0-3]|[1-9]) {0,3}([-:\. ])? {0,3}([0-5]\d)(\s{0,2})\b?"       ' TIはTIMEの一部,ASは誤読対策
             pattern = "\b([01]\d|2[0-3]|[1-9])([-:\. ]){0,3}([0-5]\d)\s{0,2}\b?"       ' TIはTIMEの一部,ASは誤読対策
             mc = Regex.Matches(cleaned, pattern)
             For Each m In mc
@@ -2641,6 +2712,8 @@ Partial Class frmMain
             Dim Minutes As String = If(MinutesMatch.Success, MinutesMatch.Groups("Minutes").Value, "")
 
             If Times <> "" AndAlso Minutes <> "" Then
+                If Math.Abs(TimesMatch.Index - TimeBaseTitle.Index) > 100 Then Return ""
+
                 If IsValidTime(Times, Minutes) Then
                     Dim formattedTime = FormatTime(Times, Minutes)
                     AddUsed(formattedTime, TimesMatch.Index, TimesMatch.Length)
@@ -3179,21 +3252,20 @@ Partial Class frmMain
             band = ExtractSat(text)
             If band <> "" Then Return band
 
-            ' 2. 波長表示の完全系を探す　　（xxＭ) 
-            band = ExtractDirectBand(cleaned)
-            If band <> "" Then
-                Return band
-            End If
-
             ' 3. 周波数の直接表記があるか探す 7.123MHZ, 145.04Mhz、136KHZ, 2.4GHZなど 周波数単位がある
             band = ExtractDirectFrequency(cleaned)
             If band <> "" Then
                 Return band
             End If
 
-
             ' 4.1 周波数を求め、Bandにする        ' 周波数抽出（例：7.074, 145.04）
             band = ExtractFrequencyByReal(cleaned)
+            If band <> "" Then
+                Return band
+            End If
+
+            ' 2. 波長表示の完全系を探す　　（xxＭ) 
+            band = ExtractDirectBand(cleaned)
             If band <> "" Then
                 Return band
             End If
@@ -3371,7 +3443,7 @@ Partial Class frmMain
             Dim bn As String
             Dim unit As String = ""
 
-            pattern = "\b(\d+(\.\d+)?) ?([KMG](HZ|C))"                   ' 28.152MHZ など完全系であること
+            pattern = "\b(\d+(\. ?\d+)?) ?([KMG](HZ|C))"                   ' 28.152MHZ など完全系であること
             For Each m In Regex.Matches(text, pattern)
                 If IsUsed(m.Index, m.Length) Then Continue For
                 If BandBaseTitle.Index <> 0 AndAlso Math.Abs(m.Index - BandBaseTitle.Index) > 200 Then Continue For
@@ -3411,7 +3483,7 @@ Partial Class frmMain
             ' 1. 波長表示の Band 表記があるか探す           
             Dim upper = CleanTextBand(text)
 
-            Dim pattern = "\d+(\.\d+)?"
+            Dim pattern = "\d+(\. ?\d+)?"
             For Each m In Regex.Matches(text, pattern)
                 If IsUsed(m.Index, m.Length) Then Continue For
                 If BandBaseTitle.Index <> 0 AndAlso Math.Abs(m.Index - BandBaseTitle.Index) > 200 Then Continue For
@@ -3458,7 +3530,7 @@ Partial Class frmMain
 
             text = CleanTextFreq(text)
 
-            Dim pattern = "(\d+ ?(\.\d+))"          ' なぜか小数点前に空白１個が入るケースが多い
+            Dim pattern = "(\d+ ?(\. ?\d+))"          ' なぜか小数点前に空白１個が入るケースが多い
             ExtractFrequencySub(text, pattern)
 
             If DetectionBands.Count = 1 Then
@@ -3467,8 +3539,6 @@ Partial Class frmMain
 
             Return ""
         End Function
-
-
 
 
         ' 4.　メータ表示のない周波数 表記を直接抽出　' 7、 144 等の波長表示

@@ -9,21 +9,14 @@
     <AssemblyTitle>QslOrganizer</AssemblyTitle>
     <ApplicationIcon>QslOrganizer.ico</ApplicationIcon>
     <Copyright>MIT</Copyright>
-    <AssemblyVersion>1.1.3.1</AssemblyVersion>
-    <FileVersion>1.1.3.1</FileVersion>
+    <AssemblyVersion>1.1.3.2</AssemblyVersion>
+    <FileVersion>1.1.3.2</FileVersion>
     <Company>Studio Zaigo (JA7FKF)</Company>
     <PackageIcon>QslOrganizer.ico</PackageIcon>
     <ImportedNamespaces>System.Data=False,System.Drawing=False,System.Windows.Forms=False,Microsoft.VisualBasic=True,System=True,System.Collections=True,System.Collections.Generic=True,System.Diagnostics=True,System.Linq=True,System.Xml.Linq=True,System.Threading.Tasks=True,QslOrganizer=True</ImportedNamespaces>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="AboutBox1.Designer.vb" />
-    <Compile Remove="AboutBox1.vb" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Remove="AboutBox1.resx" />
-  </ItemGroup>
+ 
 
   <ItemGroup>
     <Content Include="QslOrganizer.ico" />

@@ -29,10 +29,10 @@ Partial Class frmSelect
         btnOk = New Button()
         Label1 = New Label()
         Panel2 = New Panel()
+        btnCancel = New Button()
         Panel1 = New Panel()
         Label2 = New Label()
         PicOldQsl = New PictureBox()
-        btnCancel = New Button()
         Panel2.SuspendLayout()
         Panel1.SuspendLayout()
         CType(PicOldQsl, ComponentModel.ISupportInitialize).BeginInit()
@@ -105,6 +105,16 @@ Partial Class frmSelect
         Panel2.Size = New Size(618, 63)
         Panel2.TabIndex = 1
         ' 
+        ' btnCancel
+        ' 
+        btnCancel.Location = New Point(504, 21)
+        btnCancel.Margin = New Padding(3, 3, 3, 10)
+        btnCancel.Name = "btnCancel"
+        btnCancel.Size = New Size(95, 32)
+        btnCancel.TabIndex = 6
+        btnCancel.Text = "Cancel"
+        btnCancel.UseVisualStyleBackColor = True
+        ' 
         ' Panel1
         ' 
         Panel1.Controls.Add(Label2)
@@ -140,16 +150,6 @@ Partial Class frmSelect
         PicOldQsl.SizeMode = PictureBoxSizeMode.Zoom
         PicOldQsl.TabIndex = 0
         PicOldQsl.TabStop = False
-        ' 
-        ' btnCancel
-        ' 
-        btnCancel.Location = New Point(504, 21)
-        btnCancel.Margin = New Padding(3, 3, 3, 10)
-        btnCancel.Name = "btnCancel"
-        btnCancel.Size = New Size(95, 32)
-        btnCancel.TabIndex = 6
-        btnCancel.Text = "Cancel"
-        btnCancel.UseVisualStyleBackColor = True
         ' 
         ' frmSelect
         ' 

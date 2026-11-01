@@ -22,6 +22,7 @@ Partial Class frmSettings
     'コード エディターを使って変更しないでください。
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmSettings))
         txtOutputHolder = New TextBox()
         Panel1 = New Panel()
         btnOK = New Button()
@@ -249,6 +250,7 @@ Partial Class frmSettings
         ' btnInputFolder
         ' 
         btnInputFolder.BackColor = SystemColors.Control
+        btnInputFolder.Image = CType(resources.GetObject("btnInputFolder.Image"), Image)
         btnInputFolder.Location = New Point(602, 74)
         btnInputFolder.Margin = New Padding(3, 2, 3, 2)
         btnInputFolder.Name = "btnInputFolder"
@@ -269,6 +271,7 @@ Partial Class frmSettings
         ' 
         ' btnOutputFolder
         ' 
+        btnOutputFolder.Image = CType(resources.GetObject("btnOutputFolder.Image"), Image)
         btnOutputFolder.Location = New Point(602, 122)
         btnOutputFolder.Margin = New Padding(3, 2, 3, 2)
         btnOutputFolder.Name = "btnOutputFolder"
@@ -541,6 +544,7 @@ Partial Class frmSettings
         Controls.Add(Panel1)
         ForeColor = SystemColors.ControlDarkDark
         FormBorderStyle = FormBorderStyle.FixedDialog
+        Icon = CType(resources.GetObject("$this.Icon"), Icon)
         Margin = New Padding(3, 2, 3, 2)
         MaximizeBox = False
         MinimizeBox = False

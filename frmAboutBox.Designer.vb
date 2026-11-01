@@ -22,6 +22,7 @@ Partial Class frmAboutBox
     'コード エディターを使って変更しないでください。
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmAboutBox))
         TableLayoutPanel = New TableLayoutPanel()
         Button1 = New Button()
         lstInformation = New ListBox()
@@ -86,6 +87,7 @@ Partial Class frmAboutBox
         ClientSize = New Size(483, 402)
         Controls.Add(TableLayoutPanel)
         FormBorderStyle = FormBorderStyle.FixedDialog
+        Icon = CType(resources.GetObject("$this.Icon"), Icon)
         Margin = New Padding(4)
         MaximizeBox = False
         MinimizeBox = False
@@ -93,7 +95,8 @@ Partial Class frmAboutBox
         Padding = New Padding(10)
         ShowInTaskbar = False
         StartPosition = FormStartPosition.CenterParent
-        Text = "AboutBox1"
+        Text = "AboutBox"
+        TopMost = True
         TableLayoutPanel.ResumeLayout(False)
         TableLayoutPanel.PerformLayout()
         ResumeLayout(False)
